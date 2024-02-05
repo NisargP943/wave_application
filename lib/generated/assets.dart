@@ -14,11 +14,15 @@ class Assets {
   static const String imagesBanner = 'assets/images/banner.png';
   static const String imagesBottomImg = 'assets/images/bottom_img.png';
   static const String imagesFacebook = 'assets/images/facebook.png';
+  static const String imagesFour = 'assets/images/four.jpg';
   static const String imagesGoogle = 'assets/images/google.png';
   static const String imagesLoginBg = 'assets/images/loginBg.png';
   static const String imagesLogo = 'assets/images/logo.png';
+  static const String imagesOne = 'assets/images/one.jpg';
   static const String imagesReject = 'assets/images/reject.png';
+  static const String imagesThree = 'assets/images/three.jpg';
   static const String imagesTitleLogo = 'assets/images/title_logo.png';
+  static const String imagesTwo = 'assets/images/two.jpg';
   static const String imagesWelcome1 = 'assets/images/welcome_1.jpeg';
   static const String imagesWelcome2 = 'assets/images/welcome_2.jpeg';
   static const String imagesWelcome3 = 'assets/images/welcome_3.jpeg';

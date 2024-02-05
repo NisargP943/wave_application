@@ -241,7 +241,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
         if (phoneNumberController.text == staticNumber) {
           Get.to(LoginPageScreen());
         } else {
-          Get.to(SignUpPageScreen());
+          Get.to(const SignUpPageScreen());
         }
       }
     }

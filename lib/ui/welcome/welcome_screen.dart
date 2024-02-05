@@ -27,57 +27,56 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: pageBodyWidget(),
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: pageIndex,
+        builder: (context, value, child) =>
+            value == 3 ? buildLastScreen() : Container(),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
   Widget pageBodyWidget() {
-    return SingleChildScrollView(
-      child: ValueListenableBuilder(
-        valueListenable: pageIndex,
-        builder: (BuildContext context, int value, Widget? child) {
-          return Column(
-            children: [
-              SizedBox(
-                height: 0.7.sh,
-                child: PageView.builder(
-                  onPageChanged: (value) {
-                    pageIndex.value = value;
-                  },
-                  itemBuilder: (context, index) {
-                    return Image.asset(
-                      walkthroughList[index],
-                      fit: BoxFit.fill,
-                    );
-                  },
-                  itemCount: walkthroughList.length,
-                  controller: imageController,
-                  physics: const BouncingScrollPhysics(),
-                ),
-              ),
-              50.verticalSpace,
-              value == 2 ? buildLastScreen() : const SizedBox.shrink()
-            ],
-          );
-        },
-      ),
+    return ValueListenableBuilder(
+      valueListenable: pageIndex,
+      builder: (BuildContext context, int value, Widget? child) {
+        return PageView.builder(
+          onPageChanged: (value) {
+            pageIndex.value = value;
+          },
+          itemBuilder: (context, index) {
+            return Image.asset(
+              walkthroughList[index],
+              fit: BoxFit.fill,
+            );
+          },
+          itemCount: walkthroughList.length,
+          controller: imageController,
+          physics: const BouncingScrollPhysics(),
+        );
+      },
     );
   }
 
   Widget buildLastScreen() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15).r,
-      child: AppButtonWidget(
-        text: "Get Started",
-        onTap: () {
-          Get.off(LoginOneScreen());
-        },
+      padding: const EdgeInsets.symmetric(horizontal: 20).r,
+      child: SizedBox(
+        height: 50.h,
+        child: AppButtonWidget(
+          text: "Get Started",
+          onTap: () {
+            Get.off(const LoginOneScreen());
+          },
+        ),
       ),
     );
   }
 }
 
 List walkthroughList = [
-  Assets.imagesWelcome1,
-  Assets.imagesWelcome2,
-  Assets.imagesWelcome3,
+  Assets.imagesOne,
+  Assets.imagesTwo,
+  Assets.imagesThree,
+  Assets.imagesFour,
 ];
