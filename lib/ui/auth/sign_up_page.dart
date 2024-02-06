@@ -22,7 +22,11 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   TextEditingController passwordController = TextEditingController();
 
+  TextEditingController passwordAgainController = TextEditingController();
+
   TextEditingController nameController = TextEditingController();
+
+  TextEditingController locationController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -31,6 +35,9 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
   ValueNotifier<bool> passwordAccepted = ValueNotifier(false);
 
   ValueNotifier<bool> nameAccepted = ValueNotifier(false);
+
+  ValueNotifier<bool> passwordAgainAccepted = ValueNotifier(false);
+  ValueNotifier<bool> currentLocation = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +119,40 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                   },
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.visiblePassword,
+                ),
+                10.verticalSpace,
+                TextFieldDesignPage(
+                  accepted: passwordAgainAccepted,
+                  controller: passwordAgainController,
+                  labelText: "Password Again",
+                  onChanged: (p0) {
+                    if (p0.length < 6) {
+                      passwordAgainAccepted.value = false;
+                    } else if (p0 != passwordController.text) {
+                      passwordAgainAccepted.value = false;
+                    } else {
+                      passwordAgainAccepted.value = true;
+                    }
+                  },
+                  textInputAction: TextInputAction.next,
+                  textInputType: TextInputType.emailAddress,
+                ),
+                10.verticalSpace,
+                TextFieldDesignPage(
+                  accepted: currentLocation,
+                  controller: locationController,
+                  labelText: "Current location",
+                  onChanged: (p0) {
+                    if (p0.isEmpty) {
+                      currentLocation.value = false;
+                    } else if (p0.length < 3) {
+                      currentLocation.value = false;
+                    } else {
+                      currentLocation.value = true;
+                    }
+                  },
+                  textInputAction: TextInputAction.next,
+                  textInputType: TextInputType.emailAddress,
                 ),
                 14.verticalSpace,
                 GestureDetector(
@@ -255,7 +296,28 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
         ),
       );
       return;
-    }
+    } else if (passwordAgainController.text != passwordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Password doesn't matched"),
+        ),
+      );
+      return;
+    } else if (locationController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter current location"),
+        ),
+      );
+      return;
+    } else if (locationController.text.length < 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter valid current location"),
+        ),
+      );
+      return;
+    } else {}
   }
 
   /// Navigates back to the previous screen.
