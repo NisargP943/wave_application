@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 
 /// A collection of pre-defined text styles for customizing text appearance,
@@ -54,8 +55,14 @@ class CustomTextStyles {
         color: Colors.white,
       );
 
+  static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.copyWith(
+        fontSize: 13.spMin,
+        color: Colors.grey.withOpacity(0.8),
+      );
+
   static get bodyMediumBlack900 => theme.textTheme.bodyMedium!.copyWith(
         color: appTheme.black900,
+        fontSize: 22.spMin,
       );
 
   static get bodyMediumGray500 => theme.textTheme.bodyMedium!.copyWith(
@@ -89,7 +96,8 @@ class CustomTextStyles {
       );
 
   static get bodyMediumRed700 => theme.textTheme.bodyMedium!.copyWith(
-        color: appTheme.red700,
+        color: Color(0xffA41C8E),
+        fontSize: 16.spMin,
       );
 
   static get bodyMedium_1 => theme.textTheme.bodyMedium!;

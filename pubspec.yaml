@@ -42,6 +42,7 @@ dependencies:
   flutter_svg:
   cached_network_image:
   fluttertoast: ^8.2.4
+  pinput: ^3.0.1
 
 
 

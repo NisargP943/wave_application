@@ -5,6 +5,7 @@ import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/login_with_email_page.dart';
+import 'package:wave_app/ui/auth/otp_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
@@ -317,7 +318,9 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
         ),
       );
       return;
-    } else {}
+    } else {
+      Get.to(const OtpPage());
+    }
   }
 
   /// Navigates back to the previous screen.
