@@ -45,10 +45,13 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   late LocationPermission permission;
 
+  late Position position;
+
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _determinePosition().then(
+        (value) => debugPrint("${position.latitude} ${position.longitude}"));
   }
 
   @override
@@ -370,6 +373,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
+    position = await Geolocator.getCurrentPosition();
     return await Geolocator.getCurrentPosition();
   }
 }
