@@ -44,6 +44,8 @@ dependencies:
   fluttertoast: ^8.2.4
   pinput: ^3.0.1
   geolocator: ^10.1.0
+  uuid:
+  http:
 
 
 

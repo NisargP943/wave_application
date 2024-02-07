@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/login_with_email_page.dart';
 import 'package:wave_app/ui/auth/otp_page.dart';
+import 'package:wave_app/values/string.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
@@ -41,54 +46,69 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
   ValueNotifier<bool> passwordAgainAccepted = ValueNotifier(false);
 
   ValueNotifier<bool> currentLocation = ValueNotifier(false);
+
   bool? serviceEnabled;
 
   late LocationPermission permission;
 
   late Position position;
 
+  String session = "122334";
+
+  late Uuid uuid;
+
+  List places = [];
+
   @override
   void initState() {
     super.initState();
-    _determinePosition().then(
-        (value) => debugPrint("${position.latitude} ${position.longitude}"));
+    locationController.addListener(() {
+      setState(() {
+        if (session.isEmpty) {
+          session = uuid.v4();
+        }
+      });
+      getPlacesSuggestion();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(0xfff5f5f5),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20).r,
-          child: Row(
-            children: [
-              CustomImageView(
-                imagePath: Assets.imagesBackIcon,
-                onTap: () {
-                  onTapImgArrowLeft(context);
-                },
-                width: 24.r,
-                height: 24.r,
-              ),
-              const Spacer(),
-              CustomImageView(
-                imagePath: Assets.imagesLogo,
-                height: 70.h,
-                width: 80.w,
-              ),
-              30.horizontalSpace,
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: const Color(0xfff5f5f5),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5).r,
+        child: Row(
+          children: [
+            CustomImageView(
+              imagePath: Assets.imagesBackIcon,
+              onTap: () {
+                onTapImgArrowLeft(context);
+              },
+              width: 24.r,
+              height: 24.r,
+            ),
+            const Spacer(),
+            CustomImageView(
+              imagePath: Assets.imagesLogo,
+              height: 70.h,
+              width: 80.w,
+            ),
+            30.horizontalSpace,
+          ],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      body: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                80.verticalSpace,
+                SizedBox(
+                  height: 0.15.sh,
+                ),
                 _buildNavigationBarBig(context),
                 80.verticalSpace,
                 TextFieldDesignPage(
@@ -169,6 +189,23 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.emailAddress,
                 ),
+                10.verticalSpace,
+                ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                  itemCount: places.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      locationController.text = places[index]['description'];
+                    },
+                    child: Text(
+                      places[index]["description"],
+                    ),
+                  ),
+                  separatorBuilder: (BuildContext context, int index) {
+                    return 15.verticalSpace;
+                  },
+                ),
                 14.verticalSpace,
                 GestureDetector(
                   onTap: () {
@@ -216,8 +253,8 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                 30.verticalSpace,
               ],
             ),
-          ),
-        ),
+          )
+        ],
       ),
     );
   }
@@ -375,5 +412,20 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
     // continue accessing the position of the device.
     position = await Geolocator.getCurrentPosition();
     return await Geolocator.getCurrentPosition();
+  }
+
+  void getPlacesSuggestion() async {
+    String request =
+        '${Constant().placesBaseUrl}?input=${locationController.text}&key=${Constant().placesApiKey}.&sessiontoken=$session';
+    try {
+      var response = await http.get(Uri.parse(request));
+      if (response.statusCode == 200) {
+        places = jsonDecode(response.body)['predictions'];
+        setState(() {});
+        debugPrint(places.toString());
+      }
+    } catch (e) {
+      e.toString();
+    }
   }
 }
