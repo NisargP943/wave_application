@@ -3,7 +3,9 @@ import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
@@ -28,6 +30,8 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   String staticNumber = "9427337907";
 
   bool isChecked = false;
+
+  var authController = Get.put(AuthController());
 
   @override
   void initState() {
@@ -186,7 +190,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   CustomImageView(
                     imagePath: Assets.imagesHelpdesk,
                     onTap: () {
-                      _launchURL("https://wavetechservices.in");
+                      _launchURL("https://www.wavetechservices.in");
                     },
                     height: 100.r,
                     width: 130.r,
@@ -213,7 +217,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   }
 
   onTapTxtWeburl(BuildContext context) {
-    _launchURL("https://wavetechservices.in");
+    _launchURL("https://www.wavetechservices.in");
   }
 
   void validate() {
@@ -238,7 +242,9 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             content: Text("Please enter valid phone number"),
           ),
         );
-      } else {}
+      } else {
+        authController.otpApi(phoneNumberController.text);
+      }
     }
   }
 
