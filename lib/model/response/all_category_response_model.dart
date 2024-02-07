@@ -36,13 +36,14 @@ class Datum {
   String catg;
   Priority priority;
   String thumbnail;
+  bool? isFavourite;
 
-  Datum({
-    required this.id,
-    required this.catg,
-    required this.priority,
-    required this.thumbnail,
-  });
+  Datum(
+      {required this.id,
+      required this.catg,
+      required this.priority,
+      required this.thumbnail,
+      this.isFavourite});
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],

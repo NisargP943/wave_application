@@ -58,6 +58,18 @@ class CustomTextStyles {
         color: Colors.grey.withOpacity(0.8),
       );
 
+  static get bodyMediumGrey13LineThrough =>
+      theme.textTheme.bodyMedium!.copyWith(
+        fontSize: 13.spMin,
+        color: Colors.grey.withOpacity(0.8),
+        decoration: TextDecoration.lineThrough,
+      );
+
+  static get bodySmallGrey11 => theme.textTheme.bodyMedium!.copyWith(
+        fontSize: 11.spMin,
+        color: Colors.grey.withOpacity(0.8),
+      );
+
   static get bodyMediumBlack900 => theme.textTheme.bodyMedium!.copyWith(
         color: appTheme.black900,
         fontSize: 22.spMin,
@@ -145,8 +157,8 @@ class CustomTextStyles {
       );
 
   static get bodySmallff9b9b9b11 => theme.textTheme.bodySmall!.copyWith(
-        color: const Color(0XFF9B9B9B),
-        fontSize: 11,
+        color: Colors.black,
+        fontSize: 11.spMin,
       );
 
   // Display text style
