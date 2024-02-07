@@ -3,13 +3,10 @@ import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
-import 'package:wave_app/ui/auth/login_with_email_page.dart';
-import 'package:wave_app/ui/auth/sign_up_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_phone_number.dart';
@@ -237,13 +234,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             content: Text("Please enter valid phone number"),
           ),
         );
-      } else {
-        if (phoneNumberController.text == staticNumber) {
-          Get.to(LoginPageScreen());
-        } else {
-          Get.to(const SignUpPageScreen());
-        }
-      }
+      } else {}
     }
   }
 }
