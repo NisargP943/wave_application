@@ -3,6 +3,7 @@ import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
@@ -183,8 +184,11 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   ),
                   const Spacer(),
                   CustomImageView(
-                    imagePath: Assets.imagesLogo,
-                    height: 110.r,
+                    imagePath: Assets.imagesHelpdesk,
+                    onTap: () {
+                      _launchURL("https://wavetechservices.in");
+                    },
+                    height: 100.r,
                     width: 130.r,
                     alignment: Alignment.topRight,
                   ),
@@ -209,7 +213,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   }
 
   onTapTxtWeburl(BuildContext context) {
-    // TODO: implement Actions
+    _launchURL("https://wavetechservices.in");
   }
 
   void validate() {
@@ -235,6 +239,14 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
           ),
         );
       } else {}
+    }
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }
