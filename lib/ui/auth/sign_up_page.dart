@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -190,22 +191,37 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 10.verticalSpace,
-                ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                  itemCount: places.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
-                      locationController.text = places[index]['description'];
-                    },
-                    child: Text(
-                      places[index]["description"],
-                    ),
-                  ),
-                  separatorBuilder: (BuildContext context, int index) {
-                    return 15.verticalSpace;
-                  },
-                ),
+                places.isEmpty
+                    ? const SizedBox.shrink()
+                    : Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 15).r,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10).r,
+                        ),
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 5,
+                          ).r,
+                          itemCount: places.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) => GestureDetector(
+                            onTap: () {
+                              convertLocationToLatLang(index);
+                              locationController.text = places[index]
+                                  ["structured_formatting"]['main_text'];
+                            },
+                            child: Text(
+                              places[index]["structured_formatting"]
+                                  ['main_text'],
+                            ),
+                          ),
+                          separatorBuilder: (BuildContext context, int index) {
+                            return 15.verticalSpace;
+                          },
+                        ),
+                      ),
                 14.verticalSpace,
                 GestureDetector(
                   onTap: () {
@@ -423,9 +439,17 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
         places = jsonDecode(response.body)['predictions'];
         setState(() {});
         debugPrint(places.toString());
+        debugPrint(response.body);
       }
     } catch (e) {
       e.toString();
     }
+  }
+
+  void convertLocationToLatLang(int index) {
+    final locations = locationFromAddress(
+      "Gronausestraat 710, Enschede",
+    );
+    print(locations);
   }
 }

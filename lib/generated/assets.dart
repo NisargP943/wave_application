@@ -17,10 +17,15 @@ class Assets {
   static const String imagesFacebook = 'assets/images/facebook.png';
   static const String imagesFour = 'assets/images/four.jpg';
   static const String imagesGoogle = 'assets/images/google.png';
+  static const String imagesHeart = 'assets/images/heart.png';
+  static const String imagesHome = 'assets/images/home.png';
   static const String imagesLoginBg = 'assets/images/loginBg.png';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesOne = 'assets/images/one.jpg';
+  static const String imagesProfile = 'assets/images/profile.png';
   static const String imagesReject = 'assets/images/reject.png';
+  static const String imagesShopping = 'assets/images/shopping.png';
+  static const String imagesShoppingCart = 'assets/images/shoppingCart.png';
   static const String imagesThree = 'assets/images/three.jpg';
   static const String imagesTitleLogo = 'assets/images/title_logo.png';
   static const String imagesTwo = 'assets/images/two.jpg';
