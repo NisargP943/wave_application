@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   var categoryController = Get.put(AllCatController());
   ValueNotifier<int> pageNotifier = ValueNotifier(0);
 
-  ValueNotifier<bool> widgetNotifier = ValueNotifier(true);
+  ValueNotifier<bool> widgetNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -370,6 +370,9 @@ class _MainPageState extends State<MainPage> {
       builder: (context, value, child) => BottomNavigationBar(
         selectedItemColor: const Color(0xffDB3022),
         onTap: (val) {
+          if (widgetNotifier.value == true) {
+            widgetNotifier.value = false;
+          }
           pageNotifier.value = val;
         },
         currentIndex: value,
@@ -499,7 +502,9 @@ class _MainPageState extends State<MainPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            widgetNotifier.value = !widgetNotifier.value;
+          },
           child: Container(
             margin: const EdgeInsets.only(left: 5).r,
             padding: const EdgeInsets.symmetric(
