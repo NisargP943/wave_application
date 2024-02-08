@@ -18,7 +18,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   var categoryController = Get.put(AllCatController());
   ValueNotifier<int> pageNotifier = ValueNotifier(0);
-
   ValueNotifier<bool> widgetNotifier = ValueNotifier(false);
 
   @override
@@ -110,15 +109,15 @@ class _MainPageState extends State<MainPage> {
   Widget homeServicesListView() {
     return GetBuilder<AllCatController>(
       builder: (controller) => SizedBox(
-        height: 240.h,
+        height: 250.h,
         child: ListView.separated(
-          itemCount:
-              controller.allCategoryResponseModel.value?.data.length ?? 0,
+          itemCount: controller.firstPriorityList?.length ?? 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 5,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
+            final firstList = controller.firstPriorityList?[index];
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -139,30 +138,16 @@ class _MainPageState extends State<MainPage> {
                 5.verticalSpace,
                 CustomImageView(
                   height: 80.h,
-                  imagePath: controller
-                      .allCategoryResponseModel.value?.data[index].thumbnail,
+                  imagePath: firstList?.thumbnail,
                 ),
                 5.verticalSpace,
                 GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      categoryController.allCategoryResponseModel.value
-                              ?.data[index].isFavourite !=
-                          categoryController.allCategoryResponseModel.value
-                              ?.data[index].isFavourite;
-                    });
-                  },
+                  onTap: () {},
                   child: Padding(
                     padding: const EdgeInsets.only(left: 60, top: 10).r,
                     child: Icon(
-                      color: controller.allCategoryResponseModel.value
-                                  ?.data[index].isFavourite ==
-                              true
-                          ? Colors.red
-                          : null,
-                      controller.allCategoryResponseModel.value?.data[index]
-                                  .isFavourite ==
-                              true
+                      color: firstList?.isFavourite == true ? Colors.red : null,
+                      firstList?.isFavourite == true
                           ? Icons.favorite
                           : Icons.favorite_border_outlined,
                     ),
@@ -172,14 +157,16 @@ class _MainPageState extends State<MainPage> {
                 ratingBarRow(),
                 3.verticalSpace,
                 Text(
-                  "Dorothy Perkins",
+                  firstList?.servicename ?? "",
                   style: CustomTextStyles.bodySmallff9b9b9b,
                 ),
                 3.verticalSpace,
-                Text(
-                  "${controller.allCategoryResponseModel.value?.data[index].catg}" ??
-                      "",
-                  style: CustomTextStyles.bodyLargeBlack900_1,
+                SizedBox(
+                  width: 110.w,
+                  child: Text(
+                    firstList?.catg ?? "",
+                    style: CustomTextStyles.bodyLargeBlack900_1,
+                  ),
                 ),
                 3.verticalSpace,
                 RichText(
@@ -241,15 +228,15 @@ class _MainPageState extends State<MainPage> {
   Widget newCategoryListView() {
     return GetBuilder<AllCatController>(
       builder: (controller) => SizedBox(
-        height: 240.h,
+        height: 250.h,
         child: ListView.separated(
-          itemCount:
-              controller.allCategoryResponseModel.value?.data.length ?? 0,
+          itemCount: controller.secondPriorityList?.length ?? 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 5,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
+            final secondList = controller.secondPriorityList?[index];
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -270,33 +257,20 @@ class _MainPageState extends State<MainPage> {
                 5.verticalSpace,
                 CustomImageView(
                   height: 80.h,
-                  imagePath: controller
-                      .allCategoryResponseModel.value?.data[index].thumbnail,
+                  imagePath: secondList?.thumbnail,
                 ),
                 5.verticalSpace,
                 GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      categoryController.allCategoryResponseModel.value
-                              ?.data[index].isFavourite !=
-                          categoryController.allCategoryResponseModel.value
-                              ?.data[index].isFavourite;
-                    });
-                  },
+                  onTap: () {},
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 60,
                       top: 10,
                     ).r,
                     child: Icon(
-                      color: controller.allCategoryResponseModel.value
-                                  ?.data[index].isFavourite ==
-                              true
-                          ? Colors.red
-                          : null,
-                      controller.allCategoryResponseModel.value?.data[index]
-                                  .isFavourite ==
-                              true
+                      color:
+                          secondList?.isFavourite == true ? Colors.red : null,
+                      secondList?.isFavourite == true
                           ? Icons.favorite
                           : Icons.favorite_border_outlined,
                     ),
@@ -306,14 +280,16 @@ class _MainPageState extends State<MainPage> {
                 ratingBarRow(),
                 3.verticalSpace,
                 Text(
-                  "Dorothy Perkins",
+                  secondList?.servicename ?? "",
                   style: CustomTextStyles.bodySmallff9b9b9b,
                 ),
                 3.verticalSpace,
-                Text(
-                  "${controller.allCategoryResponseModel.value?.data[index].catg}" ??
-                      "",
-                  style: CustomTextStyles.bodyLargeBlack900_1,
+                SizedBox(
+                  width: 110.w,
+                  child: Text(
+                    secondList?.catg ?? "",
+                    style: CustomTextStyles.bodyLargeBlack900_1,
+                  ),
                 ),
                 3.verticalSpace,
                 RichText(
@@ -437,23 +413,19 @@ class _MainPageState extends State<MainPage> {
         child: controller.loading.isTrue
             ? const Center(child: CircularProgressIndicator())
             : ListView.separated(
-                itemCount:
-                    controller.allCategoryResponseModel.value?.data.length ?? 0,
+                itemCount: controller.mainCatFirstPriority?.length ?? 0,
                 padding: const EdgeInsets.symmetric(horizontal: 5).r,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
+                  final mainFirst = controller.mainCatFirstPriority?[index];
                   return Column(
                     children: [
                       CustomImageView(
                         height: 80.h,
-                        imagePath: controller.allCategoryResponseModel.value
-                            ?.data[index].thumbnail,
+                        imagePath: mainFirst?.thumbnail,
                       ),
                       5.verticalSpace,
-                      Text(
-                          controller.allCategoryResponseModel.value?.data[index]
-                                  .catg ??
-                              "",
+                      Text(mainFirst?.catg ?? "",
                           style: CustomTextStyles.bodyLargeBlack900_1),
                     ],
                   );

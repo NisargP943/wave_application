@@ -29,6 +29,8 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   String staticNumber = "9427337907";
 
+  List<Worker>? workers;
+
   bool isChecked = false;
 
   var authController = Get.put(AuthController());
@@ -39,6 +41,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
     );
+    initWorkers();
   }
 
   @override
@@ -246,6 +249,20 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
         authController.otpApi(phoneNumberController.text);
       }
     }
+  }
+
+  void initWorkers() {
+    workers = [
+      ever(authController.customerAuthResponseModel, (callback) {
+        if (callback.otp != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("your otp is ${callback.otp} "),
+            ),
+          );
+        }
+      })
+    ];
   }
 
   void _launchURL(String url) async {

@@ -33,6 +33,7 @@ class AllCategoryResponseModel {
 
 class Datum {
   String id;
+  String? servicename;
   String catg;
   Priority priority;
   String thumbnail;
@@ -40,6 +41,7 @@ class Datum {
 
   Datum(
       {required this.id,
+      this.servicename,
       required this.catg,
       required this.priority,
       required this.thumbnail,
@@ -47,6 +49,7 @@ class Datum {
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
+        servicename: json['servicename'],
         catg: json["catg"],
         priority: priorityValues.map[json["priority"]]!,
         thumbnail: json["thumbnail"],
@@ -54,6 +57,7 @@ class Datum {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "servicename": servicename,
         "catg": catg,
         "priority": priorityValues.reverse[priority],
         "thumbnail": thumbnail,

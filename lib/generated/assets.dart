@@ -15,6 +15,7 @@ class Assets {
   static const String imagesBottomImg = 'assets/images/bottom_img.png';
   static const String imagesChatbot = 'assets/images/chatbot.png';
   static const String imagesFacebook = 'assets/images/facebook.png';
+  static const String imagesFilter = 'assets/images/filter.png';
   static const String imagesFour = 'assets/images/four.jpg';
   static const String imagesGoogle = 'assets/images/google.png';
   static const String imagesHeart = 'assets/images/heart.png';
@@ -22,9 +23,12 @@ class Assets {
   static const String imagesHome = 'assets/images/home.png';
   static const String imagesLoginBg = 'assets/images/loginBg.png';
   static const String imagesLogo = 'assets/images/logo.png';
+  static const String imagesMoreVert = 'assets/images/more_vert.png';
   static const String imagesOne = 'assets/images/one.jpg';
+  static const String imagesPriceFilter = 'assets/images/priceFilter.png';
   static const String imagesProfile = 'assets/images/profile.png';
   static const String imagesReject = 'assets/images/reject.png';
+  static const String imagesSearch = 'assets/images/search.png';
   static const String imagesShopping = 'assets/images/shopping.png';
   static const String imagesShoppingCart = 'assets/images/shoppingCart.png';
   static const String imagesThree = 'assets/images/three.jpg';

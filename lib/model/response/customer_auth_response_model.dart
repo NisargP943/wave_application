@@ -11,22 +11,26 @@ String customerAuthResponseModelToJson(CustomerAuthResponseModel data) =>
     json.encode(data.toJson());
 
 class CustomerAuthResponseModel {
-  List<Datum>? data;
-  int otp;
+  List? data;
+  int? otp;
 
   CustomerAuthResponseModel({
-    required this.data,
-    required this.otp,
+    this.data,
+    this.otp,
   });
 
   factory CustomerAuthResponseModel.fromJson(Map<String, dynamic> json) =>
       CustomerAuthResponseModel(
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: json["data"] == null
+            ? []
+            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
         otp: json["otp"],
       );
 
   Map<String, dynamic> toJson() => {
-        "data": List<dynamic>.from(data?.map((x) => x.toJson()) ?? []),
+        "data": data == [null]
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
         "otp": otp,
       };
 }
@@ -36,7 +40,7 @@ class Datum {
   String? customername;
   String? city;
   String? mobile;
-  String? email;
+  dynamic email;
   String? curloc;
   int? status;
 
