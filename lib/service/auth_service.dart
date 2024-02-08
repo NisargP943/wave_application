@@ -16,4 +16,24 @@ class AuthApiService {
       rethrow;
     }
   }
+
+  Future signUpNewUser(
+    String name,
+    String mobileNumber,
+    String password,
+    String email,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "http://wavetechservices.in/app/register_new_customer.php?username=$name&mobile=$mobileNumber&password=$password&email=$email&street=Vasna&city=Ahmedabad&pincode=380007&glat=23.0225&glong=72.5714",
+        ),
+      );
+      print(response.body);
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
 }

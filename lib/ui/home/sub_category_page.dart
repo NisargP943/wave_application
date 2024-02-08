@@ -55,6 +55,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff5f5f5),
       appBar: AppBar(
         centerTitle: true,
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -220,36 +221,6 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                         Text(
                           subCategory?.name ?? "",
                           style: CustomTextStyles.bodyLargeBlack900_1,
-                        ),
-                        3.verticalSpace,
-                        Row(
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    style: CustomTextStyles.bodySmallff9b9b9b11,
-                                    text: "Blue",
-                                  ),
-                                ],
-                                text: "Color:",
-                                style: CustomTextStyles.bodyMediumGrey13,
-                              ),
-                            ),
-                            20.horizontalSpace,
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    style: CustomTextStyles.bodySmallff9b9b9b11,
-                                    text: "L",
-                                  ),
-                                ],
-                                text: "Size:",
-                                style: CustomTextStyles.bodyMediumGrey13,
-                              ),
-                            ),
-                          ],
                         ),
                         3.verticalSpace,
                         Text(

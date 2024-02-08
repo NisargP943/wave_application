@@ -11,7 +11,7 @@ String customerAuthResponseModelToJson(CustomerAuthResponseModel data) =>
     json.encode(data.toJson());
 
 class CustomerAuthResponseModel {
-  List? data;
+  List<Datum>? data;
   int? otp;
 
   CustomerAuthResponseModel({
@@ -19,18 +19,15 @@ class CustomerAuthResponseModel {
     this.otp,
   });
 
-  factory CustomerAuthResponseModel.fromJson(Map<String, dynamic> json) =>
-      CustomerAuthResponseModel(
-        data: json["data"] == null
-            ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
-        otp: json["otp"],
-      );
+  factory CustomerAuthResponseModel.fromJson(Map<String, dynamic> json) {
+    return CustomerAuthResponseModel(
+      data: List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+      otp: json["otp"],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "data": data == [null]
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
+  Map<String, dynamic>? toJson() => {
+        "data": List<dynamic>.from(data!.map((x) => x.toJson())),
         "otp": otp,
       };
 }
@@ -54,17 +51,17 @@ class Datum {
     this.status,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        id: json["id"],
-        customername: json["customername"],
-        city: json["city"],
-        mobile: json["mobile"],
-        email: json["email"],
-        curloc: json["curloc"],
-        status: json["status"],
+  factory Datum.fromJson(Map<String, dynamic>? json) => Datum(
+        id: json?["id"],
+        customername: json?["customername"],
+        city: json?["city"],
+        mobile: json?["mobile"],
+        email: json?["email"],
+        curloc: json?["curloc"],
+        status: json?["status"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic>? toJson() => {
         "id": id,
         "customername": customername,
         "city": city,

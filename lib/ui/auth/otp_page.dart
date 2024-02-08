@@ -4,13 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:wave_app/generated/assets.dart';
-import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/model/response/customer_auth_response_model.dart';
+import 'package:wave_app/ui/auth/sign_up_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
+import '../../generated/assets.dart';
+import '../../theme/custom_text_style.dart';
+
 class OtpPage extends StatefulWidget {
-  const OtpPage({super.key});
+  const OtpPage({super.key, this.customerAuthResponseModel, this.mobileNumber});
+
+  final CustomerAuthResponseModel? customerAuthResponseModel;
+  final String? mobileNumber;
 
   @override
   State<OtpPage> createState() => _OtpPageState();
@@ -39,6 +45,16 @@ class _OtpPageState extends State<OtpPage> {
         );
       },
     );
+    Future.delayed(const Duration(seconds: 2), () {
+      if (widget.customerAuthResponseModel?.otp != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                "Your OTP is ${widget.customerAuthResponseModel?.otp}\nPlease do not share to anyone"),
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -125,12 +141,19 @@ class _OtpPageState extends State<OtpPage> {
                       ),
                     );
                     return;
-                  } else if (otpController.text.length < 4) {
+                  } else if (otpController.text.length < 4 ||
+                      double.tryParse(otpController.text) !=
+                          widget.customerAuthResponseModel?.otp) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Please enter valid OTP"),
                       ),
                     );
+                    return;
+                  } else {
+                    Get.off(SignUpPageScreen(
+                      mobileNumber: widget.mobileNumber,
+                    ));
                   }
                 },
                 text: "Confirm",

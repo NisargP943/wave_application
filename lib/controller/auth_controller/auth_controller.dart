@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/service/auth_service.dart';
-import 'package:wave_app/ui/auth/sign_up_page.dart';
 import 'package:wave_app/ui/home/main_page.dart';
 
 class AuthController extends GetxController {
@@ -16,8 +15,12 @@ class AuthController extends GetxController {
     try {
       final authResp = await authApiService.checkUserApi(mobileNumber);
       if (authResp.statusCode == 200) {
-        customerAuthResponseModel.value =
-            customerAuthResponseModelFromJson(authResp.body);
+        try {
+          customerAuthResponseModel.value =
+              customerAuthResponseModelFromJson(authResp.body);
+        } catch (e) {
+          debugPrint("error       ${e.toString()}");
+        }
         loading.value = false;
       }
     } catch (e) {
@@ -26,15 +29,19 @@ class AuthController extends GetxController {
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    ever(customerAuthResponseModel, (callback) {
-      if (callback.data == null) {
-        Get.to(const SignUpPageScreen());
-      } else {
+  Future<void> newUserSignUp(
+      String name, String mobileNumber, String email, String password) async {
+    loading.value = true;
+    try {
+      final authResp = await authApiService.signUpNewUser(
+          name, mobileNumber, password, email);
+      if (authResp.statusCode == 200) {
+        loading.value = false;
         Get.off(const MainPage());
       }
-    });
+    } catch (e) {
+      debugPrint(e.toString());
+      loading.value = true;
+    }
   }
 }
