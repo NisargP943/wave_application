@@ -13,7 +13,8 @@ class TextFieldDesignPage extends StatefulWidget {
       this.visiblePassword,
       this.inputFormatters,
       this.onChanged,
-      required this.accepted})
+      required this.accepted,
+      this.prefixWidget})
       : super(key: key);
   final TextEditingController controller;
   final String labelText;
@@ -23,6 +24,7 @@ class TextFieldDesignPage extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onChanged;
   final ValueNotifier<bool> accepted;
+  final Widget? prefixWidget;
 
   @override
   _TextFieldDesignPageState createState() => _TextFieldDesignPageState();
@@ -84,6 +86,7 @@ class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
                 textInputAction: widget.textInputAction,
                 inputFormatters: widget.inputFormatters,
                 decoration: InputDecoration(
+                  prefixIcon: widget.prefixWidget,
                   suffixIcon: widget.controller.text.isNotEmpty
                       ? Image.asset(
                           value ? Assets.imagesAccepted : Assets.imagesReject,
@@ -97,9 +100,12 @@ class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
                           .r,
                   border: InputBorder.none,
                   labelText: widget.labelText,
-                  labelStyle: TextStyle(color: labelColor, fontSize: 14.spMin),
+                  labelStyle: TextStyle(
+                    color: labelColor,
+                    fontSize: 14.spMin,
+                  ),
                   prefixIconConstraints: const BoxConstraints(
-                    minWidth: 0,
+                    minWidth: 30,
                     minHeight: 0,
                   ),
                 ),

@@ -30,11 +30,27 @@ class AuthController extends GetxController {
   }
 
   Future<void> newUserSignUp(
-      String name, String mobileNumber, String email, String password) async {
+      {required String name,
+      required String mobileNumber,
+      required String email,
+      pincode,
+      street,
+      city,
+      required String password,
+      double? lat,
+      double? lang}) async {
     loading.value = true;
     try {
       final authResp = await authApiService.signUpNewUser(
-          name, mobileNumber, password, email);
+          name: name,
+          mobileNumber: mobileNumber,
+          password: password,
+          email: email,
+          street: street,
+          city: city,
+          lat: lat,
+          lang: lang,
+          pincode: pincode);
       if (authResp.statusCode == 200) {
         loading.value = false;
         Get.off(const MainPage());

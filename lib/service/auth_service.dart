@@ -17,16 +17,21 @@ class AuthApiService {
     }
   }
 
-  Future signUpNewUser(
-    String name,
-    String mobileNumber,
-    String password,
-    String email,
-  ) async {
+  Future signUpNewUser({
+    required String name,
+    required String mobileNumber,
+    required String password,
+    required String pincode,
+    street,
+    city,
+    required String email,
+    double? lat,
+    lang,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://wavetechservices.in/app/register_new_customer.php?username=$name&mobile=$mobileNumber&password=$password&email=$email&street=Vasna&city=Ahmedabad&pincode=380007&glat=23.0225&glong=72.5714",
+          "http://wavetechservices.in/app/register_new_customer.php?username=$name&mobile=$mobileNumber&password=$password&email=$email&street=$street&city=$city&pincode=$pincode&glat=$lat&glong=$lang",
         ),
       );
       print(response.body);
