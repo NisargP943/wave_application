@@ -26,8 +26,8 @@
 
     <application
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:label="wave_app">
+        android:icon="@mipmap/launcher_icon"
+        android:label="Wave Tech Services">
 
         <activity
             android:name=".MainActivity"
