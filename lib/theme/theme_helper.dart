@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 String _appTheme = "primary";
 
@@ -154,9 +155,9 @@ class TextThemes {
           fontFamily: 'Inter',
           fontWeight: FontWeight.w700,
         ),
-        titleMedium: const TextStyle(
-          color: Color(0XFF636363),
-          fontSize: 17,
+        titleMedium: TextStyle(
+          color: const Color(0XFF636363),
+          fontSize: 14.spMin,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w700,
         ),

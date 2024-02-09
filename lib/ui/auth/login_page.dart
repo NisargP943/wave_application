@@ -48,43 +48,68 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: theme.colorScheme.onPrimary.withOpacity(1),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomImageView(
-                  imagePath: Assets.imagesLoginBg, alignment: Alignment.center),
-              40.verticalSpace,
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                  ).r,
-                  child: Text(
-                    "Enter Mobile Number",
-                    style: CustomTextStyles.titleLargeBlack900,
+    return Scaffold(
+      backgroundColor: theme.colorScheme.onPrimary.withOpacity(1),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CustomImageView(
+                  imagePath: Assets.imagesLoginbg,
+                  alignment: Alignment.center,
+                  height: 0.5.sh,
+                  width: 1.sw,
+                  fit: BoxFit.fitWidth,
+                ),
+                Positioned(
+                  bottom: 0.02.sh,
+                  right: 0.01.sh,
+                  child: CustomImageView(
+                    imagePath: Assets.imagesLogo,
+                    height: 100.r,
+                    width: 114.r,
                   ),
                 ),
-              ),
-              10.verticalSpace,
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15).r,
-                child: CustomPhoneNumber(
-                  controller: phoneNumberController,
+                Positioned(
+                  right: 0.16.sh,
+                  bottom: 0.05.sh,
+                  child: CustomImageView(
+                    height: 60.h,
+                    imagePath: Assets.imagesLoginText,
+                  ),
+                ),
+              ],
+            ),
+            20.verticalSpace,
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                ).r,
+                child: Text(
+                  "Enter Mobile Number",
+                  style: CustomTextStyles.titleMediumGray700,
                 ),
               ),
-              20.verticalSpace,
-              termsChecker(),
-              19.verticalSpace,
-              _buildLoginSignup(),
-              18.verticalSpace,
-              _buildWebUrl(context)
-            ],
-          ),
+            ),
+            10.verticalSpace,
+            Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15).r,
+              child: CustomPhoneNumber(
+                controller: phoneNumberController,
+              ),
+            ),
+            20.verticalSpace,
+            termsChecker(),
+            19.verticalSpace,
+            _buildLoginSignup(),
+            18.verticalSpace,
+            _buildWebUrl(context)
+          ],
         ),
       ),
     );
@@ -92,7 +117,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   Widget termsChecker() {
     return Padding(
-      padding: const EdgeInsets.only(left: 38, right: 70).r,
+      padding: const EdgeInsets.only(left: 38, right: 50).r,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
