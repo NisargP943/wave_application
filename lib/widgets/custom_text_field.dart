@@ -13,7 +13,7 @@ class TextFieldDesignPage extends StatefulWidget {
       this.visiblePassword,
       this.inputFormatters,
       this.onChanged,
-      required this.accepted,
+      this.accepted,
       this.prefixWidget})
       : super(key: key);
   final TextEditingController controller;
@@ -23,7 +23,7 @@ class TextFieldDesignPage extends StatefulWidget {
   final bool? visiblePassword;
   final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onChanged;
-  final ValueNotifier<bool> accepted;
+  final ValueNotifier<bool>? accepted;
   final Widget? prefixWidget;
 
   @override
@@ -75,7 +75,7 @@ class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5).r,
             child: ValueListenableBuilder(
-              valueListenable: widget.accepted,
+              valueListenable: widget.accepted ?? ValueNotifier(true),
               builder: (context, value, child) => TextField(
                 onChanged: widget.onChanged,
                 controller: widget.controller,

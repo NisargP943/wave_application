@@ -53,8 +53,8 @@ class CustomTextStyles {
         color: Colors.white,
       );
 
-  static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.copyWith(
-        fontSize: 13.spMin,
+  static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.inter.copyWith(
+        fontSize: 14.spMin,
         color: Colors.grey.withOpacity(0.8),
       );
 
@@ -70,9 +70,10 @@ class CustomTextStyles {
         color: Colors.grey.withOpacity(0.8),
       );
 
-  static get bodyMediumBlack900 => theme.textTheme.bodyMedium!.copyWith(
+  static get bodyMediumBlack900 => theme.textTheme.bodyMedium!.inter.copyWith(
         color: appTheme.black900,
-        fontSize: 22.spMin,
+        fontSize: 21.spMin,
+        fontWeight: FontWeight.w600,
       );
 
   static get bodyMediumGray500 => theme.textTheme.bodyMedium!.copyWith(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
-import 'package:wave_app/ui/welcome/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,14 +13,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
+    /*Future.delayed(
       const Duration(seconds: 2),
       () {
         Get.off(
           const WelcomeScreen(),
         );
       },
-    );
+    );*/
   }
 
   @override
@@ -37,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
             Image(
               height: ScreenUtil().setHeight(180),
               width: ScreenUtil().setWidth(210),
-              fit: BoxFit.fill,
               image: const AssetImage(Assets.imagesLogo),
             ),
             SizedBox(height: 35.h),

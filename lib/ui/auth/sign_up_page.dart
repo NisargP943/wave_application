@@ -101,7 +101,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                30.verticalSpace,
+                35.verticalSpace,
                 Row(
                   children: [
                     CustomImageView(
@@ -115,14 +115,13 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                     const Spacer(),
                     CustomImageView(
                       imagePath: Assets.imagesLogo,
-                      height: 70.h,
-                      width: 80.w,
+                      scale: 13,
                     ),
                     30.horizontalSpace,
                   ],
                 ),
                 _buildNavigationBarBig(context),
-                80.verticalSpace,
+                70.verticalSpace,
                 TextFieldDesignPage(
                   prefixWidget: const Icon(
                     Icons.person_2_outlined,
@@ -206,12 +205,10 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                     Icons.location_on_outlined,
                     color: Colors.grey,
                   ),
-                  accepted: currentLocation,
                   controller: locationController,
                   labelText: "Current location",
                   onChanged: (p0) {
                     showPlaces.value = true;
-                    currentLocation.value = true;
                   },
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.emailAddress,

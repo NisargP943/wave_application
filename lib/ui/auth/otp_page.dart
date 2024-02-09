@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/ui/auth/sign_up_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
@@ -88,8 +89,7 @@ class _OtpPageState extends State<OtpPage> {
                   ),
                   CustomImageView(
                     imagePath: Assets.imagesLogo,
-                    height: 70.h,
-                    width: 80.w,
+                    scale: 11,
                   ),
                 ],
               ),
@@ -103,7 +103,7 @@ class _OtpPageState extends State<OtpPage> {
                     height: 0.05.sh,
                   ),
                   Text(
-                    "Please enter OTP",
+                    "Please Enter OTP",
                     style: CustomTextStyles.bodyMediumBlack900,
                   ),
                   10.verticalSpace,
@@ -211,21 +211,22 @@ class _OtpPageState extends State<OtpPage> {
           ],
         ),
       ),
-      floatingActionButton: GestureDetector(
+      floatingActionButton: CustomImageView(
+        imagePath: Assets.imagesHelpdesk,
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("This functionality is under development"),
-            ),
-          );
+          _launchURL("https://www.wavetechservices.in");
         },
-        child: const CircleAvatar(
-          radius: 40,
-          backgroundImage: AssetImage(
-            Assets.imagesChatbot,
-          ),
-        ),
+        height: 100.r,
+        width: 130.r,
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

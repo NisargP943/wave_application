@@ -69,8 +69,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   right: 0.01.sh,
                   child: CustomImageView(
                     imagePath: Assets.imagesLogo,
-                    height: 100.r,
-                    width: 114.r,
+                    scale: 9,
                   ),
                 ),
                 Positioned(
@@ -171,7 +170,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
         onTap: () {
           validate();
         },
-        text: "Login/Signup",
+        text: "Login / Signup",
       ),
     );
   }
@@ -294,7 +293,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
       ever(authController.customerAuthResponseModel, (callback) {
         for (int i = 0; i < callback.data!.length; i++) {
           if (callback.data?[i].customername == null) {
-            Get.off(OtpPage(
+            Get.to(OtpPage(
               customerAuthResponseModel: callback,
               mobileNumber: phoneNumberController.text,
             ));
