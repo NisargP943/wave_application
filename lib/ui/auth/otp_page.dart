@@ -184,7 +184,7 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                             );
                           } else {
-                            Get.off(const MainPage());
+                            Get.offAll(const MainPage());
                           }
                         }
                       }
