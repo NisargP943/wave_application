@@ -222,7 +222,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   }
 
   onTapTxtWeburl(BuildContext context) {
-    _launchURL("https://www.wavetechservices.in");
+    _launchURL("https://www.wavetechservices.in/");
   }
 
   void validate() {
@@ -283,7 +283,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   void _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $url';
     }
