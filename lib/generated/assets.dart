@@ -12,6 +12,13 @@ class Assets {
   static const String imagesArrow = 'assets/images/arrow.png';
   static const String imagesBackIcon = 'assets/images/backIcon.png';
   static const String imagesBanner = 'assets/images/banner.png';
+  static const String imagesBannerFive = 'assets/images/bannerFive.png';
+  static const String imagesBannerFour = 'assets/images/bannerFour.png';
+  static const String imagesBannerOne = 'assets/images/bannerOne.png';
+  static const String imagesBannerSeven = 'assets/images/bannerSeven.png';
+  static const String imagesBannerSix = 'assets/images/bannerSix.png';
+  static const String imagesBannerThree = 'assets/images/bannerThree.png';
+  static const String imagesBannerTwo = 'assets/images/bannerTwo.png';
   static const String imagesBottomImg = 'assets/images/bottom_img.png';
   static const String imagesChatbot = 'assets/images/chatbot.png';
   static const String imagesFacebook = 'assets/images/facebook.png';

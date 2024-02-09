@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -30,6 +31,11 @@ class _OtpPageState extends State<OtpPage> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
@@ -61,15 +67,15 @@ class _OtpPageState extends State<OtpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40).r,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 0.06.sh,
-              ),
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 0.06.sh,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15).r,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomImageView(
@@ -87,114 +93,122 @@ class _OtpPageState extends State<OtpPage> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 0.05.sh,
-              ),
-              Text(
-                "Please enter OTP",
-                style: CustomTextStyles.bodyMediumBlack900,
-              ),
-              10.verticalSpace,
-              Text(
-                "We have send the verification \ncode to your mobile number",
-                style: CustomTextStyles.bodyMediumGrey13,
-              ),
-              40.verticalSpace,
-              Pinput(
-                controller: otpController,
-                defaultPinTheme: PinTheme(
-                  margin: const EdgeInsets.only(
-                    right: 25,
-                  ).r,
-                  height: 50.r,
-                  width: 55.r,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12).r,
-                    border: Border.all(
-                      color: Colors.grey.withOpacity(0.5),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40).r,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 0.05.sh,
+                  ),
+                  Text(
+                    "Please enter OTP",
+                    style: CustomTextStyles.bodyMediumBlack900,
+                  ),
+                  10.verticalSpace,
+                  Text(
+                    "We have send the verification \ncode to your mobile number",
+                    style: CustomTextStyles.bodyMediumGrey13,
+                  ),
+                  40.verticalSpace,
+                  Pinput(
+                    controller: otpController,
+                    defaultPinTheme: PinTheme(
+                      margin: const EdgeInsets.only(
+                        right: 25,
+                      ).r,
+                      height: 50.r,
+                      width: 55.r,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12).r,
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    focusedPinTheme: PinTheme(
+                      margin: const EdgeInsets.only(
+                        right: 25,
+                      ).r,
+                      height: 50.r,
+                      width: 55.r,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          12,
+                        ).r,
+                        border: Border.all(
+                          color: Colors.orange,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                focusedPinTheme: PinTheme(
-                  margin: const EdgeInsets.only(
-                    right: 25,
-                  ).r,
-                  height: 50.r,
-                  width: 55.r,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      12,
-                    ).r,
-                    border: Border.all(
-                      color: Colors.orange,
-                    ),
+                  30.verticalSpace,
+                  AppButtonWidget(
+                    onTap: () {
+                      if (otpController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please enter OTP"),
+                          ),
+                        );
+                        return;
+                      } else if (otpController.text.length < 4 ||
+                          double.tryParse(otpController.text) !=
+                              widget.customerAuthResponseModel?.otp) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please enter valid OTP"),
+                          ),
+                        );
+                        return;
+                      } else {
+                        Get.off(SignUpPageScreen(
+                          mobileNumber: widget.mobileNumber,
+                        ));
+                      }
+                    },
+                    text: "Confirm",
                   ),
-                ),
-              ),
-              30.verticalSpace,
-              AppButtonWidget(
-                onTap: () {
-                  if (otpController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please enter OTP"),
-                      ),
-                    );
-                    return;
-                  } else if (otpController.text.length < 4 ||
-                      double.tryParse(otpController.text) !=
-                          widget.customerAuthResponseModel?.otp) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please enter valid OTP"),
-                      ),
-                    );
-                    return;
-                  } else {
-                    Get.off(SignUpPageScreen(
-                      mobileNumber: widget.mobileNumber,
-                    ));
-                  }
-                },
-                text: "Confirm",
-              ),
-              30.verticalSpace,
-              GestureDetector(
-                onTap: () {
-                  setState(
-                    () {
-                      _secondsRemaining = 60;
-                      _timer.cancel();
-                      _timer = Timer.periodic(
-                        const Duration(seconds: 1),
-                        (Timer timer) {
-                          setState(
-                            () {
-                              if (_secondsRemaining > 0) {
-                                _secondsRemaining--;
-                              } else {
-                                _timer.cancel();
-                                // Timer completed, do something here
-                              }
+                  30.verticalSpace,
+                  GestureDetector(
+                    onTap: () {
+                      setState(
+                        () {
+                          _secondsRemaining = 60;
+                          _timer.cancel();
+                          _timer = Timer.periodic(
+                            const Duration(seconds: 1),
+                            (Timer timer) {
+                              setState(
+                                () {
+                                  if (_secondsRemaining > 0) {
+                                    _secondsRemaining--;
+                                  } else {
+                                    _timer.cancel();
+                                    // Timer completed, do something here
+                                  }
+                                },
+                              );
                             },
                           );
                         },
                       );
                     },
-                  );
-                },
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    _secondsRemaining > 0
-                        ? "Resend in $_secondsRemaining seconds"
-                        : "Resend OTP",
-                    style: CustomTextStyles.bodyMediumRed700,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        _secondsRemaining > 0
+                            ? "Resend in $_secondsRemaining seconds"
+                            : "Resend OTP",
+                        style: CustomTextStyles.bodyMediumRed700,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: GestureDetector(

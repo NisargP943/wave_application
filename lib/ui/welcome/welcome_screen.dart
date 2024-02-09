@@ -30,7 +30,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       floatingActionButton: ValueListenableBuilder(
         valueListenable: pageIndex,
         builder: (context, value, child) =>
-            value == 3 ? buildLastScreen() : Container(),
+            value == 6 ? buildLastScreen() : Container(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -75,8 +75,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 List walkthroughList = [
-  Assets.imagesOne,
-  Assets.imagesTwo,
-  Assets.imagesThree,
-  Assets.imagesFour,
+  Assets.imagesBannerOne,
+  Assets.imagesBannerTwo,
+  Assets.imagesBannerThree,
+  Assets.imagesBannerFour,
+  Assets.imagesBannerFive,
+  Assets.imagesBannerSix,
+  Assets.imagesBannerSeven,
 ];
