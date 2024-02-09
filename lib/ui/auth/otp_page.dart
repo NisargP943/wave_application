@@ -8,6 +8,7 @@ import 'package:pinput/pinput.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/ui/auth/sign_up_page.dart';
+import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
@@ -52,16 +53,23 @@ class _OtpPageState extends State<OtpPage> {
         );
       },
     );
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       if (widget.customerAuthResponseModel?.otp != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            duration: const Duration(seconds: 8),
             content: Text(
                 "Your OTP is ${widget.customerAuthResponseModel?.otp}\nPlease do not share to anyone"),
           ),
         );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -164,9 +172,21 @@ class _OtpPageState extends State<OtpPage> {
                         );
                         return;
                       } else {
-                        Get.off(SignUpPageScreen(
-                          mobileNumber: widget.mobileNumber,
-                        ));
+                        for (int i = 0;
+                            i < widget.customerAuthResponseModel!.data!.length;
+                            i++) {
+                          if (widget.customerAuthResponseModel?.data?[i]
+                                  .customername ==
+                              null) {
+                            Get.off(
+                              SignUpPageScreen(
+                                mobileNumber: widget.mobileNumber,
+                              ),
+                            );
+                          } else {
+                            Get.off(const MainPage());
+                          }
+                        }
                       }
                     },
                     text: "Confirm",

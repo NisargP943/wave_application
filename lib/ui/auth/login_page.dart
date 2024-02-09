@@ -11,7 +11,6 @@ import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/otp_page.dart';
-import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_phone_number.dart';
@@ -291,22 +290,16 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   void initWorkers() {
     workers = [
       ever(authController.customerAuthResponseModel, (callback) {
-        for (int i = 0; i < callback.data!.length; i++) {
-          if (callback.data?[i].customername == null) {
-            Get.back();
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => Get.to(
-                OtpPage(
-                  customerAuthResponseModel: callback,
-                  mobileNumber: phoneNumberController.text,
-                ),
-              ),
-            );
-          } else {
-            Get.off(const MainPage());
-          }
-        }
+        Get.back();
+        Future.delayed(
+          const Duration(seconds: 1),
+          () => Get.to(
+            OtpPage(
+              customerAuthResponseModel: callback,
+              mobileNumber: phoneNumberController.text,
+            ),
+          ),
+        );
       })
     ];
   }
