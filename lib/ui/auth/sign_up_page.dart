@@ -12,7 +12,7 @@ import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/theme_helper.dart';
-import 'package:wave_app/ui/auth/login_with_email_page.dart';
+import 'package:wave_app/ui/auth/login_page.dart';
 import 'package:wave_app/values/string.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
@@ -84,7 +84,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
     _determinePosition().then(
       (value) => convertLatLongToAddress(value.latitude, value.longitude).then(
         (value) => locationController.text =
-            "${value[0].street}${value[0].subLocality}${value[0].locality}, ${value[0].postalCode}",
+            "${value[0].street}, ${value[0].subLocality}, ${value[0].locality}, ${value[0].postalCode}",
       ),
     );
   }
@@ -233,15 +233,14 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) => GestureDetector(
                               onTap: () {
-                                locationController.text = places[index]
-                                    ['structured_formatting']["main_text"];
+                                locationController.text =
+                                    "${places[index]['description']}";
                                 convertAddressToLatLong(
                                     locationController.text);
                                 showPlaces.value = false;
                               },
                               child: Text(
-                                places[index]['structured_formatting']
-                                    ["main_text"],
+                                places[index]['description'],
                               ),
                             ),
                             separatorBuilder:
@@ -253,7 +252,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(LoginPageScreen());
+                    Get.to(const LoginOneScreen());
                   },
                   child: Align(
                     alignment: Alignment.centerRight,
@@ -497,8 +496,10 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
       double latitude, double longitude) async {
     address = await placemarkFromCoordinates(latitude, longitude);
     locationController.text =
-        "${address[0].street}${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}";
-    debugPrint("value after conversion : ${locationController.text}");
+        "${locationController.text}, ${address[0].postalCode}";
+    /* "${address[0].street}${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}";*/
+    debugPrint(
+        "----------------------------------------------------value after conversion : ${address[0].street}, ${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}");
     return address;
   }
 
