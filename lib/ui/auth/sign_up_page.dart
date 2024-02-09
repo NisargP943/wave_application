@@ -84,7 +84,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
     _determinePosition().then(
       (value) => convertLatLongToAddress(value.latitude, value.longitude).then(
         (value) => locationController.text =
-            "${value[0].locality}, ${value[0].postalCode}",
+            "${value[0].street}${value[0].subLocality}${value[0].locality}, ${value[0].postalCode}",
       ),
     );
   }
@@ -497,7 +497,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
       double latitude, double longitude) async {
     address = await placemarkFromCoordinates(latitude, longitude);
     locationController.text =
-        "${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}";
+        "${address[0].street}${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}";
     debugPrint("value after conversion : ${locationController.text}");
     return address;
   }
