@@ -69,7 +69,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   right: 0.01.sh,
                   child: CustomImageView(
                     imagePath: Assets.imagesLogo,
-                    scale: 9,
+                    scale: 11,
                   ),
                 ),
                 Positioned(
@@ -293,10 +293,16 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
       ever(authController.customerAuthResponseModel, (callback) {
         for (int i = 0; i < callback.data!.length; i++) {
           if (callback.data?[i].customername == null) {
-            Get.to(OtpPage(
-              customerAuthResponseModel: callback,
-              mobileNumber: phoneNumberController.text,
-            ));
+            Get.back();
+            Future.delayed(
+              const Duration(seconds: 1),
+              () => Get.to(
+                OtpPage(
+                  customerAuthResponseModel: callback,
+                  mobileNumber: phoneNumberController.text,
+                ),
+              ),
+            );
           } else {
             Get.off(const MainPage());
           }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
@@ -17,6 +18,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   ValueNotifier<int> pageIndex = ValueNotifier(0);
 
   @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
+    );
+  }
+
+  @override
   void dispose() {
     imageController.dispose();
     super.dispose();
@@ -24,15 +33,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: pageBodyWidget(),
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: pageIndex,
-        builder: (context, value, child) =>
-            value == 6 ? buildLastScreen() : Container(),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: pageBodyWidget(),
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: pageIndex,
+          builder: (context, value, child) =>
+              value == 6 ? buildLastScreen() : Container(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

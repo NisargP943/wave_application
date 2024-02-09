@@ -54,15 +54,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
         ),
-        floatingActionButton: GestureDetector(
-          onTap: () {},
-          child: const CircleAvatar(
-            backgroundImage: AssetImage(
-              Assets.imagesChatbot,
-            ),
-            radius: 30,
-          ),
-        ),
       ),
     );
   }
@@ -72,7 +63,7 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomImageView(
-          imagePath: "https://wavetechservices.in/images/web/decor2.jpeg",
+          imagePath: Assets.imagesOne,
           height: 0.35.sh,
           width: 1.sw,
           fit: BoxFit.fill,
@@ -319,7 +310,7 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomImageView(
-          imagePath: "https://wavetechservices.in/images/web/decor2.jpeg",
+          imagePath: Assets.imagesOne,
           height: 0.52.sh,
           fit: BoxFit.fill,
           placeHolder: "Please wait",

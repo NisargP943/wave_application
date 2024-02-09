@@ -21,7 +21,6 @@ class AuthController extends GetxController {
         } catch (e) {
           debugPrint("error       ${e.toString()}");
         }
-        loading.value = false;
       }
     } catch (e) {
       debugPrint(e.toString());

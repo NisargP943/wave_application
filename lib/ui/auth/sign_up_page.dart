@@ -115,13 +115,13 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                     const Spacer(),
                     CustomImageView(
                       imagePath: Assets.imagesLogo,
-                      scale: 13,
+                      scale: 14,
                     ),
-                    30.horizontalSpace,
+                    15.horizontalSpace,
                   ],
                 ),
                 _buildNavigationBarBig(context),
-                70.verticalSpace,
+                65.verticalSpace,
                 TextFieldDesignPage(
                   prefixWidget: const Icon(
                     Icons.person_2_outlined,
