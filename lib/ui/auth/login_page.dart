@@ -67,7 +67,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   bottom: 0.02.sh,
                   right: 0.01.sh,
                   child: CustomImageView(
-                    imagePath: Assets.imagesLogo,
+                    imagePath: Assets.imagesLogo2,
                     scale: 11,
                   ),
                 ),
@@ -147,15 +147,13 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
       child: RichText(
           text: TextSpan(children: [
             TextSpan(
-                text: "By signing up I agree to the",
-                style: theme.textTheme.titleMedium),
+                text: "By signing up I agree to the", style: theme.textTheme.titleMedium),
             const TextSpan(text: " "),
             TextSpan(text: "Terms of use", style: theme.textTheme.titleMedium),
             const TextSpan(text: " "),
             TextSpan(text: "and", style: theme.textTheme.titleMedium),
             const TextSpan(text: " "),
-            TextSpan(
-                text: "Privacy Policy.", style: theme.textTheme.titleMedium)
+            TextSpan(text: "Privacy Policy.", style: theme.textTheme.titleMedium)
           ]),
           textAlign: TextAlign.left),
     );
@@ -189,10 +187,9 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   Container(
                     height: 64,
                     width: 92,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 34, vertical: 20),
-                    decoration: AppDecoration.outlineBlack9004.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder24),
+                    padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
+                    decoration: AppDecoration.outlineBlack9004
+                        .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
                     child: CustomImageView(
                       imagePath: Assets.imagesGoogle,
                       height: 24,
@@ -203,10 +200,9 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   Container(
                     height: 64,
                     width: 92,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 34, vertical: 20),
-                    decoration: AppDecoration.outlineBlack9004.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder24),
+                    padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
+                    decoration: AppDecoration.outlineBlack9004
+                        .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
                     child: CustomImageView(
                       imagePath: Assets.imagesFacebook,
                       height: 24,

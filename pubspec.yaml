@@ -41,7 +41,6 @@ dependencies:
   country_pickers: ^2.0.0
   flutter_svg:
   cached_network_image:
-  fluttertoast: ^8.2.4
   pinput: ^3.0.1
   geolocator: ^10.1.0
   uuid:
