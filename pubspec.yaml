@@ -43,6 +43,8 @@ dependencies:
   cached_network_image:
   pinput: ^3.0.1
   geolocator: ^10.1.0
+  hive: any
+  hive_flutter: any
   uuid:
   http:
   geocoding: ^2.1.1
@@ -56,9 +58,7 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/images/logo.png"
   min_sdk_android: 21
-  hive: ^2.2.3
   path_provider: ^2.0.2
-  hive_flutter: ^1.1.0
 
 
 
@@ -69,14 +69,15 @@ dev_dependencies:
     sdk: flutter
 
 
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  hive_generator: ^2.0.1
-  build_runner: ^2.4.8
+  build_runner: any
+  hive_generator: any
 
 
 # For information on the generic Dart part of this file, see the

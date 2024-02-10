@@ -49,8 +49,7 @@ class _HomePageState extends State<HomePage> {
               : SingleChildScrollView(
                   child: ValueListenableBuilder(
                     valueListenable: widgetNotifier,
-                    builder: (context, value, child) =>
-                        value ? mainWidgetTwo() : mainWidgetOne(),
+                    builder: (context, value, child) => mainWidgetTwo(),
                   ),
                 ),
         ),
@@ -64,7 +63,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         CustomImageView(
           imagePath: Assets.imagesOne,
-          height: 0.35.sh,
+          height: 0.25.sh,
           width: 1.sw,
           fit: BoxFit.fill,
           placeHolder: "Please wait",
@@ -98,8 +97,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget homeServicesListView() {
     return GetBuilder<AllCatController>(
-      builder: (controller) => SizedBox(
-        height: 250.h,
+      builder: (controller) => Container(
+        height: 210.h,
+        //  color: Colors.red,
         child: ListView.separated(
           itemCount: controller.firstPriorityList?.length ?? 0,
           padding: const EdgeInsets.symmetric(
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
+                    horizontal: 10,
                     vertical: 3,
                   ).r,
                   decoration: BoxDecoration(
@@ -127,14 +127,15 @@ class _HomePageState extends State<HomePage> {
                 ),
                 5.verticalSpace,
                 CustomImageView(
-                  height: 80.h,
+                  margin: const EdgeInsets.only(left: 10),
+                  height: 70.h,
                   imagePath: firstList?.thumbnail,
                 ),
-                5.verticalSpace,
+                0.verticalSpace,
                 GestureDetector(
                   onTap: () {},
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 60, top: 10).r,
+                    padding: const EdgeInsets.only(left: 60, top: 0).r,
                     child: Icon(
                       color: firstList?.isFavourite == true ? Colors.red : null,
                       firstList?.isFavourite == true
@@ -217,8 +218,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget newCategoryListView() {
     return GetBuilder<AllCatController>(
-      builder: (controller) => SizedBox(
-        height: 250.h,
+      builder: (controller) => Container(
+        height: 230.h,
+        //  color: Colors.red,
         child: ListView.separated(
           itemCount: controller.secondPriorityList?.length ?? 0,
           padding: const EdgeInsets.symmetric(
@@ -232,7 +234,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
+                    horizontal: 10,
                     vertical: 3,
                   ).r,
                   decoration: BoxDecoration(
@@ -246,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 5.verticalSpace,
                 CustomImageView(
-                  height: 80.h,
+                  height: 70.h,
                   imagePath: secondList?.thumbnail,
                 ),
                 5.verticalSpace,
@@ -255,11 +257,10 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 60,
-                      top: 10,
+                      top: 0,
                     ).r,
                     child: Icon(
-                      color:
-                          secondList?.isFavourite == true ? Colors.red : null,
+                      color: secondList?.isFavourite == true ? Colors.red : null,
                       secondList?.isFavourite == true
                           ? Icons.favorite
                           : Icons.favorite_border_outlined,
@@ -305,7 +306,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget mainWidgetOne() {
+  /*Widget mainWidgetOne() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -328,9 +329,9 @@ class _HomePageState extends State<HomePage> {
         categoryListviewWidget()
       ],
     );
-  }
+  }*/
 
-  Widget categoryListviewWidget() {
+  /*Widget categoryListviewWidget() {
     return GetBuilder<AllCatController>(
       builder: (controller) => SizedBox(
         height: 110.h,
@@ -360,8 +361,9 @@ class _HomePageState extends State<HomePage> {
               ),
       ),
     );
-  }
+  }*/
 
+/*
   Widget labelWidget() {
     return Padding(
       padding: const EdgeInsets.only(left: 5).r,
@@ -371,6 +373,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+*/
 
   Widget labelWidgetTwo(String? labelText) {
     return Padding(
@@ -386,7 +389,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Text(
             "View All",
-            style: CustomTextStyles.bodySmallff9b9b9b11,
+            style: CustomTextStyles.bodyMedium_1,
           ),
         ],
       ),
@@ -402,7 +405,7 @@ class _HomePageState extends State<HomePage> {
             widgetNotifier.value = !widgetNotifier.value;
           },
           child: Container(
-            margin: const EdgeInsets.only(left: 5).r,
+            margin: const EdgeInsets.only(left: 15).r,
             padding: const EdgeInsets.symmetric(
               vertical: 8,
               horizontal: 30,

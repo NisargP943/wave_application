@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/main.dart';
+import 'package:wave_app/model/customer_data.dart';
+import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/ui/welcome/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,12 +18,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    CustomerData temp = customerDB?.get("isLogin");
     Future.delayed(
       const Duration(seconds: 2),
       () {
-        Get.off(
-          const WelcomeScreen(),
-        );
+        /// checking condition if the user is already logged in than redirect to home page
+        if (temp.isLogin == true) {
+          Get.off(const MainPage());
+        } else {
+          Get.off(
+            const WelcomeScreen(),
+          );
+        }
       },
     );
   }
@@ -54,8 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 Text(
                   "Services Faster Than\nYour Next Coffee Break",
-                  style: TextStyle(
-                      color: const Color(0xff636363), fontSize: 23.spMin),
+                  style: TextStyle(color: const Color(0xff636363), fontSize: 23.spMin),
                 ),
                 SizedBox(height: 40.h),
                 Image(
@@ -69,8 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 75.h),
             Text(
               "www.wavetechservices.in",
-              style:
-                  TextStyle(color: const Color(0xff636363), fontSize: 19.spMin),
+              style: TextStyle(color: const Color(0xff636363), fontSize: 19.spMin),
             ),
             SizedBox(height: 0.10.sh),
             Image(

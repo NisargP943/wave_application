@@ -7,12 +7,16 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
+
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/otp_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_phone_number.dart';
+
+import '../../main.dart';
+import '../../model/customer_data.dart';
 
 // ignore_for_file: must_be_immutable
 class LoginOneScreen extends StatefulWidget {
@@ -67,7 +71,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   right: 0.01.sh,
                   child: CustomImageView(
                     imagePath: Assets.imagesLogo2,
-                    scale: 11,
+                    scale: 13,
                   ),
                 ),
                 Positioned(
@@ -102,7 +106,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             ),
             20.verticalSpace,
             termsChecker(),
-            19.verticalSpace,
+            25.verticalSpace,
             _buildLoginSignup(),
             15.verticalSpace,
             _buildWebUrl(context)
@@ -114,7 +118,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   Widget termsChecker() {
     return Padding(
-      padding: const EdgeInsets.only(left: 38, right: 50).r,
+      padding: const EdgeInsets.only(left: 15, right: 50).r,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -166,7 +170,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
         onTap: () {
           validate();
         },
-        text: "Login / Signup",
+        text: "Login  /   Signup",
       ),
     );
   }
@@ -284,6 +288,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             ),
           ),
         );
+        customerDB?.put("isLogin", CustomerData(isLogin: true));
       })
     ];
   }
