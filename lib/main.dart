@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:wave_app/model/customer_data.dart';
 import 'package:wave_app/ui/welcome/splash_screen.dart';
 
-void main() {
+Box? customerDB;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  ///Hive Intialized
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(CustomerDataAdapter());
+
+  customerDB = await Hive.openBox<CustomerData>("customerDataBox");
+
   runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

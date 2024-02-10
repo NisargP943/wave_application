@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/main.dart';
+import 'package:wave_app/model/customer_data.dart';
 import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
@@ -300,6 +302,9 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             ),
           ),
         );
+
+        ///setting isLogin to true
+        customerDB?.put("isLogin", CustomerData(isLogin: true));
       })
     ];
   }
