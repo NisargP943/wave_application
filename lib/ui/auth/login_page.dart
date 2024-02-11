@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
-
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/otp_page.dart';
@@ -148,17 +147,22 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   Widget termsTextWidget() {
     return Expanded(
       child: RichText(
-          text: TextSpan(children: [
+        text: TextSpan(
+          children: [
             TextSpan(
-                text: "By signing up I agree to the", style: theme.textTheme.titleMedium),
+                text: "By signing up I agree to the",
+                style: theme.textTheme.titleMedium),
             const TextSpan(text: " "),
             TextSpan(text: "Terms of use", style: theme.textTheme.titleMedium),
             const TextSpan(text: " "),
             TextSpan(text: "and", style: theme.textTheme.titleMedium),
             const TextSpan(text: " "),
-            TextSpan(text: "Privacy Policy.", style: theme.textTheme.titleMedium)
-          ]),
-          textAlign: TextAlign.left),
+            TextSpan(
+                text: "Privacy Policy.", style: theme.textTheme.titleMedium)
+          ],
+        ),
+        textAlign: TextAlign.left,
+      ),
     );
   }
 
@@ -184,38 +188,16 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 15).r,
+              padding: const EdgeInsets.symmetric(horizontal: 15).r,
               child: Row(
                 children: [
-                  Container(
-                    height: 64,
-                    width: 92,
-                    padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
-                    decoration: AppDecoration.outlineBlack9004
-                        .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
-                    child: CustomImageView(
-                      imagePath: Assets.imagesGoogle,
-                      height: 24,
-                      width: 23,
-                      alignment: Alignment.center,
-                    ),
-                  ),
-                  Container(
-                    height: 64,
-                    width: 92,
-                    padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
-                    decoration: AppDecoration.outlineBlack9004
-                        .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
-                text: "By signing up I agree to the", style: theme.textTheme.titleMedium),
-            TextSpan(text: "Privacy Policy.", style: theme.textTheme.titleMedium)
-        text: "Login  /   Signup",
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  30.horizontalSpace,
+                  20.horizontalSpace,
                   CustomImageView(
                     imagePath: Assets.imagesGoogleIcon,
                     height: 45,
                     width: 45,
                     alignment: Alignment.center,
+                  ),
                   40.horizontalSpace,
                   CustomImageView(
                     imagePath: Assets.imagesFbIcon,
