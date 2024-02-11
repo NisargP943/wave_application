@@ -170,7 +170,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
         onTap: () {
           validate();
         },
-        text: "Login  /   Signup",
+        text: "Login / Signup",
       ),
     );
   }
@@ -186,15 +186,36 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 15).r,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                    height: 64,
+                    width: 92,
+                    padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
+                    decoration: AppDecoration.outlineBlack9004
+                        .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
+                    child: CustomImageView(
+                      imagePath: Assets.imagesGoogle,
+                      height: 24,
+                      width: 23,
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                  Container(
+                    height: 64,
+                    width: 92,
+                    padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
+                    decoration: AppDecoration.outlineBlack9004
+                        .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
+                text: "By signing up I agree to the", style: theme.textTheme.titleMedium),
+            TextSpan(text: "Privacy Policy.", style: theme.textTheme.titleMedium)
+        text: "Login  /   Signup",
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   30.horizontalSpace,
                   CustomImageView(
                     imagePath: Assets.imagesGoogleIcon,
                     height: 45,
                     width: 45,
                     alignment: Alignment.center,
-                  ),
                   40.horizontalSpace,
                   CustomImageView(
                     imagePath: Assets.imagesFbIcon,
