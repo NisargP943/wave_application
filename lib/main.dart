@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:wave_app/model/customer_data.dart';
-import 'package:wave_app/ui/auth/login_page.dart';
+import 'package:wave_app/ui/welcome/splash_screen.dart';
 
 Box? customerDB;
 
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: false,
         ),
-        home: const LoginOneScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
