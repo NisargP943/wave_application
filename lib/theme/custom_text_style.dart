@@ -214,12 +214,16 @@ class CustomTextStyles {
 
   static get titleMediumGray700 => theme.textTheme.titleMedium!.copyWith(
         color: Colors.black,
+        fontFamily: "Acme",
         fontSize: 19.spMin,
         fontWeight: FontWeight.w500,
       );
 
   static get titleMediumff407bff => theme.textTheme.titleMedium!.copyWith(
-        color: const Color(0XFF407BFF),
+        color: Colors.black,
+        fontFamily: "Acme",
+        fontWeight: FontWeight.w300,
+        fontSize: 14.spMin,
       );
 }
 

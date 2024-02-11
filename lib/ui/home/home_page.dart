@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
 ValueNotifier<bool> widgetNotifier = ValueNotifier(false);
@@ -98,81 +99,91 @@ class _HomePageState extends State<HomePage> {
   Widget homeServicesListView() {
     return GetBuilder<AllCatController>(
       builder: (controller) => Container(
-        height: 210.h,
+        height: 218.h,
         //  color: Colors.red,
         child: ListView.separated(
-          itemCount: controller.firstPriorityList?.length ?? 0,
+          itemCount:
+              controller.allCategoryByTypesResponseModel.value?.data.length ??
+                  0,
           padding: const EdgeInsets.symmetric(
             horizontal: 5,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            final firstList = controller.firstPriorityList?[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ).r,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20).r,
-                    color: Colors.red,
-                  ),
-                  child: Text(
-                    "-20%",
-                    style: CustomTextStyles.bodySmallOnPrimary,
-                  ),
-                ),
-                5.verticalSpace,
-                CustomImageView(
-                  margin: const EdgeInsets.only(left: 10),
-                  height: 70.h,
-                  imagePath: firstList?.thumbnail,
-                ),
-                0.verticalSpace,
-                GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 60, top: 0).r,
-                    child: Icon(
-                      color: firstList?.isFavourite == true ? Colors.red : null,
-                      firstList?.isFavourite == true
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
+            final firstList =
+                controller.allCategoryByTypesResponseModel.value?.data[index];
+            return GestureDetector(
+              onTap: () {
+                Get.to(ServiceDetailsPage(categoryModel: firstList));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ).r,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20).r,
+                      color: Colors.red,
+                    ),
+                    child: Text(
+                      "-20%",
+                      style: CustomTextStyles.bodySmallOnPrimary,
                     ),
                   ),
-                ),
-                3.verticalSpace,
-                ratingBarRow(),
-                3.verticalSpace,
-                Text(
-                  firstList?.servicename ?? "",
-                  style: CustomTextStyles.bodySmallff9b9b9b,
-                ),
-                3.verticalSpace,
-                SizedBox(
-                  width: 110.w,
-                  child: Text(
-                    firstList?.catg ?? "",
-                    style: CustomTextStyles.bodyLargeBlack900_1,
+                  5.verticalSpace,
+                  CustomImageView(
+                    margin: const EdgeInsets.only(left: 10),
+                    height: 70.h,
+                    imagePath: firstList?.thumbnail,
                   ),
-                ),
-                3.verticalSpace,
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "",
-                        style: CustomTextStyles.bodySmallRed700,
+                  0.verticalSpace,
+                  GestureDetector(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 60, top: 0).r,
+                      child: Icon(
+                        color:
+                            firstList?.isFavourite == true ? Colors.red : null,
+                        firstList?.isFavourite == true
+                            ? Icons.favorite
+                            : Icons.favorite_border_outlined,
                       ),
-                    ],
-                    text: "Rs 350",
-                    style: CustomTextStyles.bodyMediumGrey13,
+                    ),
                   ),
-                )
-              ],
+                  3.verticalSpace,
+                  ratingBarRow(firstList?.rating ?? 1),
+                  3.verticalSpace,
+                  Text(
+                    firstList?.stype ?? "",
+                    style: CustomTextStyles.bodySmallff9b9b9b,
+                  ),
+                  3.verticalSpace,
+                  SizedBox(
+                    width: 120.w,
+                    child: Text(
+                      firstList?.servicename ?? "",
+                      style: CustomTextStyles.bodyLargeBlack900_1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  3.verticalSpace,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "",
+                          style: CustomTextStyles.bodySmallRed700,
+                        ),
+                      ],
+                      text: "Rs ${firstList?.price}",
+                      style: CustomTextStyles.bodyMediumGrey13,
+                    ),
+                  )
+                ],
+              ),
             );
           },
           separatorBuilder: (BuildContext context, int index) {
@@ -183,11 +194,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Row ratingBarRow() {
+  Row ratingBarRow(int rating) {
     return Row(
       children: [
         RatingBar(
-          initialRating: 5,
+          initialRating: double.parse(rating.toString()),
           allowHalfRating: true,
           itemCount: 5,
           glowColor: Colors.orangeAccent,
@@ -229,73 +240,82 @@ class _HomePageState extends State<HomePage> {
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             final secondList = controller.secondPriorityList?[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ).r,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20).r,
-                    color: Colors.black,
-                  ),
-                  child: Text(
-                    "New",
-                    style: CustomTextStyles.bodySmallOnPrimary,
-                  ),
-                ),
-                5.verticalSpace,
-                CustomImageView(
-                  height: 70.h,
-                  imagePath: secondList?.thumbnail,
-                ),
-                5.verticalSpace,
-                GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 60,
-                      top: 0,
+            return GestureDetector(
+              onTap: () {
+                Get.to(ServiceDetailsPage(categoryModel: secondList));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
                     ).r,
-                    child: Icon(
-                      color: secondList?.isFavourite == true ? Colors.red : null,
-                      secondList?.isFavourite == true
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20).r,
+                      color: Colors.black,
+                    ),
+                    child: Text(
+                      "New",
+                      style: CustomTextStyles.bodySmallOnPrimary,
                     ),
                   ),
-                ),
-                3.verticalSpace,
-                ratingBarRow(),
-                3.verticalSpace,
-                Text(
-                  secondList?.servicename ?? "",
-                  style: CustomTextStyles.bodySmallff9b9b9b,
-                ),
-                3.verticalSpace,
-                SizedBox(
-                  width: 110.w,
-                  child: Text(
-                    secondList?.catg ?? "",
-                    style: CustomTextStyles.bodyLargeBlack900_1,
+                  5.verticalSpace,
+                  CustomImageView(
+                    height: 70.h,
+                    imagePath: secondList?.thumbnail,
                   ),
-                ),
-                3.verticalSpace,
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "",
-                        style: CustomTextStyles.bodySmallRed700,
+                  5.verticalSpace,
+                  GestureDetector(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 60,
+                        top: 0,
+                      ).r,
+                      child: Icon(
+                        color:
+                            secondList?.isFavourite == true ? Colors.red : null,
+                        secondList?.isFavourite == true
+                            ? Icons.favorite
+                            : Icons.favorite_border_outlined,
                       ),
-                    ],
-                    text: "Rs 350",
-                    style: CustomTextStyles.bodyMediumGrey13,
+                    ),
                   ),
-                )
-              ],
+                  3.verticalSpace,
+                  ratingBarRow(
+                    secondList?.rating ?? 1,
+                  ),
+                  3.verticalSpace,
+                  Text(
+                    secondList?.catg ?? "",
+                    style: CustomTextStyles.bodySmallff9b9b9b,
+                  ),
+                  3.verticalSpace,
+                  SizedBox(
+                    width: 120.w,
+                    child: Text(
+                      secondList?.servicename ?? "",
+                      style: CustomTextStyles.bodyLargeBlack900_1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  3.verticalSpace,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "",
+                          style: CustomTextStyles.bodySmallRed700,
+                        ),
+                      ],
+                      text: "Rs ${secondList?.price}",
+                      style: CustomTextStyles.bodyMediumGrey13,
+                    ),
+                  )
+                ],
+              ),
             );
           },
           separatorBuilder: (BuildContext context, int index) {

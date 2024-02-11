@@ -38,6 +38,9 @@ class Datum {
   Priority priority;
   String thumbnail;
   bool? isFavourite;
+  String? stype;
+  int rating;
+  int price;
 
   Datum(
       {required this.id,
@@ -45,7 +48,10 @@ class Datum {
       required this.catg,
       required this.priority,
       required this.thumbnail,
-      this.isFavourite});
+      this.isFavourite,
+      this.stype,
+      required this.rating,
+      required this.price});
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
@@ -53,6 +59,9 @@ class Datum {
         catg: json["catg"],
         priority: priorityValues.map[json["priority"]]!,
         thumbnail: json["thumbnail"],
+        stype: json["stype"],
+        rating: json["rating"],
+        price: json["price"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -61,6 +70,9 @@ class Datum {
         "catg": catg,
         "priority": priorityValues.reverse[priority],
         "thumbnail": thumbnail,
+        "stype": stype,
+        "rating": rating,
+        "price": price,
       };
 }
 
