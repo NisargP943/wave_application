@@ -55,8 +55,8 @@ class _MainPageState extends State<MainPage> {
       decoration: BoxDecoration(
         border: Border.all(width: 0.5, color: Colors.grey.withOpacity(0.3)),
         borderRadius: const BorderRadius.horizontal(
-          left: Radius.circular(16),
-          right: Radius.circular(16),
+          left: Radius.circular(15),
+          right: Radius.circular(15),
         ).r,
       ),
       child: ClipRRect(
@@ -83,8 +83,8 @@ class _MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   color: value == 0 ? const Color(0xffDB3022) : null,
-                  height: 45.h,
-                  width: 30.w,
+                  height: 40.h,
+                  width: 25.w,
                   Assets.imagesHome,
                 ),
                 label: "Home",
@@ -92,8 +92,8 @@ class _MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   color: value == 1 ? const Color(0xffDB3022) : null,
-                  height: 45.h,
-                  width: 30.w,
+                  height: 40.h,
+                  width: 25.w,
                   Assets.imagesShoppingCart,
                 ),
                 label: "Book",
@@ -101,8 +101,8 @@ class _MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   color: value == 2 ? const Color(0xffDB3022) : null,
-                  height: 45.h,
-                  width: 30.w,
+                  height: 40.h,
+                  width: 25.w,
                   Assets.imagesShopping,
                 ),
                 label: "My Orders",
@@ -110,8 +110,8 @@ class _MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   color: value == 3 ? const Color(0xffDB3022) : null,
-                  height: 45.h,
-                  width: 30.w,
+                  height: 40.h,
+                  width: 25.w,
                   Assets.imagesHeart,
                 ),
                 label: "Favourites",
@@ -119,8 +119,8 @@ class _MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   color: value == 4 ? const Color(0xffDB3022) : null,
-                  height: 45.h,
-                  width: 30.w,
+                  height: 40.h,
+                  width: 25.w,
                   Assets.imagesProfile,
                 ),
                 label: "Helpdesk",
