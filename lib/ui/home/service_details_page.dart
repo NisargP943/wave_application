@@ -49,214 +49,231 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark,
+      appBar: pageAppBar(),
+      body: pageBodyWidget(),
+    );
+  }
+
+  AppBar pageAppBar() {
+    return AppBar(
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      backgroundColor: Colors.white,
+      elevation: 0,
+      shadowColor: Colors.white,
+      leading: GestureDetector(
+        onTap: () {
+          Get.back();
+        },
+        child: Image.asset(
+          Assets.imagesBackIcon,
+          scale: 1.8,
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        shadowColor: Colors.white,
-        leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Image.asset(
-            Assets.imagesBackIcon,
-            scale: 1.8,
+      ),
+      title: Text(
+        widget.categoryModel?.catg ?? "Please wait",
+        style: CustomTextStyles.titleMediumGray700,
+        overflow: TextOverflow.ellipsis,
+      ),
+      centerTitle: true,
+      actions: [
+        Image.asset(
+          Assets.imagesShare,
+          scale: 1.8,
+        ),
+      ],
+    );
+  }
+
+  Widget pageBodyWidget() {
+    return ValueListenableBuilder(
+      valueListenable: isLoading,
+      builder: (context, value, child) => value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : widget.categoryModel == null
+              ? Center(
+                  child: Text(
+                    "No Data Found",
+                    style: CustomTextStyles.bodyLargeBlack90018,
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: CustomImageView(
+                          imagePath: widget.categoryModel?.thumbnail,
+                          height: 0.4.sh,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      30.verticalSpace,
+                      dateTimePicker(),
+                      20.verticalSpace,
+                      serviceDetails(),
+                      serviceLabel(),
+                      5.verticalSpace,
+                      ratingBarRow(),
+                      30.verticalSpace,
+                      serviceDescription(),
+                      70.verticalSpace,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                        child: AppButtonWidget(
+                          onTap: () {},
+                          text: "ADD TO CART",
+                        ),
+                      ),
+                      20.verticalSpace,
+                    ],
+                  ),
+                ),
+    );
+  }
+
+  Widget serviceDescription() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15).r,
+      child: Text(
+        "Blood Test at Home in 60 Mins - Get Tested at Home in 60 Minsconcealed elastication. Elasticated seam under the bust and short puff sleeves with a small frill trim.",
+        style: CustomTextStyles.titleMediumff407bff,
+      ),
+    );
+  }
+
+  Widget serviceLabel() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15).r,
+      child: Text(
+        widget.categoryModel?.servicename ?? "",
+        style: CustomTextStyles.bodySmallff9b9b9b,
+      ),
+    );
+  }
+
+  Widget serviceDetails() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15).r,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            widget.categoryModel?.stype ?? "",
+            style: CustomTextStyles.bodyLargeBlack90018,
           ),
-        ),
-        title: Text(
-          widget.categoryModel?.catg ?? "Please wait",
-          style: CustomTextStyles.titleMediumGray700,
-          overflow: TextOverflow.ellipsis,
-        ),
-        centerTitle: true,
-        actions: [
-          Image.asset(
-            Assets.imagesShare,
-            scale: 1.8,
+          Text(
+            "Rs ${widget.categoryModel?.price}",
+            style: CustomTextStyles.bodyLargeBlack90018,
           ),
         ],
       ),
-      body: ValueListenableBuilder(
-        valueListenable: isLoading,
-        builder: (context, value, child) => value
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : widget.categoryModel == null
-                ? Center(
-                    child: Text(
-                      "No Data Found",
-                      style: CustomTextStyles.bodyLargeBlack90018,
-                    ),
-                  )
-                : SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: CustomImageView(
-                            imagePath: widget.categoryModel?.thumbnail,
-                            height: 0.4.sh,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        30.verticalSpace,
-                        StatefulBuilder(
-                          builder: (context, setState) => Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10).r,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      dateTimeIndex = 0;
-                                      setState(() {});
-                                      buildCalenderDialog();
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(8).r,
-                                        border: Border.all(
-                                          color: dateTimeIndex == 0
-                                              ? Colors.orangeAccent
-                                              : Colors.grey.withOpacity(0.5),
-                                        ),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                        vertical: 14,
-                                      ).r,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            dateController.text.isEmpty
-                                                ? "Date"
-                                                : dateController.text,
-                                            style: CustomTextStyles
-                                                .bodyLargeBlack900,
-                                          ),
-                                          RotatedBox(
-                                            quarterTurns: 3,
-                                            child: Image.asset(
-                                              Assets.imagesBackIcon,
-                                              scale: 3,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                15.horizontalSpace,
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      dateTimeIndex = 1;
-                                      timeSheet();
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                              vertical: 14, horizontal: 14)
-                                          .r,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: dateTimeIndex == 1
-                                              ? Colors.orangeAccent
-                                              : Colors.grey.withOpacity(0.5),
-                                        ),
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(8).r,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            timeController.text.isEmpty
-                                                ? "Time"
-                                                : timeController.text,
-                                            style: CustomTextStyles
-                                                .bodyLargeBlack900,
-                                          ),
-                                          RotatedBox(
-                                            quarterTurns: 3,
-                                            child: Image.asset(
-                                              Assets.imagesBackIcon,
-                                              scale: 3,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                10.horizontalSpace,
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5).r,
-                                  child: Image.asset(
-                                    Assets.imagesFavIcon,
-                                    scale: 2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        20.verticalSpace,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.categoryModel?.stype ?? "",
-                                style: CustomTextStyles.bodyLargeBlack90018,
-                              ),
-                              Text(
-                                "Rs ${widget.categoryModel?.price}",
-                                style: CustomTextStyles.bodyLargeBlack90018,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                          child: Text(
-                            widget.categoryModel?.servicename ?? "",
-                            style: CustomTextStyles.bodySmallff9b9b9b,
-                          ),
-                        ),
-                        5.verticalSpace,
-                        ratingBarRow(),
-                        30.verticalSpace,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                          child: Text(
-                            "Blood Test at Home in 60 Mins - Get Tested at Home in 60 Minsconcealed elastication. Elasticated seam under the bust and short puff sleeves with a small frill trim.",
-                            style: CustomTextStyles.titleMediumff407bff,
-                          ),
-                        ),
-                        70.verticalSpace,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                          child: AppButtonWidget(
-                            onTap: () {},
-                            text: "ADD TO CART",
-                          ),
-                        ),
-                        20.verticalSpace,
-                      ],
+    );
+  }
+
+  Widget dateTimePicker() {
+    return StatefulBuilder(
+      builder: (context, setState) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10).r,
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  dateTimeIndex = 0;
+                  setState(() {});
+                  buildCalenderDialog();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8).r,
+                    border: Border.all(
+                      color: dateTimeIndex == 0
+                          ? Colors.orangeAccent
+                          : Colors.grey.withOpacity(0.5),
                     ),
                   ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 14,
+                  ).r,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        dateController.text.isEmpty
+                            ? "Date"
+                            : dateController.text,
+                        style: CustomTextStyles.bodyLargeBlack900,
+                      ),
+                      RotatedBox(
+                        quarterTurns: 3,
+                        child: Image.asset(
+                          Assets.imagesBackIcon,
+                          scale: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            15.horizontalSpace,
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  dateTimeIndex = 1;
+                  timeSheet();
+                  setState(() {});
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 14)
+                          .r,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: dateTimeIndex == 1
+                          ? Colors.orangeAccent
+                          : Colors.grey.withOpacity(0.5),
+                    ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8).r,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        timeController.text.isEmpty
+                            ? "Time"
+                            : timeController.text,
+                        style: CustomTextStyles.bodyLargeBlack900,
+                      ),
+                      RotatedBox(
+                        quarterTurns: 3,
+                        child: Image.asset(
+                          Assets.imagesBackIcon,
+                          scale: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            10.horizontalSpace,
+            Padding(
+              padding: const EdgeInsets.only(top: 5).r,
+              child: Image.asset(
+                Assets.imagesFavIcon,
+                scale: 2,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
