@@ -55,8 +55,8 @@ class _MainPageState extends State<MainPage> {
       decoration: BoxDecoration(
         border: Border.all(width: 0.5, color: Colors.grey.withOpacity(0.3)),
         borderRadius: const BorderRadius.horizontal(
-          left: Radius.circular(15),
-          right: Radius.circular(15),
+          left: Radius.circular(16),
+          right: Radius.circular(16),
         ).r,
       ),
       child: ClipRRect(
