@@ -6,13 +6,14 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:wave_app/model/customer_data.dart';
 import 'package:wave_app/ui/welcome/splash_screen.dart';
 
-Box? customerDB;
+Box? customerDB, locationDB;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(CustomerDataAdapter());
   customerDB = await Hive.openBox<CustomerData>("customerDataBox");
+  locationDB = await Hive.openBox("locationBox");
   if (customerDB?.get("isLogin") == null) {
     customerDB?.put("isLogin", CustomerData(isLogin: false));
   }

@@ -184,7 +184,10 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                             );
                           } else {
-                            Get.offAll(const MainPage());
+                            Get.offAll(MainPage(
+                              customerAuthResponseModel:
+                                  widget.customerAuthResponseModel,
+                            ));
                           }
                         }
                       }

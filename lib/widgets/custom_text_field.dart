@@ -14,7 +14,8 @@ class TextFieldDesignPage extends StatefulWidget {
       this.inputFormatters,
       this.onChanged,
       this.accepted,
-      this.prefixWidget})
+      this.prefixWidget,
+      this.edgeInsets})
       : super(key: key);
   final TextEditingController controller;
   final String labelText;
@@ -25,6 +26,7 @@ class TextFieldDesignPage extends StatefulWidget {
   final void Function(String)? onChanged;
   final ValueNotifier<bool>? accepted;
   final Widget? prefixWidget;
+  final EdgeInsets? edgeInsets;
 
   @override
   _TextFieldDesignPageState createState() => _TextFieldDesignPageState();
@@ -95,7 +97,7 @@ class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
                       : const SizedBox.shrink(),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding:
+                  contentPadding: widget.edgeInsets ??
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 15)
                           .r,
                   border: InputBorder.none,

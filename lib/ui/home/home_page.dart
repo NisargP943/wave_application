@@ -4,22 +4,31 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
+import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/main.dart';
+import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
+import 'package:wave_app/widgets/custom_text_field.dart';
 
 ValueNotifier<bool> widgetNotifier = ValueNotifier(false);
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.customerAuthResponseModel});
+
+  final CustomerAuthResponseModel? customerAuthResponseModel;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController searchController = TextEditingController();
   var categoryController = Get.put(AllCatController());
+  var authController = Get.put(AuthController());
+  String? customerData;
 
   @override
   void initState() {
@@ -30,6 +39,8 @@ class _HomePageState extends State<HomePage> {
         statusBarColor: Colors.transparent,
       ),
     );
+    customerData = locationDB?.get("city").toString();
+    print("City $customerData");
   }
 
   @override
@@ -48,10 +59,7 @@ class _HomePageState extends State<HomePage> {
                   child: CircularProgressIndicator(),
                 )
               : SingleChildScrollView(
-                  child: ValueListenableBuilder(
-                    valueListenable: widgetNotifier,
-                    builder: (context, value, child) => mainWidgetTwo(),
-                  ),
+                  child: mainWidgetTwo(),
                 ),
         ),
       ),
@@ -68,6 +76,41 @@ class _HomePageState extends State<HomePage> {
           width: 1.sw,
           fit: BoxFit.fill,
           placeHolder: "Please wait",
+        ),
+        15.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: SizedBox(
+            width: 200.w,
+            child: Row(
+              children: [
+                Text(
+                  customerData ?? "Ahmedabad",
+                  style: CustomTextStyles.bodyMedium_1,
+                ),
+                3.horizontalSpace,
+                RotatedBox(
+                  quarterTurns: 3,
+                  child: CustomImageView(
+                    imagePath: Assets.imagesBackIcon,
+                    scale: 3,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        10.verticalSpace,
+        TextFieldDesignPage(
+          edgeInsets: const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
+          textInputAction: TextInputAction.done,
+          textInputType: TextInputType.text,
+          controller: searchController,
+          labelText: "Search",
+          prefixWidget: const Icon(
+            Icons.search,
+            color: Colors.grey,
+          ),
         ),
         15.verticalSpace,
         labelWidgetTwo("Home Services"),

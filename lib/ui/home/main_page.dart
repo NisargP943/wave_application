@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/ui/home/sub_category_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({super.key, this.customerAuthResponseModel});
+
+  final CustomerAuthResponseModel? customerAuthResponseModel;
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -15,13 +18,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   ValueNotifier<int> pageNotifier = ValueNotifier(0);
-  List<Widget> pages = [
-    const HomePage(),
-    const HomePage(),
-    const HomePage(),
-    const SubCategoryPage(),
-    const HomePage(),
-  ];
+  List<Widget> pages = [];
 
   @override
   void initState() {
@@ -32,6 +29,13 @@ class _MainPageState extends State<MainPage> {
         statusBarColor: Colors.white,
       ),
     );
+    pages = [
+      HomePage(customerAuthResponseModel: widget.customerAuthResponseModel),
+      const HomePage(),
+      const HomePage(),
+      const SubCategoryPage(),
+      const HomePage(),
+    ];
   }
 
   @override

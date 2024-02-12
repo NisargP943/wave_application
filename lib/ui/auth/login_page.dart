@@ -280,19 +280,32 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   void initWorkers() {
     workers = [
-      ever(authController.customerAuthResponseModel, (callback) {
-        Get.back();
-        Future.delayed(
-          const Duration(seconds: 1),
-          () => Get.to(
-            OtpPage(
-              customerAuthResponseModel: callback,
-              mobileNumber: phoneNumberController.text,
+      ever(
+        authController.customerAuthResponseModel,
+        (callback) {
+          Get.back();
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => Get.to(
+              OtpPage(
+                customerAuthResponseModel: callback,
+                mobileNumber: phoneNumberController.text,
+              ),
             ),
-          ),
-        );
-        customerDB?.put("isLogin", CustomerData(isLogin: true));
-      })
+          );
+          if (callback.data?[0].customername != null) {
+            customerDB?.put("isLogin", CustomerData(isLogin: true));
+
+            for (int i = 0; i < callback.data!.length; i++) {
+              print("location ${callback.data?[i].city}");
+              locationDB?.put(
+                "city",
+                callback.data?[i].city,
+              );
+            }
+          }
+        },
+      )
     ];
   }
 
