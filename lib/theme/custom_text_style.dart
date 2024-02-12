@@ -54,8 +54,9 @@ class CustomTextStyles {
       );
 
   static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.inter.copyWith(
-        fontSize: 14.spMin,
-        color: Colors.grey.withOpacity(0.8),
+        fontSize: 12.spMin,
+        fontFamily: "Acme",
+        color: Colors.black,
       );
 
   static get bodyMediumGrey13LineThrough =>
@@ -72,7 +73,7 @@ class CustomTextStyles {
 
   static get bodyMediumBlack900 => theme.textTheme.bodyMedium!.inter.copyWith(
         color: appTheme.black900,
-        fontSize: 21.spMin,
+        fontSize: 19.spMin,
         fontWeight: FontWeight.w600,
       );
 
@@ -124,8 +125,8 @@ class CustomTextStyles {
       );
 
   static get bodySmallErrorContainer => theme.textTheme.bodySmall!.copyWith(
-        color: theme.colorScheme.errorContainer,
-        fontSize: 11,
+        color: Colors.black,
+        fontSize: 12.spMin,
       );
 
   static get bodySmallGray900 => theme.textTheme.bodySmall!.copyWith(
@@ -160,6 +161,11 @@ class CustomTextStyles {
   static get bodySmallff9b9b9b11 => theme.textTheme.bodySmall!.copyWith(
         color: Colors.black,
         fontSize: 11.spMin,
+      );
+
+  static get bodySmallff9b9b9b13 => theme.textTheme.bodySmall!.copyWith(
+        color: Colors.grey,
+        fontSize: 13.spMin,
       );
 
   // Display text style

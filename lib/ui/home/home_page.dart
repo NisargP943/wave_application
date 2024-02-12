@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
@@ -26,6 +27,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
+  PageController pageController = PageController();
+  ValueNotifier<bool> slidePage = ValueNotifier(false);
   var categoryController = Get.put(AllCatController());
   var authController = Get.put(AuthController());
   String? customerData;
@@ -41,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     );
     customerData = locationDB?.get("city").toString();
     print("City $customerData");
+    //slideBanner();
   }
 
   @override
@@ -52,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xfff5f5f5),
+        backgroundColor: Colors.transparent, //const Color(0xfff5f5f5),
         body: GetBuilder<AllCatController>(
           builder: (controller) => categoryController.loading.isTrue
               ? const Center(
@@ -70,37 +74,51 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomImageView(
-          imagePath: Assets.imagesOne,
-          height: 0.25.sh,
-          width: 1.sw,
-          fit: BoxFit.fill,
-          placeHolder: "Please wait",
-        ),
         15.verticalSpace,
+        labelWidgetTwo("Home"),
+        5.verticalSpace,
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
           child: SizedBox(
             width: 200.w,
             child: Row(
               children: [
                 Text(
                   customerData ?? "Ahmedabad",
-                  style: CustomTextStyles.bodyMedium_1,
+                  style: CustomTextStyles.bodySmallff9b9b9b13,
                 ),
-                3.horizontalSpace,
-                RotatedBox(
-                  quarterTurns: 3,
-                  child: CustomImageView(
-                    imagePath: Assets.imagesBackIcon,
-                    scale: 3,
+                PopupMenuButton(
+                  splashRadius: 5,
+                  icon: RotatedBox(
+                    quarterTurns: 3,
+                    child: CustomImageView(
+                      imagePath: Assets.imagesBackIcon,
+                      scale: 3.5,
+                    ),
                   ),
-                )
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        onTap: () {},
+                        child: Text(
+                          "Contact Us",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: Text("Settings",
+                            style: CustomTextStyles.bodySmallErrorContainer),
+                        onTap: () {},
+                      ),
+                    ];
+                  },
+                ),
               ],
             ),
           ),
         ),
-        10.verticalSpace,
         TextFieldDesignPage(
           edgeInsets: const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
           textInputAction: TextInputAction.done,
@@ -112,27 +130,101 @@ class _HomePageState extends State<HomePage> {
             color: Colors.grey,
           ),
         ),
-        15.verticalSpace,
-        labelWidgetTwo("Home Services"),
-        5.verticalSpace,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-          child: Text(
-            "click and book",
-            style: CustomTextStyles.bodyMediumGrey13,
+        10.verticalSpace,
+        Container(
+          height: 0.3.sh,
+          decoration: const BoxDecoration(),
+          child: GetBuilder<AllCatController>(
+            builder: (controller) => AlignedGridView.count(
+              padding: const EdgeInsets.symmetric(
+                vertical: 5,
+                horizontal: 10,
+              ).r,
+              scrollDirection: Axis.horizontal,
+              crossAxisCount: 2,
+              itemCount: controller
+                      .allCategoryByTypesResponseModel.value?.data.length ??
+                  0,
+              mainAxisSpacing: 20,
+              itemBuilder: (context, index) {
+                final firstList = controller
+                    .allCategoryByTypesResponseModel.value?.data[index];
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(
+                      ServiceDetailsPage(categoryModel: firstList),
+                    );
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      5.verticalSpace,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 30,
+                        ).r,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(5).r,
+                        ),
+                        child: CustomImageView(
+                          alignment: Alignment.center,
+                          //margin: const EdgeInsets.only(left: 10),
+                          height: 40.h,
+                          imagePath: firstList?.thumbnail,
+                        ),
+                      ),
+                      2.verticalSpace,
+                      SizedBox(
+                        width: 80.w,
+                        child: Text(
+                          firstList?.servicename ?? "",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                          overflow: TextOverflow.visible,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
-        20.verticalSpace,
-        homeServicesListView(),
-        labelWidgetTwo("Talk to Our Experts"),
-        3.verticalSpace,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-          child: Text(
-            "You've never seen it before!",
-            style: CustomTextStyles.bodyMediumGrey13,
+        Container(
+          margin: const EdgeInsets.only(bottom: 15).r,
+          height: 10.h,
+          color: const Color(0xfff5f5f5),
+        ),
+        SizedBox(
+          height: 150.h,
+          child: PageView.builder(
+            onPageChanged: (val) {
+              slidePage.value = true;
+            },
+            controller: pageController,
+            itemCount: homePageBannerList.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10).r,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10).r,
+                child: CustomImageView(
+                  width: double.infinity,
+                  imagePath: homePageBannerList[index],
+                  placeHolder: "Please wait",
+                ),
+              ),
+            ),
           ),
         ),
+        //homeServicesListView(),
+        Container(
+          margin: const EdgeInsets.only(top: 15, bottom: 15).r,
+          height: 10.h,
+          color: const Color(0xfff5f5f5),
+        ),
+        labelWidgetOne("Talk to Our Experts"),
         10.verticalSpace,
         newCategoryListView(),
       ],
@@ -162,23 +254,9 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 3,
-                    ).r,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20).r,
-                      color: Colors.red,
-                    ),
-                    child: Text(
-                      "-20%",
-                      style: CustomTextStyles.bodySmallOnPrimary,
-                    ),
-                  ),
                   5.verticalSpace,
                   CustomImageView(
-                    margin: const EdgeInsets.only(left: 10),
+                    margin: const EdgeInsets.only(left: 10).r,
                     height: 70.h,
                     imagePath: firstList?.thumbnail,
                   ),
@@ -243,17 +321,17 @@ class _HomePageState extends State<HomePage> {
         RatingBar(
           initialRating: double.parse(rating.toString()),
           allowHalfRating: true,
-          itemCount: 5,
+          itemCount: 1,
           glowColor: Colors.orangeAccent,
           itemSize: 12,
           ratingWidget: RatingWidget(
-            full: const Icon(
+            full: Icon(
               Icons.star_sharp,
-              color: Colors.orangeAccent,
+              color: Colors.black.withOpacity(0.5),
             ),
-            half: const Icon(
+            half: Icon(
               Icons.star_half_sharp,
-              color: Colors.yellow,
+              color: Colors.black.withOpacity(0.5),
             ),
             empty: const Icon(
               Icons.star_border_sharp,
@@ -261,7 +339,12 @@ class _HomePageState extends State<HomePage> {
           ),
           onRatingUpdate: (double value) {},
         ),
-        3.horizontalSpace,
+        1.horizontalSpace,
+        Text(
+          "${double.parse(rating.toString())}",
+          style: CustomTextStyles.bodySmallGrey11,
+        ),
+        2.horizontalSpace,
         Text(
           "(10)",
           style: CustomTextStyles.bodySmallGrey11,
@@ -272,13 +355,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget newCategoryListView() {
     return GetBuilder<AllCatController>(
-      builder: (controller) => Container(
-        height: 230.h,
+      builder: (controller) => SizedBox(
+        height: 160.h,
         //  color: Colors.red,
         child: ListView.separated(
           itemCount: controller.secondPriorityList?.length ?? 0,
           padding: const EdgeInsets.symmetric(
-            horizontal: 5,
+            horizontal: 15,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
@@ -290,59 +373,28 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 3,
+                  5.verticalSpace,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(8),
                     ).r,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20).r,
-                      color: Colors.black,
-                    ),
-                    child: Text(
-                      "New",
-                      style: CustomTextStyles.bodySmallOnPrimary,
+                    child: CustomImageView(
+                      height: 90.r,
+                      width: 90.r,
+                      imagePath: secondList?.thumbnail,
                     ),
                   ),
                   5.verticalSpace,
-                  CustomImageView(
-                    height: 70.h,
-                    imagePath: secondList?.thumbnail,
-                  ),
-                  5.verticalSpace,
-                  GestureDetector(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 60,
-                        top: 0,
-                      ).r,
-                      child: Icon(
-                        color:
-                            secondList?.isFavourite == true ? Colors.red : null,
-                        secondList?.isFavourite == true
-                            ? Icons.favorite
-                            : Icons.favorite_border_outlined,
-                      ),
-                    ),
-                  ),
-                  3.verticalSpace,
-                  ratingBarRow(
-                    secondList?.rating ?? 1,
-                  ),
-                  3.verticalSpace,
-                  Text(
-                    secondList?.catg ?? "",
-                    style: CustomTextStyles.bodySmallff9b9b9b,
-                  ),
-                  3.verticalSpace,
                   SizedBox(
                     width: 120.w,
                     child: Text(
                       secondList?.servicename ?? "",
-                      style: CustomTextStyles.bodyLargeBlack900_1,
-                      overflow: TextOverflow.ellipsis,
+                      style: CustomTextStyles.bodySmallErrorContainer,
+                      overflow: TextOverflow.visible,
                     ),
+                  ),
+                  ratingBarRow(
+                    secondList?.rating ?? 1,
                   ),
                   3.verticalSpace,
                   RichText(
@@ -353,7 +405,7 @@ class _HomePageState extends State<HomePage> {
                           style: CustomTextStyles.bodySmallRed700,
                         ),
                       ],
-                      text: "Rs ${secondList?.price}",
+                      text: "₹${secondList?.price}",
                       style: CustomTextStyles.bodyMediumGrey13,
                     ),
                   )
@@ -369,92 +421,26 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /*Widget mainWidgetOne() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomImageView(
-          imagePath: Assets.imagesOne,
-          height: 0.52.sh,
-          fit: BoxFit.fill,
-          placeHolder: "Please wait",
-        ),
-        chatBotButtonRow(),
-        labelWidget(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5).r,
-          child: Text(
-            "You've never seen it before!",
-            style: CustomTextStyles.bodyMediumGrey13,
-          ),
-        ),
-        20.verticalSpace,
-        categoryListviewWidget()
-      ],
-    );
-  }*/
-
-  /*Widget categoryListviewWidget() {
-    return GetBuilder<AllCatController>(
-      builder: (controller) => SizedBox(
-        height: 110.h,
-        child: controller.loading.isTrue
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.separated(
-                itemCount: controller.mainCatFirstPriority?.length ?? 0,
-                padding: const EdgeInsets.symmetric(horizontal: 5).r,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  final mainFirst = controller.mainCatFirstPriority?[index];
-                  return Column(
-                    children: [
-                      CustomImageView(
-                        height: 80.h,
-                        imagePath: mainFirst?.thumbnail,
-                      ),
-                      5.verticalSpace,
-                      Text(mainFirst?.catg ?? "",
-                          style: CustomTextStyles.bodyLargeBlack900_1),
-                    ],
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return 20.horizontalSpace;
-                },
-              ),
-      ),
-    );
-  }*/
-
-/*
-  Widget labelWidget() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 5).r,
-      child: Text(
-        "Home Services",
-        style: CustomTextStyles.bodyLargeBlack90018,
-      ),
-    );
-  }
-*/
-
   Widget labelWidgetTwo(String? labelText) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 15,
       ).r,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            labelText ?? "Home Services",
-            style: CustomTextStyles.bodyLargeBlack90018,
-          ),
-          Text(
-            "View All",
-            style: CustomTextStyles.bodyMedium_1,
-          ),
-        ],
+      child: Text(
+        labelText ?? "Home Services",
+        style: CustomTextStyles.bodyMedium_1,
+      ),
+    );
+  }
+
+  Widget labelWidgetOne(String? labelText) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+      ).r,
+      child: Text(
+        labelText ?? "Talk to our Experts",
+        style: CustomTextStyles.bodyMediumBlack900,
       ),
     );
   }
@@ -504,4 +490,31 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  void slideBanner() {
+    pageController.addListener(() {
+      if (slidePage.value == true) {
+        Future.delayed(
+          const Duration(seconds: 5),
+          () => pageController.nextPage(
+            duration: const Duration(
+              seconds: 2,
+            ),
+            curve: Curves.ease,
+          ),
+        );
+        slidePage.value = false;
+      }
+    });
+  }
 }
+
+List homePageBannerList = [
+  Assets.imagesOne,
+  Assets.imagesTwo,
+  Assets.imagesThree,
+  Assets.imagesFour,
+  Assets.imagesTwo,
+  Assets.imagesOne,
+  Assets.imagesThree,
+];
