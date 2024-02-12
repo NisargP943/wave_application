@@ -7,16 +7,13 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
-
+import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/otp_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_phone_number.dart';
-
-import '../../main.dart';
-import '../../model/customer_data.dart';
 
 // ignore_for_file: must_be_immutable
 class LoginOneScreen extends StatefulWidget {
@@ -70,8 +67,8 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   bottom: 0.02.sh,
                   right: 0.01.sh,
                   child: CustomImageView(
-                    imagePath: Assets.imagesLogo2,
-                    scale: 13,
+                    imagePath: Assets.imagesLogo,
+                    scale: 11,
                   ),
                 ),
                 Positioned(
@@ -106,9 +103,9 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             ),
             20.verticalSpace,
             termsChecker(),
-            25.verticalSpace,
+            19.verticalSpace,
             _buildLoginSignup(),
-            15.verticalSpace,
+            18.verticalSpace,
             _buildWebUrl(context)
           ],
         ),
@@ -118,7 +115,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   Widget termsChecker() {
     return Padding(
-      padding: const EdgeInsets.only(left: 15, right: 50).r,
+      padding: const EdgeInsets.only(left: 38, right: 50).r,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -206,22 +203,12 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 20),
                     decoration: AppDecoration.outlineBlack9004
                         .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
-                text: "By signing up I agree to the", style: theme.textTheme.titleMedium),
-            TextSpan(text: "Privacy Policy.", style: theme.textTheme.titleMedium)
-        text: "Login  /   Signup",
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  30.horizontalSpace,
-                  CustomImageView(
-                    imagePath: Assets.imagesGoogleIcon,
-                    height: 45,
-                    width: 45,
-                    alignment: Alignment.center,
-                  40.horizontalSpace,
-                  CustomImageView(
-                    imagePath: Assets.imagesFbIcon,
-                    height: 30,
-                    width: 30,
-                    alignment: Alignment.center,
+                    child: CustomImageView(
+                      imagePath: Assets.imagesFacebook,
+                      height: 24,
+                      width: 24,
+                      alignment: Alignment.center,
+                    ),
                   ),
                   const Spacer(),
                   CustomImageView(
@@ -229,8 +216,8 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                     onTap: () {
                       _launchURL("https://www.wavetechservices.in");
                     },
-                    height: 80.r,
-                    width: 90.r,
+                    height: 100.r,
+                    width: 130.r,
                     alignment: Alignment.topRight,
                   ),
                 ],
@@ -309,7 +296,6 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             ),
           ),
         );
-        customerDB?.put("isLogin", CustomerData(isLogin: true));
       })
     ];
   }
