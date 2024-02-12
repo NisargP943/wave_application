@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
@@ -97,17 +98,19 @@ class _HomePageState extends State<HomePage> {
 
   Widget homeServicesListView() {
     return GetBuilder<AllCatController>(
-      builder: (controller) => Container(
+      builder: (controller) => SizedBox(
+        ///   Top Service List
         height: 210.h,
-        //  color: Colors.red,
+
         child: ListView.separated(
-          itemCount: controller.firstPriorityList?.length ?? 0,
+          itemCount: controller.allCategoryByTypesResponseModel.value?.data.length ?? 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 5,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            final firstList = controller.firstPriorityList?[index];
+            final firstList =
+                controller.allCategoryByTypesResponseModel.value?.data[index];
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -137,6 +140,7 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 60, top: 0).r,
                     child: Icon(
+                      size: 25.r,
                       color: firstList?.isFavourite == true ? Colors.red : null,
                       firstList?.isFavourite == true
                           ? Icons.favorite
@@ -145,21 +149,24 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 3.verticalSpace,
-                ratingBarRow(),
-                3.verticalSpace,
-                Text(
-                  firstList?.servicename ?? "",
-                  style: CustomTextStyles.bodySmallff9b9b9b,
-                ),
+                ratingBarRow(firstList, index),
                 3.verticalSpace,
                 SizedBox(
                   width: 110.w,
                   child: Text(
-                    firstList?.catg ?? "",
+                    firstList?.servicename ?? "",
                     style: CustomTextStyles.bodyLargeBlack900_1,
                   ),
                 ),
                 3.verticalSpace,
+                /* SizedBox(
+                  width: 110.w,
+                  child: Text(
+                    firstList?.stype ?? "",
+                    style: CustomTextStyles.bodyLargeBlack900_1,
+                  ),
+                ),
+                3.verticalSpace,*/
                 RichText(
                   text: TextSpan(
                     children: [
@@ -168,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                         style: CustomTextStyles.bodySmallRed700,
                       ),
                     ],
-                    text: "Rs 350",
+                    text: "Rs ${firstList?.price}",
                     style: CustomTextStyles.bodyMediumGrey13,
                   ),
                 )
@@ -176,18 +183,18 @@ class _HomePageState extends State<HomePage> {
             );
           },
           separatorBuilder: (BuildContext context, int index) {
-            return 20.horizontalSpace;
+            return 15.horizontalSpace;
           },
         ),
       ),
     );
   }
 
-  Row ratingBarRow() {
+  Row ratingBarRow(Datum? data, int index) {
     return Row(
       children: [
         RatingBar(
-          initialRating: 5,
+          initialRating: double.tryParse(data!.rating.toString()) ?? 1.0,
           allowHalfRating: true,
           itemCount: 5,
           glowColor: Colors.orangeAccent,
@@ -218,9 +225,10 @@ class _HomePageState extends State<HomePage> {
 
   Widget newCategoryListView() {
     return GetBuilder<AllCatController>(
-      builder: (controller) => Container(
+      builder: (controller) => SizedBox(
+        ///   Bottom Service List
         height: 230.h,
-        //  color: Colors.red,
+
         child: ListView.separated(
           itemCount: controller.secondPriorityList?.length ?? 0,
           padding: const EdgeInsets.symmetric(
@@ -260,6 +268,7 @@ class _HomePageState extends State<HomePage> {
                       top: 0,
                     ).r,
                     child: Icon(
+                      size: 25.r,
                       color: secondList?.isFavourite == true ? Colors.red : null,
                       secondList?.isFavourite == true
                           ? Icons.favorite
@@ -268,13 +277,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 3.verticalSpace,
-                ratingBarRow(),
+                ratingBarRow(secondList, index),
                 3.verticalSpace,
-                Text(
+                /*Text(
                   secondList?.servicename ?? "",
                   style: CustomTextStyles.bodySmallff9b9b9b,
                 ),
-                3.verticalSpace,
+                3.verticalSpace,*/
                 SizedBox(
                   width: 110.w,
                   child: Text(
@@ -291,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                         style: CustomTextStyles.bodySmallRed700,
                       ),
                     ],
-                    text: "Rs 350",
+                    text: "Rs ${secondList?.price}",
                     style: CustomTextStyles.bodyMediumGrey13,
                   ),
                 )
@@ -299,7 +308,7 @@ class _HomePageState extends State<HomePage> {
             );
           },
           separatorBuilder: (BuildContext context, int index) {
-            return 20.horizontalSpace;
+            return 15.horizontalSpace;
           },
         ),
       ),
