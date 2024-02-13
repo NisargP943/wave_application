@@ -15,17 +15,20 @@ class TextFieldDesignPage extends StatefulWidget {
       this.onChanged,
       this.accepted,
       this.prefixWidget,
-      this.edgeInsets})
+      this.edgeInsets,
+      this.readOnly,
+      this.onTap})
       : super(key: key);
   final TextEditingController controller;
   final String labelText;
   final TextInputType? textInputType;
   final TextInputAction? textInputAction;
-  final bool? visiblePassword;
+  final bool? visiblePassword, readOnly;
   final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onChanged;
   final ValueNotifier<bool>? accepted;
   final Widget? prefixWidget;
+  final void Function()? onTap;
   final EdgeInsets? edgeInsets;
 
   @override
@@ -81,8 +84,10 @@ class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
               builder: (context, value, child) => TextField(
                 onChanged: widget.onChanged,
                 controller: widget.controller,
+                onTap: widget.onTap,
                 obscureText: widget.visiblePassword ?? false,
                 focusNode: _focusNode,
+                readOnly: widget.readOnly ?? false,
                 style: TextStyle(color: Colors.black, fontSize: 16.spMin),
                 keyboardType: widget.textInputType,
                 textInputAction: widget.textInputAction,

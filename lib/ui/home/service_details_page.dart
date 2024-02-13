@@ -9,14 +9,16 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
+import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
-  const ServiceDetailsPage({super.key, this.categoryModel});
+  const ServiceDetailsPage({super.key, this.categoryModel, this.consultant});
 
-  final Datum? categoryModel;
+  final ServicesModel? categoryModel;
+  final Consultant? consultant;
 
   @override
   State<ServiceDetailsPage> createState() => _ServiceDetailsPageState();
@@ -115,6 +117,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                       dateTimePicker(),
                       20.verticalSpace,
                       serviceDetails(),
+                      3.verticalSpace,
                       serviceLabel(),
                       5.verticalSpace,
                       ratingBarRow(),
@@ -149,7 +152,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Text(
-        widget.categoryModel?.servicename ?? "",
+        widget.categoryModel?.catg ?? "",
         style: CustomTextStyles.bodySmallff9b9b9b,
       ),
     );
@@ -161,13 +164,15 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            widget.categoryModel?.stype.toString() ?? "",
-            style: CustomTextStyles.bodyLargeBlack90018,
+          Expanded(
+            child: Text(
+              widget.categoryModel?.servicename.toString() ?? "",
+              style: CustomTextStyles.displaySmallBlack900,
+            ),
           ),
           Text(
             "Rs ${widget.categoryModel?.srate}",
-            style: CustomTextStyles.bodyLargeBlack90018,
+            style: CustomTextStyles.displaySmallBlack900,
           ),
         ],
       ),
@@ -323,8 +328,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         color: const Color.fromRGBO(60, 60, 67, 0.80),
         fontWeight: FontWeight.w500,
       ),*/
+
       firstDayOfWeek: 0,
       controlsHeight: 50,
+      selectedDayHighlightColor: const Color(0xffA41C8E),
       /* customModePickerIcon: Image.asset(
         Assets.images.viewAllArrow.path,
         height: 18.r,
@@ -359,14 +366,29 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           .isNegative,
     );
 
-    return CalendarDatePicker2(
-      config: config,
-      value: _singleDatePickerValueWithDefaultValue,
-      onValueChanged: (dates) {
-        dateController.text =
-            DateFormat("yyyy-MM-dd").format(dates.last ?? DateTime.now());
-        setState(() => _singleDatePickerValueWithDefaultValue = dates);
-      },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CalendarDatePicker2(
+          config: config,
+          value: _singleDatePickerValueWithDefaultValue,
+          onValueChanged: (dates) {
+            dateController.text =
+                DateFormat("yyyy-MM-dd").format(dates.last ?? DateTime.now());
+            setState(() => _singleDatePickerValueWithDefaultValue = dates);
+          },
+        ),
+        SizedBox(
+          width: 100.w,
+          child: AppButtonWidget(
+            text: "Ok",
+            onTap: () {
+              Get.back();
+            },
+          ),
+        ),
+        10.verticalSpace,
+      ],
     );
   }
 
@@ -431,6 +453,16 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ),
                 ),
               ),
+              SizedBox(
+                width: 100.w,
+                child: AppButtonWidget(
+                  text: "Ok",
+                  onTap: () {
+                    Get.back();
+                  },
+                ),
+              ),
+              10.verticalSpace,
             ],
           ),
         );

@@ -11,7 +11,7 @@ String allCategoryResponseModelToJson(AllCategoryResponseModel data) =>
     json.encode(data.toJson());
 
 class AllCategoryResponseModel {
-  List<Datum>? data;
+  List<ServicesModel>? data;
   int? success;
 
   AllCategoryResponseModel({
@@ -23,7 +23,8 @@ class AllCategoryResponseModel {
       AllCategoryResponseModel(
         data: json["data"] == null
             ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+            : List<ServicesModel>.from(
+                json["data"]!.map((x) => ServicesModel.fromJson(x))),
         success: json["success"],
       );
 
@@ -35,7 +36,7 @@ class AllCategoryResponseModel {
       };
 }
 
-class Datum {
+class ServicesModel {
   String? id;
   String? servicename;
   String? sdesc;
@@ -46,8 +47,9 @@ class Datum {
   int? rating;
   int? price;
   String? thumbnail;
+  bool? imageLoaded;
 
-  Datum({
+  ServicesModel({
     this.id,
     this.servicename,
     this.sdesc,
@@ -58,9 +60,10 @@ class Datum {
     this.rating,
     this.price,
     this.thumbnail,
+    this.imageLoaded,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory ServicesModel.fromJson(Map<String, dynamic> json) => ServicesModel(
         id: json["id"],
         servicename: json["servicename"],
         sdesc: json["sdesc"],

@@ -104,31 +104,31 @@ class TextThemes {
         bodyLarge: TextStyle(
           color: appTheme.gray900,
           fontSize: 16,
-          fontFamily: 'Acme',
+          fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         bodyMedium: TextStyle(
           color: appTheme.gray900,
           fontSize: 14,
-          fontFamily: 'Acme',
+          fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
           color: appTheme.gray500,
           fontSize: 10,
-          fontFamily: 'Acme',
+          fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         displayMedium: TextStyle(
           color: colorScheme.onPrimary.withOpacity(1),
           fontSize: 48,
-          fontFamily: 'Acme',
+          fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         displaySmall: TextStyle(
           color: appTheme.gray900,
           fontSize: 34,
-          fontFamily: 'Acme',
+          fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         headlineLarge: TextStyle(

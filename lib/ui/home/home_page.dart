@@ -8,6 +8,7 @@ import 'package:wave_app/controller/all_category_controller/all_category_control
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
+import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
@@ -15,6 +16,7 @@ import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
 
 ValueNotifier<bool> widgetNotifier = ValueNotifier(false);
+ValueNotifier<List<ServicesModel>> serviceListNotifier = ValueNotifier([]);
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.customerAuthResponseModel});
@@ -31,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   ValueNotifier<bool> slidePage = ValueNotifier(false);
   var categoryController = Get.put(AllCatController());
   var authController = Get.put(AuthController());
+  List<Worker> workers = [];
   String? customerData;
 
   @override
@@ -44,7 +47,6 @@ class _HomePageState extends State<HomePage> {
     );
     customerData = locationDB?.get("city").toString();
     print("City $customerData");
-    //slideBanner();
   }
 
   @override
@@ -56,9 +58,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.transparent, //const Color(0xfff5f5f5),
+        appBar: pageAppBar(),
+        backgroundColor: Colors.white, //const Color(0xfff5f5f5),
         body: GetBuilder<AllCatController>(
-          builder: (controller) => categoryController.loading.isTrue
+          builder: (controller) => controller.loading.isTrue
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
@@ -74,7 +77,6 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        15.verticalSpace,
         labelWidgetTwo("Home"),
         5.verticalSpace,
         Padding(
@@ -108,8 +110,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       PopupMenuItem(
-                        child: Text("Settings",
-                            style: CustomTextStyles.bodySmallErrorContainer),
+                        child: Text(
+                          "Settings",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                        ),
                         onTap: () {},
                       ),
                     ];
@@ -120,6 +124,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         TextFieldDesignPage(
+          readOnly: true,
+          onTap: () {},
           edgeInsets: const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
           textInputAction: TextInputAction.done,
           textInputType: TextInputType.text,
@@ -134,20 +140,20 @@ class _HomePageState extends State<HomePage> {
         Container(
           height: 0.3.sh,
           decoration: const BoxDecoration(),
-          child: GetBuilder<AllCatController>(
-            builder: (controller) => AlignedGridView.count(
+          child: ValueListenableBuilder(
+            valueListenable: serviceListNotifier,
+            builder: (context, value, child) => AlignedGridView.count(
               padding: const EdgeInsets.symmetric(
                 vertical: 5,
                 horizontal: 10,
               ).r,
               scrollDirection: Axis.horizontal,
               crossAxisCount: 2,
-              itemCount:
-                  controller.allServicesResponse.value?.data?.length ?? 0,
+              itemCount: value.length,
               mainAxisSpacing: 20,
               itemBuilder: (context, index) {
-                final firstList =
-                    controller.allServicesResponse.value?.data?[index];
+                final firstList = value[index];
+
                 return GestureDetector(
                   onTap: () {
                     Get.to(
@@ -180,7 +186,8 @@ class _HomePageState extends State<HomePage> {
                         child: Text(
                           firstList?.servicename ?? "",
                           style: CustomTextStyles.bodySmallErrorContainer,
-                          overflow: TextOverflow.visible,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -226,6 +233,15 @@ class _HomePageState extends State<HomePage> {
         labelWidgetOne("Talk to Our Experts"),
         10.verticalSpace,
         newCategoryListView(),
+        10.verticalSpace,
+        Container(
+          margin: const EdgeInsets.only(top: 15, bottom: 15).r,
+          height: 10.h,
+          color: const Color(0xfff5f5f5),
+        ),
+        labelWidgetOne("Find other services"),
+        10.verticalSpace,
+        amcCategoryListView(),
       ],
     );
   }
@@ -274,14 +290,82 @@ class _HomePageState extends State<HomePage> {
         height: 160.h,
         //  color: Colors.red,
         child: ListView.separated(
-          itemCount: controller.allServicesResponse.value?.data?.length ?? 0,
+          itemCount: controller.allConsultantResponse.value?.data.length ?? 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             final secondList =
-                controller.allServicesResponse.value?.data?[index];
+                controller.allConsultantResponse.value?.data[index];
+            return GestureDetector(
+              onTap: () {
+                Get.to(ServiceDetailsPage(consultant: secondList));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  5.verticalSpace,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(8),
+                    ).r,
+                    child: CustomImageView(
+                      height: 90.r,
+                      width: 90.r,
+                      imagePath: secondList?.thumbnail,
+                    ),
+                  ),
+                  5.verticalSpace,
+                  SizedBox(
+                    width: 120.w,
+                    child: Text(
+                      secondList?.servicename ?? "",
+                      style: CustomTextStyles.bodySmallErrorContainer,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                  ratingBarRow(
+                    secondList?.rating ?? 1,
+                  ),
+                  3.verticalSpace,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "",
+                          style: CustomTextStyles.bodySmallRed700,
+                        ),
+                      ],
+                      text: "₹${secondList?.price}",
+                      style: CustomTextStyles.bodyMediumGrey13,
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return 20.horizontalSpace;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget amcCategoryListView() {
+    return GetBuilder<AllCatController>(
+      builder: (controller) => SizedBox(
+        height: 140.h,
+        //  color: Colors.red,
+        child: ListView.separated(
+          itemCount: controller.allAmcProducts.value?.data?.length ?? 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final secondList = controller.allAmcProducts.value?.data?[index];
             return GestureDetector(
               onTap: () {
                 Get.to(ServiceDetailsPage(categoryModel: secondList));
@@ -295,8 +379,8 @@ class _HomePageState extends State<HomePage> {
                       Radius.circular(8),
                     ).r,
                     child: CustomImageView(
-                      height: 90.r,
-                      width: 90.r,
+                      height: 70.r,
+                      width: 70.r,
                       imagePath: secondList?.thumbnail,
                     ),
                   ),
@@ -422,6 +506,21 @@ class _HomePageState extends State<HomePage> {
         slidePage.value = false;
       }
     });
+  }
+
+  AppBar pageAppBar() {
+    return AppBar(
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      backgroundColor: Colors.white,
+      elevation: 0,
+      shadowColor: Colors.white,
+      leading: const Icon(
+        Icons.menu_rounded,
+        color: Colors.purple,
+      ),
+    );
   }
 }
 

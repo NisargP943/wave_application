@@ -171,6 +171,7 @@ class CustomTextStyles {
   // Display text style
   static get displaySmallBlack900 => theme.textTheme.displaySmall!.copyWith(
         color: appTheme.black900,
+        fontSize: 20.spMin,
       );
 
   static get displaySmallOnPrimary => theme.textTheme.displaySmall!.copyWith(
@@ -227,7 +228,6 @@ class CustomTextStyles {
 
   static get titleMediumff407bff => theme.textTheme.titleMedium!.copyWith(
         color: Colors.black,
-        fontFamily: "Acme",
         fontWeight: FontWeight.w300,
         fontSize: 14.spMin,
       );
