@@ -139,7 +139,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Text(
-        "Blood Test at Home in 60 Mins - Get Tested at Home in 60 Minsconcealed elastication. Elasticated seam under the bust and short puff sleeves with a small frill trim.",
+        widget.categoryModel?.sdesc ?? "",
         style: CustomTextStyles.titleMediumff407bff,
       ),
     );
@@ -162,11 +162,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            widget.categoryModel?.stype ?? "",
+            widget.categoryModel?.stype.toString() ?? "",
             style: CustomTextStyles.bodyLargeBlack90018,
           ),
           Text(
-            "Rs ${widget.categoryModel?.price}",
+            "Rs ${widget.categoryModel?.srate}",
             style: CustomTextStyles.bodyLargeBlack90018,
           ),
         ],
