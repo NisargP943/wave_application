@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wave_app/generated/assets.dart';
 
 class CustomImageView extends StatelessWidget {
   ///[imagePath] is required parameter for showing image
@@ -126,10 +127,10 @@ class CustomImageView extends StatelessWidget {
               ),
             ),
             errorWidget: (context, url, error) => Image.asset(
-              placeHolder,
+              Assets.imagesLogo2,
               height: height,
               width: width,
-              fit: fit ?? BoxFit.cover,
+              //fit: fit ?? BoxFit.cover,
             ),
           );
         case ImageType.png:
