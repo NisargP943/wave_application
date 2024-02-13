@@ -5,7 +5,7 @@ class CategoryService {
   Future getAllCategory() async {
     try {
       final response = await http.get(Uri.parse(
-          "http://kalasampurna.com/wavetech/app/get_all_maincatg.php"));
+          "http://kalasampurna.com/wavetech/app/get_all_mainservices.php"));
       debugPrint(response.body);
       return response;
     } catch (e) {

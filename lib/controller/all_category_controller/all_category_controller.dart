@@ -10,8 +10,7 @@ class AllCatController extends GetxController {
     data: [],
     success: 0,
   ).obs;
-  Rx<AllCategoryResponseModel?> allCategoryByTypesResponseModel =
-      AllCategoryResponseModel(
+  Rx<AllCategoryResponseModel?> allServicesResponse = AllCategoryResponseModel(
     data: [],
     success: 0,
   ).obs;
@@ -20,7 +19,6 @@ class AllCatController extends GetxController {
     data: [],
   ).obs;
   var loading = false.obs;
-  RxList<Datum>? firstPriorityList, secondPriorityList, mainCatFirstPriority;
   CategoryService categoryService = CategoryService();
 
   Future<void> getAllCategory() async {
@@ -31,12 +29,6 @@ class AllCatController extends GetxController {
         allCategoryResponseModel.value?.data = allCategoryResponseModelFromJson(
           authResp.body,
         ).data;
-        mainCatFirstPriority = allCategoryResponseModel.value?.data
-            .where(
-                (element) => element.priority.name == Priority.PRIORITY_1.name)
-            .toList()
-            .obs;
-        debugPrint("Main Cat Priority ::::: $mainCatFirstPriority");
         loading.value = false;
         update();
         debugPrint("Response :::: $authResp");
@@ -53,21 +45,9 @@ class AllCatController extends GetxController {
     try {
       final authResp = await categoryService.getAllCategoryByType();
       if (authResp.statusCode == 200) {
-        allCategoryByTypesResponseModel.value?.data =
-            allCategoryResponseModelFromJson(
+        allServicesResponse.value?.data = allCategoryResponseModelFromJson(
           authResp.body,
         ).data;
-        firstPriorityList = allCategoryByTypesResponseModel.value?.data
-            .where(
-                (element) => element.priority.name == Priority.PRIORITY_1.name)
-            .toList()
-            .obs;
-        secondPriorityList = allCategoryByTypesResponseModel.value?.data
-            .where(
-                (element) => element.priority.name == Priority.PRIORITY_2.name)
-            .toList()
-            .obs;
-        debugPrint("Response List :::: $firstPriorityList");
 
         loading.value = false;
         update();

@@ -142,13 +142,12 @@ class _HomePageState extends State<HomePage> {
               ).r,
               scrollDirection: Axis.horizontal,
               crossAxisCount: 2,
-              itemCount: controller
-                      .allCategoryByTypesResponseModel.value?.data.length ??
-                  0,
+              itemCount:
+                  controller.allServicesResponse.value?.data?.length ?? 0,
               mainAxisSpacing: 20,
               itemBuilder: (context, index) {
-                final firstList = controller
-                    .allCategoryByTypesResponseModel.value?.data[index];
+                final firstList =
+                    controller.allServicesResponse.value?.data?[index];
                 return GestureDetector(
                   onTap: () {
                     Get.to(
@@ -231,90 +230,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget homeServicesListView() {
-    return GetBuilder<AllCatController>(
-      builder: (controller) => Container(
-        height: 218.h,
-        //  color: Colors.red,
-        child: ListView.separated(
-          itemCount:
-              controller.allCategoryByTypesResponseModel.value?.data.length ??
-                  0,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 5,
-          ).r,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            final firstList =
-                controller.allCategoryByTypesResponseModel.value?.data[index];
-            return GestureDetector(
-              onTap: () {
-                Get.to(ServiceDetailsPage(categoryModel: firstList));
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  5.verticalSpace,
-                  CustomImageView(
-                    margin: const EdgeInsets.only(left: 10).r,
-                    height: 70.h,
-                    imagePath: firstList?.thumbnail,
-                  ),
-                  0.verticalSpace,
-                  GestureDetector(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 60, top: 0).r,
-                      child: Icon(
-                        color:
-                            firstList?.isFavourite == true ? Colors.red : null,
-                        firstList?.isFavourite == true
-                            ? Icons.favorite
-                            : Icons.favorite_border_outlined,
-                      ),
-                    ),
-                  ),
-                  3.verticalSpace,
-                  ratingBarRow(firstList?.rating ?? 1),
-                  3.verticalSpace,
-                  Text(
-                    firstList?.stype ?? "",
-                    style: CustomTextStyles.bodySmallff9b9b9b,
-                  ),
-                  3.verticalSpace,
-                  SizedBox(
-                    width: 120.w,
-                    child: Text(
-                      firstList?.servicename ?? "",
-                      style: CustomTextStyles.bodyLargeBlack900_1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  3.verticalSpace,
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "",
-                          style: CustomTextStyles.bodySmallRed700,
-                        ),
-                      ],
-                      text: "Rs ${firstList?.price}",
-                      style: CustomTextStyles.bodyMediumGrey13,
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return 20.horizontalSpace;
-          },
-        ),
-      ),
-    );
-  }
-
   Row ratingBarRow(int rating) {
     return Row(
       children: [
@@ -359,13 +274,14 @@ class _HomePageState extends State<HomePage> {
         height: 160.h,
         //  color: Colors.red,
         child: ListView.separated(
-          itemCount: controller.secondPriorityList?.length ?? 0,
+          itemCount: controller.allServicesResponse.value?.data?.length ?? 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
           ).r,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            final secondList = controller.secondPriorityList?[index];
+            final secondList =
+                controller.allServicesResponse.value?.data?[index];
             return GestureDetector(
               onTap: () {
                 Get.to(ServiceDetailsPage(categoryModel: secondList));
