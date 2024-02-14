@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
@@ -9,22 +11,22 @@ class AuthController extends GetxController {
   Rx<CustomerAuthResponseModel> customerAuthResponseModel =
       CustomerAuthResponseModel(data: [], otp: 0000).obs;
   AuthApiService authApiService = AuthApiService();
+  var errorMessage = "".obs;
 
   Future<void> otpApi(String mobileNumber) async {
     loading.value = true;
     try {
       final authResp = await authApiService.checkUserApi(mobileNumber);
       if (authResp.statusCode == 200) {
-        try {
-          customerAuthResponseModel.value =
-              customerAuthResponseModelFromJson(authResp.body);
-        } catch (e) {
-          debugPrint("error       ${e.toString()}");
-        }
+        customerAuthResponseModel.value =
+            customerAuthResponseModelFromJson(authResp.body);
       }
+    } on SocketException catch (e) {
+      debugPrint(e.toString());
+      errorMessage.value = "Connection lost";
     } catch (e) {
       debugPrint(e.toString());
-      loading.value = true;
+      errorMessage.value = "Something is wrong";
     }
   }
 
@@ -54,9 +56,11 @@ class AuthController extends GetxController {
         loading.value = false;
         Get.off(const MainPage());
       }
+    } on SocketException catch (e) {
+      errorMessage.value = "Connection lost";
     } catch (e) {
       debugPrint(e.toString());
-      loading.value = true;
+      errorMessage.value = "Something is wrong";
     }
   }
 }

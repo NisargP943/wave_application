@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
@@ -26,6 +28,7 @@ class AllCatController extends GetxController {
     data: [],
   ).obs;
   var loading = false.obs;
+  var errorMessage = "".obs;
   CategoryService categoryService = CategoryService();
 
   Future<void> getAllCategory() async {
@@ -43,10 +46,11 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: ${allServicesResponse.value?.data}");
       }
+    } on SocketException catch (e) {
+      errorMessage.value = "Connection lost";
     } catch (e) {
       debugPrint("error ${e.toString()}");
-      loading.value = true;
-      update();
+      errorMessage.value = "Something is wrong";
     }
   }
 
@@ -63,10 +67,11 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: $authResp");
       }
+    } on SocketException catch (e) {
+      errorMessage.value = "Connection lost";
     } catch (e) {
       debugPrint("error ${e.toString()}");
-      loading.value = true;
-      update();
+      errorMessage.value = "Something is wrong";
     }
   }
 
@@ -83,10 +88,11 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: $authResp");
       }
+    } on SocketException catch (e) {
+      errorMessage.value = e.message;
     } catch (e) {
       debugPrint("error ${e.toString()}");
-      loading.value = true;
-      update();
+      errorMessage.value = "Something is wrong";
     }
   }
 
@@ -102,18 +108,11 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: $authResp");
       }
+    } on SocketException catch (e) {
+      errorMessage.value = e.message;
     } catch (e) {
       debugPrint("error ${e.toString()}");
-      loading.value = true;
-      update();
+      errorMessage.value = "Something is wrong";
     }
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    getAllCategory();
-    getAllConsultants();
-    getAmcProducts();
   }
 }
