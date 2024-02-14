@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
+import 'package:wave_app/controller/internet_controller/internet_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';
@@ -35,7 +37,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   List<Worker>? workers;
 
   bool isChecked = false;
-
+  late InternetController internetController;
   var authController = Get.put(AuthController());
 
   @override
@@ -262,17 +264,31 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
           ),
         );
       } else {
-        authController.otpApi(phoneNumberController.text);
-        if (authController.loading.isTrue) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => const AlertDialog(
-              title: Center(
-                child: CircularProgressIndicator(),
+        internetController = Get.put(InternetController());
+        if (internetController.message.value == "Internet Connection Gained") {
+          authController.otpApi(phoneNumberController.text);
+          if (authController.loading.isTrue) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => const AlertDialog(
+                title: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
+        } else {
+          Flushbar(
+            backgroundColor: const Color(0xffA41C8E),
+            flushbarPosition: FlushbarPosition.BOTTOM,
+            messageText: Text(
+              internetController.message.value,
+              style: const TextStyle(
+                color: Colors.white,
               ),
             ),
-          );
+          ).show(context);
         }
       }
     }
@@ -305,7 +321,21 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
             }
           }
         },
-      )
+      ),
+
+      ///error worker
+      ever(authController.errorMessage, (callback) {
+        Flushbar(
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: Text(
+            callback,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }),
     ];
   }
 

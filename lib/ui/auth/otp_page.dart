@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,13 +56,23 @@ class _OtpPageState extends State<OtpPage> {
     );
     Future.delayed(const Duration(seconds: 1), () {
       if (widget.customerAuthResponseModel?.otp != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        Flushbar(
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: Text(
+            "Your OTP is ${widget.customerAuthResponseModel?.otp}\nPlease do not share to anyone",
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+        /* ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(seconds: 8),
             content: Text(
                 "Your OTP is ${widget.customerAuthResponseModel?.otp}\nPlease do not share to anyone"),
           ),
-        );
+        );*/
       }
     });
   }
