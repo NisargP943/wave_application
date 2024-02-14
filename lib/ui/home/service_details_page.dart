@@ -74,7 +74,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         ),
       ),
       title: Text(
-        widget.categoryModel?.catg ?? "Please wait",
+        widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
         style: CustomTextStyles.titleMediumGray700,
         overflow: TextOverflow.ellipsis,
       ),
@@ -95,7 +95,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : widget.categoryModel == null
+          : widget.categoryModel == null && widget.consultant == null
               ? Center(
                   child: Text(
                     "No Data Found",
@@ -108,7 +108,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                     children: [
                       Center(
                         child: CustomImageView(
-                          imagePath: widget.categoryModel?.thumbnail,
+                          imagePath: widget.categoryModel?.thumbnail ??
+                              widget.consultant?.thumbnail,
                           height: 0.4.sh,
                           fit: BoxFit.fill,
                         ),
@@ -128,7 +129,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 15).r,
                         child: AppButtonWidget(
                           onTap: () {},
-                          text: "ADD TO CART",
+                          text: "BOOK SERVICE",
                         ),
                       ),
                       20.verticalSpace,
@@ -142,7 +143,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Text(
-        widget.categoryModel?.sdesc ?? "",
+        widget.categoryModel?.sdesc ?? "${widget.consultant?.sdesc}",
         style: CustomTextStyles.titleMediumff407bff,
       ),
     );
@@ -152,7 +153,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Text(
-        widget.categoryModel?.catg ?? "",
+        widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
         style: CustomTextStyles.bodySmallff9b9b9b,
       ),
     );
@@ -166,12 +167,13 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         children: [
           Expanded(
             child: Text(
-              widget.categoryModel?.servicename.toString() ?? "",
+              widget.categoryModel?.servicename.toString() ??
+                  "${widget.consultant?.servicename}",
               style: CustomTextStyles.displaySmallBlack900,
             ),
           ),
           Text(
-            "Rs ${widget.categoryModel?.srate}",
+            "Rs ${widget.categoryModel?.srate ?? widget.consultant?.srate}",
             style: CustomTextStyles.displaySmallBlack900,
           ),
         ],
