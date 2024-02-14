@@ -1,19 +1,22 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
-import 'package:wave_app/controller/auth_controller/auth_controller.dart';
+import 'package:wave_app/controller/internet_controller/internet_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
+import 'package:wave_app/widgets/home_side_menu.dart';
 
 ValueNotifier<bool> widgetNotifier = ValueNotifier(false);
 ValueNotifier<List<ServicesModel>> serviceListNotifier = ValueNotifier([]);
@@ -32,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   PageController pageController = PageController();
   ValueNotifier<bool> slidePage = ValueNotifier(false);
   var categoryController = Get.put(AllCatController());
-  var authController = Get.put(AuthController());
+  var internetController = Get.put(InternetController());
   List<Worker> workers = [];
   String? customerData;
 
@@ -47,6 +50,7 @@ class _HomePageState extends State<HomePage> {
     );
     customerData = locationDB?.get("city").toString();
     print("City $customerData");
+    initWorkers();
   }
 
   @override
@@ -58,8 +62,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: const NavDrawer(),
+        drawerDragStartBehavior: DragStartBehavior.down,
         appBar: pageAppBar(),
-        backgroundColor: Colors.white, //const Color(0xfff5f5f5),
+        backgroundColor: Colors.white,
+        //const Color(0xfff5f5f5),
         body: GetBuilder<AllCatController>(
           builder: (controller) => controller.loading.isTrue
               ? const Center(
@@ -91,41 +98,24 @@ class _HomePageState extends State<HomePage> {
                   customerData ?? "Ahmedabad",
                   style: CustomTextStyles.bodySmallff9b9b9b13,
                 ),
-                PopupMenuButton(
-                  splashRadius: 5,
-                  icon: RotatedBox(
-                    quarterTurns: 3,
-                    child: CustomImageView(
-                      imagePath: Assets.imagesBackIcon,
-                      scale: 3.5,
-                    ),
+                3.horizontalSpace,
+                RotatedBox(
+                  quarterTurns: 3,
+                  child: CustomImageView(
+                    imagePath: Assets.imagesBackIcon,
+                    scale: 3.5,
                   ),
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem(
-                        onTap: () {},
-                        child: Text(
-                          "Contact Us",
-                          style: CustomTextStyles.bodySmallErrorContainer,
-                        ),
-                      ),
-                      PopupMenuItem(
-                        child: Text(
-                          "Settings",
-                          style: CustomTextStyles.bodySmallErrorContainer,
-                        ),
-                        onTap: () {},
-                      ),
-                    ];
-                  },
                 ),
               ],
             ),
           ),
         ),
+        10.verticalSpace,
         TextFieldDesignPage(
           readOnly: true,
-          onTap: () {},
+          onTap: () {
+            Get.to(const SearchPage());
+          },
           edgeInsets: const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
           textInputAction: TextInputAction.done,
           textInputType: TextInputType.text,
@@ -142,18 +132,16 @@ class _HomePageState extends State<HomePage> {
           decoration: const BoxDecoration(),
           child: ValueListenableBuilder(
             valueListenable: serviceListNotifier,
-            builder: (context, value, child) => AlignedGridView.count(
-              padding: const EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 10,
-              ).r,
+            builder: (context, value, child) => GridView.builder(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 5).r,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
               scrollDirection: Axis.horizontal,
-              crossAxisCount: 2,
               itemCount: value.length,
-              mainAxisSpacing: 20,
               itemBuilder: (context, index) {
                 final firstList = value[index];
-
                 return GestureDetector(
                   onTap: () {
                     Get.to(
@@ -165,26 +153,29 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       5.verticalSpace,
                       Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                        ).r,
                         padding: const EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 13,
                           horizontal: 30,
                         ).r,
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(5).r,
                         ),
                         child: CustomImageView(
                           alignment: Alignment.center,
                           //margin: const EdgeInsets.only(left: 10),
                           height: 40.h,
-                          imagePath: firstList?.thumbnail,
+                          imagePath: firstList.thumbnail,
                         ),
                       ),
                       2.verticalSpace,
                       SizedBox(
                         width: 80.w,
                         child: Text(
-                          firstList?.servicename ?? "",
+                          firstList.servicename ?? "",
                           style: CustomTextStyles.bodySmallErrorContainer,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
@@ -199,25 +190,56 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(bottom: 15).r,
+          margin: const EdgeInsets.only(bottom: 15, top: 15).r,
+          height: 10.h,
+          color: const Color(0xfff5f5f5),
+        ),
+        labelWidgetOne("Talk to Our Experts"),
+        10.verticalSpace,
+        newCategoryListView(),
+        Container(
+          margin: const EdgeInsets.only(top: 10, bottom: 15).r,
           height: 10.h,
           color: const Color(0xfff5f5f5),
         ),
         SizedBox(
-          height: 150.h,
-          child: PageView.builder(
-            onPageChanged: (val) {
-              slidePage.value = true;
-            },
+          height: 250.h,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
             controller: pageController,
-            itemCount: homePageBannerList.length,
+            itemCount: verticalBanner.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8).r,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10).r,
+                child: CustomImageView(
+                  width: 130.w,
+                  fit: BoxFit.fill,
+                  imagePath: verticalBanner[index],
+                  placeHolder: "Please wait",
+                ),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(bottom: 15, top: 15).r,
+          height: 10.h,
+          color: const Color(0xfff5f5f5),
+        ),
+        SizedBox(
+          height: 200.h,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            controller: pageController,
+            itemCount: horizontalBanners.length,
             itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10).r,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10).r,
                 child: CustomImageView(
-                  width: double.infinity,
-                  imagePath: homePageBannerList[index],
+                  fit: BoxFit.fill,
+                  imagePath: horizontalBanners[index],
                   placeHolder: "Please wait",
                 ),
               ),
@@ -225,15 +247,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         //homeServicesListView(),
-        Container(
-          margin: const EdgeInsets.only(top: 15, bottom: 15).r,
-          height: 10.h,
-          color: const Color(0xfff5f5f5),
-        ),
-        labelWidgetOne("Talk to Our Experts"),
-        10.verticalSpace,
-        newCategoryListView(),
-        10.verticalSpace,
         Container(
           margin: const EdgeInsets.only(top: 15, bottom: 15).r,
           height: 10.h,
@@ -516,20 +529,61 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       elevation: 0,
       shadowColor: Colors.white,
-      leading: const Icon(
-        Icons.menu_rounded,
-        color: Colors.purple,
+      iconTheme: const IconThemeData(
+        color: Color(0xffA41C8E),
       ),
     );
   }
+
+  void initWorkers() {
+    ///internet worker
+    ever(internetController.message, (callback) {
+      if (callback == "Internet Connection Gained") {
+        debugPrint("Proper internet connection");
+        categoryController.getAllCategory();
+        categoryController.getAllConsultants();
+        categoryController.getAmcProducts();
+      } else {
+        Flushbar(
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: Text(
+            callback,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    });
+    ever(categoryController.errorMessage, (callback) {
+      Flushbar(
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: Text(
+          callback,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ).show(context);
+    });
+  }
 }
 
-List homePageBannerList = [
-  Assets.imagesOne,
-  Assets.imagesTwo,
-  Assets.imagesThree,
-  Assets.imagesFour,
-  Assets.imagesTwo,
-  Assets.imagesOne,
-  Assets.imagesThree,
+List horizontalBanners = [
+  "http://wavetechservices.in/appimages/homebanners/h1.png",
+  "http://wavetechservices.in/appimages/homebanners/h2.png",
+  "http://wavetechservices.in/appimages/homebanners/h3.png",
+  "http://wavetechservices.in/appimages/homebanners/h4.png",
+  "http://wavetechservices.in/appimages/homebanners/h5.png",
+  "http://wavetechservices.in/appimages/homebanners/h6.png",
+];
+
+List verticalBanner = [
+  "http://wavetechservices.in/appimages/homebanners/v1.png",
+  "http://wavetechservices.in/appimages/homebanners/v2.png",
+  "http://wavetechservices.in/appimages/homebanners/v3.png",
+  "http://wavetechservices.in/appimages/homebanners/v4.png",
+  "http://wavetechservices.in/appimages/homebanners/v5.png",
 ];
