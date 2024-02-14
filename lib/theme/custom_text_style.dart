@@ -54,9 +54,10 @@ class CustomTextStyles {
       );
 
   static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.inter.copyWith(
-        fontSize: 12.spMin,
-        fontFamily: "Acme",
+        fontSize: 15.spMin,
+        fontFamily: "Arial",
         color: Colors.black,
+        fontWeight: FontWeight.w500,
       );
 
   static get bodyMediumGrey13LineThrough =>
@@ -82,9 +83,7 @@ class CustomTextStyles {
       );
 
   static get bodyMediumGray50013 => theme.textTheme.bodyMedium!.copyWith(
-        color: appTheme.gray500,
-        fontSize: 13,
-      );
+      color: Colors.black, fontSize: 13.spMin, fontWeight: FontWeight.w500);
 
   static get bodyMediumGray500_1 => theme.textTheme.bodyMedium!.copyWith(
         color: appTheme.gray500,
@@ -145,7 +144,8 @@ class CustomTextStyles {
 
   static get bodySmallff222222 => theme.textTheme.bodySmall!.copyWith(
         color: const Color(0XFF222222),
-        fontSize: 11,
+        fontSize: 12.spMin,
+        fontWeight: FontWeight.w600,
       );
 
   static get bodySmallff22222211 => theme.textTheme.bodySmall!.copyWith(
@@ -221,7 +221,7 @@ class CustomTextStyles {
 
   static get titleMediumGray700 => theme.textTheme.titleMedium!.copyWith(
         color: Colors.black,
-        fontFamily: "Acme",
+        fontFamily: "Arial",
         fontSize: 19.spMin,
         fontWeight: FontWeight.w500,
       );
@@ -242,7 +242,7 @@ extension on TextStyle {
 
   TextStyle get acme {
     return copyWith(
-      fontFamily: 'Acme',
+      fontFamily: 'Arial',
     );
   }
 

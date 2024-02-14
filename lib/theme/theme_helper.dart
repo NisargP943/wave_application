@@ -104,31 +104,31 @@ class TextThemes {
         bodyLarge: TextStyle(
           color: appTheme.gray900,
           fontSize: 16,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w400,
         ),
         bodyMedium: TextStyle(
           color: appTheme.gray900,
           fontSize: 14,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
           color: appTheme.gray500,
           fontSize: 10,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w400,
         ),
         displayMedium: TextStyle(
           color: colorScheme.onPrimary.withOpacity(1),
           fontSize: 48,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w400,
         ),
         displaySmall: TextStyle(
           color: appTheme.gray900,
           fontSize: 34,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w400,
         ),
         headlineLarge: TextStyle(
@@ -146,19 +146,19 @@ class TextThemes {
         headlineSmall: TextStyle(
           color: appTheme.gray700,
           fontSize: 25,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w700,
         ),
         titleLarge: TextStyle(
           color: colorScheme.onPrimary.withOpacity(1),
           fontSize: 20,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w700,
         ),
         titleMedium: TextStyle(
           color: const Color(0XFF636363),
           fontSize: 14.spMin,
-          fontFamily: 'Inter',
+          fontFamily: 'Arial',
           fontWeight: FontWeight.w700,
         ),
       );
