@@ -319,7 +319,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         3.horizontalSpace,
         Text(
           "(10)",
-          style: CustomTextStyles.bodyMediumGrey13,
+          style: CustomTextStyles.bodySmallGrey11,
         )
       ],
     );

@@ -523,6 +523,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ).show(context);
+        categoryController.loading.value = false;
+        categoryController.update();
       }
     });
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
@@ -546,6 +548,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ).show(context);
+        categoryController.loading.value = false;
+        categoryController.update();
       }
     });
   }

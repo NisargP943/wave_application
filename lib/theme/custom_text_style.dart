@@ -53,11 +53,11 @@ class CustomTextStyles {
         color: Colors.white,
       );
 
-  static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.inter.copyWith(
-        fontSize: 15.spMin,
+  static get bodyMediumGrey13 => theme.textTheme.bodyMedium!.copyWith(
+        fontSize: 14.spMin,
         fontFamily: "Arial",
         color: Colors.black,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
       );
 
   static get bodyMediumGrey13LineThrough =>
@@ -143,10 +143,10 @@ class CustomTextStyles {
       );
 
   static get bodySmallff222222 => theme.textTheme.bodySmall!.copyWith(
-        color: const Color(0XFF222222),
-        fontSize: 12.spMin,
-        fontWeight: FontWeight.w600,
-      );
+      color: const Color(0XFF222222),
+      fontSize: 12.spMin,
+      fontWeight: FontWeight.w300,
+      fontFamily: "Arial");
 
   static get bodySmallff22222211 => theme.textTheme.bodySmall!.copyWith(
         color: const Color(0XFF222222),

@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
-import 'package:wave_app/controller/internet_controller/internet_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/theme/theme_helper.dart';

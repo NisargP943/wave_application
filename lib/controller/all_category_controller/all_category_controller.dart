@@ -33,7 +33,6 @@ class AllCatController extends GetxController {
   CategoryService categoryService = CategoryService();
 
   Future<void> getAllCategory() async {
-    loading.value = true;
     try {
       final authResp = await categoryService.getAllServices();
       if (authResp.statusCode == 200) {
@@ -47,14 +46,15 @@ class AllCatController extends GetxController {
       }
     } on SocketException catch (e) {
       errorMessage.value = "Connection lost";
+      loading.value = false;
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
+      loading.value = false;
     }
   }
 
   Future<void> getAllConsultants() async {
-    loading.value = true;
     try {
       final authResp = await categoryService.getAllConsultants();
       if (authResp.statusCode == 200) {
@@ -62,7 +62,6 @@ class AllCatController extends GetxController {
           authResp.body,
         ).data;
         consultantListNotifier.value = allConsultantResponse.value!.data;
-
         loading.value = false;
         update();
         debugPrint("Response :::: $authResp");
@@ -78,7 +77,6 @@ class AllCatController extends GetxController {
   }
 
   Future<void> getAmcProducts() async {
-    loading.value = true;
     try {
       final authResp = await categoryService.getAmcProducts();
       if (authResp.statusCode == 200) {
@@ -101,7 +99,7 @@ class AllCatController extends GetxController {
   }
 
   Future<void> getSubCategory(String category) async {
-    loading.value = true;
+    var loading = true.obs;
     try {
       final authResp = await categoryService.getSubCategory(category);
       if (authResp.statusCode == 200) {
