@@ -10,15 +10,23 @@ import 'package:intl/intl.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
+import 'package:wave_app/model/response/sub_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
-  const ServiceDetailsPage({super.key, this.categoryModel, this.consultant});
+  const ServiceDetailsPage(
+      {super.key,
+      this.categoryModel,
+      this.consultant,
+      this.subCategoryModel,
+      this.fromSubCategory});
 
   final ServicesModel? categoryModel;
   final Consultant? consultant;
+  final CategoryModel? subCategoryModel;
+  final bool? fromSubCategory;
 
   @override
   State<ServiceDetailsPage> createState() => _ServiceDetailsPageState();
@@ -74,7 +82,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         ),
       ),
       title: Text(
-        widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
+        widget.fromSubCategory == true
+            ? widget.subCategoryModel!.name!
+            : widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
         style: CustomTextStyles.titleMediumGray700,
         overflow: TextOverflow.ellipsis,
       ),
@@ -95,7 +105,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : widget.categoryModel == null && widget.consultant == null
+          : widget.categoryModel == null &&
+                  widget.consultant == null &&
+                  widget.subCategoryModel == null
               ? Center(
                   child: Text(
                     "No Data Found",
@@ -103,39 +115,108 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ),
                 )
               : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: CustomImageView(
-                          imagePath: widget.categoryModel?.thumbnail ??
-                              widget.consultant?.thumbnail,
-                          height: 0.4.sh,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      30.verticalSpace,
-                      dateTimePicker(),
-                      20.verticalSpace,
-                      serviceDetails(),
-                      3.verticalSpace,
-                      serviceLabel(),
-                      5.verticalSpace,
-                      ratingBarRow(),
-                      30.verticalSpace,
-                      serviceDescription(),
-                      70.verticalSpace,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                        child: AppButtonWidget(
-                          onTap: () {},
-                          text: "BOOK SERVICE",
-                        ),
-                      ),
-                      20.verticalSpace,
-                    ],
-                  ),
+                  child: widget.fromSubCategory == true
+                      ? servicesDetailsFromSubCategoryWidget()
+                      : servicesDetailsFromHomeWidget(),
                 ),
+    );
+  }
+
+  Widget servicesDetailsFromHomeWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: CustomImageView(
+            imagePath:
+                widget.categoryModel?.thumbnail ?? widget.consultant?.thumbnail,
+            height: 0.4.sh,
+            fit: BoxFit.fill,
+          ),
+        ),
+        30.verticalSpace,
+        dateTimePicker(),
+        20.verticalSpace,
+        serviceDetails(),
+        3.verticalSpace,
+        serviceLabel(),
+        5.verticalSpace,
+        ratingBarRow(),
+        30.verticalSpace,
+        serviceDescription(),
+        70.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: AppButtonWidget(
+            onTap: () {},
+            text: "BOOK SERVICE",
+          ),
+        ),
+        20.verticalSpace,
+      ],
+    );
+  }
+
+  Widget servicesDetailsFromSubCategoryWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: CustomImageView(
+            imagePath: widget.subCategoryModel!.thumbnail,
+            height: 0.4.sh,
+            fit: BoxFit.fill,
+          ),
+        ),
+        30.verticalSpace,
+        dateTimePicker(),
+        20.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  widget.subCategoryModel!.name!,
+                  style: CustomTextStyles.displaySmallBlack900,
+                ),
+              ),
+              Text(
+                "₹ ${widget.subCategoryModel!.price}",
+                style: CustomTextStyles.displaySmallBlack900,
+              ),
+            ],
+          ),
+        ),
+        3.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: Text(
+            widget.subCategoryModel!.subcatg!,
+            style: CustomTextStyles.bodySmallff9b9b9b,
+          ),
+        ),
+        5.verticalSpace,
+        ratingBarRow(),
+        30.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: Text(
+            widget.subCategoryModel!.name!,
+            style: CustomTextStyles.titleMediumff407bff,
+          ),
+        ),
+        70.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: AppButtonWidget(
+            onTap: () {},
+            text: "BOOK SERVICE",
+          ),
+        ),
+        20.verticalSpace,
+      ],
     );
   }
 
@@ -173,7 +254,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             ),
           ),
           Text(
-            "Rs ${widget.categoryModel?.srate ?? widget.consultant?.srate}",
+            "₹ ${widget.categoryModel?.srate ?? widget.consultant?.srate}",
             style: CustomTextStyles.displaySmallBlack900,
           ),
         ],

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
@@ -20,10 +18,9 @@ class AuthController extends GetxController {
       if (authResp.statusCode == 200) {
         customerAuthResponseModel.value =
             customerAuthResponseModelFromJson(authResp.body);
+        loading.value = false;
+        update();
       }
-    } on SocketException catch (e) {
-      debugPrint(e.toString());
-      errorMessage.value = "Connection lost";
     } catch (e) {
       debugPrint(e.toString());
       errorMessage.value = "Something is wrong";
@@ -56,8 +53,6 @@ class AuthController extends GetxController {
         loading.value = false;
         Get.off(const MainPage());
       }
-    } on SocketException catch (e) {
-      errorMessage.value = "Connection lost";
     } catch (e) {
       debugPrint(e.toString());
       errorMessage.value = "Something is wrong";

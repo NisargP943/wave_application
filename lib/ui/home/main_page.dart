@@ -74,9 +74,6 @@ class _MainPageState extends State<MainPage> {
             elevation: 0,
             selectedItemColor: const Color(0xffDB3022),
             onTap: (val) {
-              if (widgetNotifier.value == false) {
-                widgetNotifier.value = true;
-              }
               pageNotifier.value = val;
             },
             currentIndex: value,

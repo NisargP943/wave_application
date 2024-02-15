@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:another_flushbar/flushbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +40,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   List<Worker>? workers;
 
   bool isChecked = false;
-  late InternetController internetController;
+  late StreamSubscription connectivity;
   var authController = Get.put(AuthController());
 
   @override
@@ -47,6 +50,12 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
       const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
     );
     initWorkers();
+  }
+
+  @override
+  void dispose() {
+    connectivity.cancel();
+    super.dispose();
   }
 
   @override
@@ -243,53 +252,47 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
   void validate() {
     if (!isChecked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please accept terms and privacy policy"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please accept terms and privacy policy",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else {
       if (phoneNumberController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Please enter phone number"),
+        Flushbar(
+          duration: const Duration(seconds: 3),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "Please enter phone number",
+            style: TextStyle(
+              color: Colors.white,
+            ),
           ),
-        );
+        ).show(context);
         return;
       } else if (phoneNumberController.text.length < 10) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Please enter valid phone number"),
-          ),
-        );
-      } else {
-        internetController = Get.put(InternetController());
-        if (internetController.message.value == "Internet Connection Gained") {
-          authController.otpApi(phoneNumberController.text);
-          if (authController.loading.isTrue) {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) => const AlertDialog(
-                title: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            );
-          }
-        } else {
-          Flushbar(
-            backgroundColor: const Color(0xffA41C8E),
-            flushbarPosition: FlushbarPosition.BOTTOM,
-            messageText: Text(
-              internetController.message.value,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
+        Flushbar(
+          duration: const Duration(seconds: 3),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "Please enter valid phone number",
+            style: TextStyle(
+              color: Colors.white,
             ),
-          ).show(context);
-        }
+          ),
+        ).show(context);
+        return;
+      } else {
+        checkConnectivity();
       }
     }
   }
@@ -326,6 +329,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
       ///error worker
       ever(authController.errorMessage, (callback) {
         Flushbar(
+          duration: const Duration(seconds: 3),
           backgroundColor: const Color(0xffA41C8E),
           flushbarPosition: FlushbarPosition.BOTTOM,
           messageText: Text(
@@ -345,5 +349,69 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  void checkConnectivity() {
+    Connectivity().checkConnectivity().then((value) {
+      if (value == ConnectivityResult.mobile ||
+          value == ConnectivityResult.wifi) {
+        authController.otpApi(phoneNumberController.text);
+        if (authController.loading.isTrue) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => const AlertDialog(
+              title: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+      } else {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Active Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    });
+    connectivity = Connectivity().onConnectivityChanged.listen((event) {
+      if (event == ConnectivityResult.mobile ||
+          event == ConnectivityResult.wifi) {
+        debugPrint("This is called");
+        authController.otpApi(phoneNumberController.text);
+        if (authController.loading.isTrue) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => const AlertDialog(
+              title: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+      }
+      if (event == ConnectivityResult.none) {
+        debugPrint("This called");
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    });
   }
 }

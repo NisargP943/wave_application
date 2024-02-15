@@ -35,9 +35,9 @@ class AllConsultantsResponseModel {
 class Consultant {
   String id;
   String servicename;
-  Catg sdesc;
+  String sdesc;
   String srate;
-  Catg catg;
+  String catg;
   Priority priority;
   Stype stype;
   int rating;
@@ -60,9 +60,9 @@ class Consultant {
   factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(
         id: json["id"],
         servicename: json["servicename"],
-        sdesc: catgValues.map[json["sdesc"]]!,
+        sdesc: json["sdesc"],
         srate: json["srate"],
-        catg: catgValues.map[json["catg"]]!,
+        catg: json["catg"],
         priority: priorityValues.map[json["priority"]]!,
         stype: stypeValues.map[json["stype"]]!,
         rating: json["rating"],
@@ -73,9 +73,9 @@ class Consultant {
   Map<String, dynamic> toJson() => {
         "id": id,
         "servicename": servicename,
-        "sdesc": catgValues.reverse[sdesc],
+        "sdesc": sdesc,
         "srate": srate,
-        "catg": catgValues.reverse[catg],
+        "catg": catg,
         "priority": priorityValues.reverse[priority],
         "stype": stypeValues.reverse[stype],
         "rating": rating,

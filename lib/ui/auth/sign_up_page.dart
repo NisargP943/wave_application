@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:another_flushbar/flushbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
@@ -68,6 +71,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   List<Placemark> address = [];
 
+  late StreamSubscription connectivity;
   var authController = Get.put(AuthController());
 
   @override
@@ -87,6 +91,12 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
             "${value[0].street}, ${value[0].subLocality}, ${value[0].locality}, ${value[0].postalCode}",
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    connectivity.cancel();
+    super.dispose();
   }
 
   @override
@@ -347,92 +357,210 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   void validate() {
     if (nameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter name"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter name",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (nameController.text.length < 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter valid name"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter valid name",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter email"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter email",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (!emailController.text.contains("@") ||
         !emailController.text.contains(".")) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter valid email"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter valid email",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter password"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter password",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (passwordController.text.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter valid password"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter valid password",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (passwordAgainController.text != passwordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password doesn't matched"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Password doesn't matched",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (locationController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter current location"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter current location",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else if (locationController.text.length < 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter valid current location"),
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter valid current location",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      );
+      ).show(context);
       return;
     } else {
-      authController.newUserSignUp(
-        name: nameController.text,
-        mobileNumber: widget.mobileNumber ?? "",
-        email: emailController.text,
-        password: passwordController.text,
-        street: address[0].subLocality,
-        city: address[0].locality,
-        pincode: address[0].postalCode,
-        lang: locations.isEmpty ? position.longitude : locations[0].longitude,
-        lat: locations.isEmpty ? position.latitude : locations[0].latitude,
-      );
-      if (authController.loading.isTrue) {
-        showDialog(
-          context: context,
-          builder: (context) => const AlertDialog(
-            title: Center(
-              child: CircularProgressIndicator(),
+      checkConnectivity();
+    }
+  }
+
+  void checkConnectivity() {
+    Connectivity().checkConnectivity().then((value) {
+      if (value == ConnectivityResult.mobile ||
+          value == ConnectivityResult.wifi) {
+        authController.newUserSignUp(
+          name: nameController.text,
+          mobileNumber: widget.mobileNumber ?? "",
+          email: emailController.text,
+          password: passwordController.text,
+          street: address[0].subLocality,
+          city: address[0].locality,
+          pincode: address[0].postalCode,
+          lang: locations.isEmpty ? position.longitude : locations[0].longitude,
+          lat: locations.isEmpty ? position.latitude : locations[0].latitude,
+        );
+        if (authController.loading.isTrue) {
+          showDialog(
+            context: context,
+            builder: (context) => const AlertDialog(
+              title: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+      } else {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Active Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
             ),
           ),
-        );
+        ).show(context);
       }
-    }
+    });
+    connectivity = Connectivity().onConnectivityChanged.listen((event) {
+      if (event == ConnectivityResult.mobile ||
+          event == ConnectivityResult.wifi) {
+        debugPrint("This is called");
+        authController.newUserSignUp(
+          name: nameController.text,
+          mobileNumber: widget.mobileNumber ?? "",
+          email: emailController.text,
+          password: passwordController.text,
+          street: address[0].subLocality,
+          city: address[0].locality,
+          pincode: address[0].postalCode,
+          lang: locations.isEmpty ? position.longitude : locations[0].longitude,
+          lat: locations.isEmpty ? position.latitude : locations[0].latitude,
+        );
+
+        if (authController.loading.isTrue) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => const AlertDialog(
+              title: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+      }
+      if (event == ConnectivityResult.none) {
+        debugPrint("This called");
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    });
   }
 
   /// Navigates back to the previous screen.

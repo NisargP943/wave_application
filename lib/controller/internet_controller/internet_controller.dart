@@ -1,22 +1,23 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 
-class InternetController extends GetxController {
+class InternetController {
   StreamSubscription? connectivity;
   var message = "".obs;
 
-  @override
-  void onInit() {
-    super.onInit();
+  void checkConnectivity(void Function()? callBack, noInternetCallBack) {
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
-        message.value = "Internet Connection Gained";
+        callBack ?? () {};
       } else {
-        message.value = "Internet Connection Lost";
+        noInternetCallBack ?? () {};
       }
     });
+  }
+
+  void cancelConnectivity() {
+    connectivity?.cancel();
   }
 }

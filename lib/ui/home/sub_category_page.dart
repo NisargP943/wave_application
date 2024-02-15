@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:another_flushbar/flushbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -6,11 +9,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
-import 'package:wave_app/controller/internet_controller/internet_controller.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/model/response/sub_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
+
+ValueNotifier<List<CategoryModel>> subCategoryNotifier = ValueNotifier([]);
 
 class SubCategoryPage extends StatefulWidget {
   const SubCategoryPage({super.key});
@@ -21,6 +27,7 @@ class SubCategoryPage extends StatefulWidget {
 
 class _SubCategoryPageState extends State<SubCategoryPage> {
   TextEditingController searchController = TextEditingController();
+  late StreamSubscription connectivity;
   ValueNotifier<bool> showSearchBar = ValueNotifier(false);
   List<String> category = [
     "Astrologers",
@@ -49,26 +56,12 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     "Wedding Planners",
     "YOGA - MEDITATION"
   ];
-  var internetController = Get.put(InternetController());
   var categoryController = Get.put(AllCatController());
 
   @override
   void initState() {
     super.initState();
-    if (internetController.message.value == "Internet Connection Gained") {
-      categoryController.getSubCategory("Astrologers");
-    } else {
-      Flushbar(
-        backgroundColor: const Color(0xffA41C8E),
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        messageText: Text(
-          internetController.message.value,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ).show(context);
-    }
+    checkConnectivity();
   }
 
   @override
@@ -88,7 +81,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             fontSize: 18.spMin,
             color: Colors.black,
             fontWeight: FontWeight.w500,
-            fontFamily: "Acme",
+            fontFamily: "Arial",
           ),
         ),
         actions: [
@@ -150,21 +143,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  if (internetController.message.value ==
-                      "Internet Connection Gained") {
-                    categoryController.getSubCategory(category[index]);
-                  } else {
-                    Flushbar(
-                      backgroundColor: const Color(0xffA41C8E),
-                      flushbarPosition: FlushbarPosition.BOTTOM,
-                      messageText: Text(
-                        internetController.message.value,
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ).show(context);
-                  }
+                  categoryController.getSubCategory(category[index]);
                 },
                 child: Container(
                   margin: const EdgeInsets.only(right: 15).r,
@@ -243,66 +222,71 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             ],
           ),
         ),
-        GetBuilder<AllCatController>(
-          builder: (controller) =>
-              controller.subCategoryResponseModel.value?.data != null
-                  ? Expanded(
-                      child: SingleChildScrollView(
-                        child: AlignedGridView.count(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 25,
-                            vertical: 5,
-                          ).r,
-                          itemCount: controller.subCategoryResponseModel.value
-                                  ?.data?.length ??
-                              0,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 2,
-                          itemBuilder: (context, index) {
-                            final subCategory = controller
-                                .subCategoryResponseModel.value?.data?[index];
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 3,
-                              ).r,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  5.verticalSpace,
-                                  Center(
-                                    child: CustomImageView(
-                                      height: 80.h,
-                                      imagePath: subCategory?.thumbnail,
-                                    ),
-                                  ),
-                                  15.verticalSpace,
-                                  ratingBarRow(),
-                                  5.verticalSpace,
-                                  Text(
-                                    subCategory?.name ?? "",
-                                    style: CustomTextStyles.bodyMediumGrey13,
-                                  ),
-                                  5.verticalSpace,
-                                  Text(
-                                    "Rs ${subCategory?.price}" ?? "",
-                                    style: CustomTextStyles.bodySmallff222222,
-                                  ),
-                                ],
+        ValueListenableBuilder(
+          valueListenable: subCategoryNotifier,
+          builder: (context, value, widget) => value == []
+              ? const Center(
+                  child: Text("No Data Found"),
+                )
+              : Expanded(
+                  child: SingleChildScrollView(
+                    child: AlignedGridView.count(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 5,
+                      ).r,
+                      itemCount: value.length,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      itemBuilder: (context, index) {
+                        final subCategory = value[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              ServiceDetailsPage(
+                                fromSubCategory: true,
+                                subCategoryModel: subCategory,
                               ),
                             );
                           },
-                        ),
-                      ),
-                    )
-                  : const Center(
-                      child: Text(
-                        "No Data Found",
-                      ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 3,
+                            ).r,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                5.verticalSpace,
+                                Center(
+                                  child: CustomImageView(
+                                    height: 80.h,
+                                    imagePath: subCategory.thumbnail,
+                                  ),
+                                ),
+                                15.verticalSpace,
+                                ratingBarRow(),
+                                5.verticalSpace,
+                                Text(
+                                  subCategory.name ?? "",
+                                  style: CustomTextStyles.bodyMediumGrey13,
+                                ),
+                                5.verticalSpace,
+                                Text(
+                                  "₹ ${subCategory.price}",
+                                  style: CustomTextStyles.bodySmallff222222,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
+                  ),
+                ),
         )
       ],
     );
@@ -339,5 +323,44 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         )
       ],
     );
+  }
+
+  void checkConnectivity() {
+    Connectivity().checkConnectivity().then((value) {
+      if (value == ConnectivityResult.mobile ||
+          value == ConnectivityResult.wifi) {
+        categoryController.getSubCategory("Astrologers");
+      } else {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Active Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    });
+    connectivity = Connectivity().onConnectivityChanged.listen((event) {
+      if (event == ConnectivityResult.mobile ||
+          event == ConnectivityResult.wifi) {
+        categoryController.getSubCategory("Astrologers");
+      } else {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    });
   }
 }

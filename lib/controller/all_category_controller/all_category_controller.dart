@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/service/category_service.dart';
 import 'package:wave_app/ui/home/home_page.dart';
+import 'package:wave_app/ui/home/sub_category_page.dart';
 
 import '../../model/response/all_category_response_model.dart';
 import '../../model/response/sub_category_response_model.dart';
@@ -27,7 +28,7 @@ class AllCatController extends GetxController {
       SubCategoryResponseModel(
     data: [],
   ).obs;
-  var loading = false.obs;
+  var loading = true.obs;
   var errorMessage = "".obs;
   CategoryService categoryService = CategoryService();
 
@@ -39,9 +40,7 @@ class AllCatController extends GetxController {
         allServicesResponse.value?.data = allCategoryResponseModelFromJson(
           authResp.body,
         ).data;
-        if (allServicesResponse.value?.data != null) {
-          serviceListNotifier.value = allServicesResponse.value!.data!;
-        }
+        serviceListNotifier.value = allServicesResponse.value!.data!;
         loading.value = false;
         update();
         debugPrint("Response :::: ${allServicesResponse.value?.data}");
@@ -62,6 +61,7 @@ class AllCatController extends GetxController {
         allConsultantResponse.value?.data = allConsultantsResponseModelFromJson(
           authResp.body,
         ).data;
+        consultantListNotifier.value = allConsultantResponse.value!.data;
 
         loading.value = false;
         update();
@@ -69,7 +69,9 @@ class AllCatController extends GetxController {
       }
     } on SocketException catch (e) {
       errorMessage.value = "Connection lost";
+      loading.value = false;
     } catch (e) {
+      loading.value = false;
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
     }
@@ -83,16 +85,18 @@ class AllCatController extends GetxController {
         allAmcProducts.value?.data = allCategoryResponseModelFromJson(
           authResp.body,
         ).data;
-
+        amcListNotifier.value = allAmcProducts.value!.data!;
         loading.value = false;
         update();
         debugPrint("Response :::: $authResp");
       }
     } on SocketException catch (e) {
       errorMessage.value = e.message;
+      loading.value = false;
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
+      loading.value = false;
     }
   }
 
@@ -104,15 +108,15 @@ class AllCatController extends GetxController {
         subCategoryResponseModel.value?.data = subCategoryResponseModelFromJson(
           authResp.body,
         ).data;
+        subCategoryNotifier.value = subCategoryResponseModel.value!.data!;
         loading.value = false;
         update();
         debugPrint("Response :::: $authResp");
       }
-    } on SocketException catch (e) {
-      errorMessage.value = e.message;
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
+      loading.value = false;
     }
   }
 }
