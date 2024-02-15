@@ -62,6 +62,21 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   void initState() {
     super.initState();
     checkConnectivity();
+    ever(categoryController.errorMessage, (callback) {
+      Future.delayed(const Duration(seconds: 1), () {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "No Active Internet Connection",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      });
+    });
   }
 
   @override
@@ -331,17 +346,22 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
           value == ConnectivityResult.wifi) {
         categoryController.getSubCategory("Astrologers");
       } else {
-        Flushbar(
-          duration: const Duration(seconds: 4),
-          backgroundColor: const Color(0xffA41C8E),
-          flushbarPosition: FlushbarPosition.BOTTOM,
-          messageText: const Text(
-            "No Active Internet Connection",
-            style: TextStyle(
-              color: Colors.white,
+        categoryController.loading.value = false;
+        categoryController.update();
+        Future.delayed(
+          const Duration(seconds: 1),
+          () => Flushbar(
+            duration: const Duration(seconds: 4),
+            backgroundColor: const Color(0xffA41C8E),
+            flushbarPosition: FlushbarPosition.BOTTOM,
+            messageText: const Text(
+              "No Active Internet Connection",
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
-          ),
-        ).show(context);
+          ).show(context),
+        );
       }
     });
     connectivity = Connectivity().onConnectivityChanged.listen((event) {

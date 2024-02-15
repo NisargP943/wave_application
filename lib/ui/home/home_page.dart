@@ -512,6 +512,8 @@ class _HomePageState extends State<HomePage> {
         categoryController.getAllConsultants();
         categoryController.getAmcProducts();
       } else {
+        categoryController.loading.value = false;
+        categoryController.update();
         Flushbar(
           duration: const Duration(seconds: 4),
           backgroundColor: const Color(0xffA41C8E),
@@ -523,8 +525,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ).show(context);
-        categoryController.loading.value = false;
-        categoryController.update();
       }
     });
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
@@ -548,8 +548,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ).show(context);
-        categoryController.loading.value = false;
-        categoryController.update();
       }
     });
   }

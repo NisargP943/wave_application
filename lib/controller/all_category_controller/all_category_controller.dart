@@ -44,9 +44,6 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: ${allServicesResponse.value?.data}");
       }
-    } on SocketException catch (e) {
-      errorMessage.value = "Connection lost";
-      loading.value = false;
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
@@ -66,9 +63,6 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: $authResp");
       }
-    } on SocketException catch (e) {
-      errorMessage.value = "Connection lost";
-      loading.value = false;
     } catch (e) {
       loading.value = false;
       debugPrint("error ${e.toString()}");
@@ -88,9 +82,6 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: $authResp");
       }
-    } on SocketException catch (e) {
-      errorMessage.value = e.message;
-      loading.value = false;
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
@@ -111,6 +102,9 @@ class AllCatController extends GetxController {
         update();
         debugPrint("Response :::: $authResp");
       }
+    } on SocketException catch (e) {
+      // errorMessage.value = "Connection Lost, Check Internet Connection";
+      update();
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
