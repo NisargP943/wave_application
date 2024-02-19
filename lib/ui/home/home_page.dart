@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                 textInputAction: TextInputAction.done,
                 textInputType: TextInputType.text,
                 controller: searchController,
-                labelText: "Search",
+                labelText: "",
                 prefixWidget: const Icon(
                   Icons.search,
                   color: Colors.grey,
