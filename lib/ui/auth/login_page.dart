@@ -46,7 +46,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
+      const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark),
     );
     initWorkers();
   }
@@ -69,9 +69,10 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
               alignment: Alignment.bottomRight,
               children: [
                 CustomImageView(
-                  imagePath: Assets.imagesLoginBgFinal,
+                  imagePath: Assets.imagesBannerFour,
                   alignment: Alignment.center,
-                  height: 0.5.sh,
+                  height: 0.52.sh,
+                  fit: BoxFit.fill,
                   width: 1.sw,
                 ),
                 Positioned(
