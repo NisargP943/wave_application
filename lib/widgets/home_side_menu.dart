@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
+import 'package:wave_app/model/customer_data.dart';
 
 import '../ui/auth/login_page.dart';
 
@@ -50,7 +51,7 @@ class NavDrawer extends StatelessWidget {
             title: const Text('Logout'),
             onTap: () {
               Get.off(const LoginOneScreen());
-              customerDB?.put("isLogin", false);
+              customerDB?.put("isLogin", CustomerData(isLogin: false));
             },
           ),
         ],
