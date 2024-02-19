@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/ui/auth/login_page.dart';
+import 'package:wave_app/ui/auth/login_with_email_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -16,6 +19,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   PageController imageController = PageController();
   ValueNotifier<int> pageIndex = ValueNotifier(0);
+  bool end = false;
 
   @override
   void initState() {
@@ -23,6 +27,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
     );
+    Timer.periodic(const Duration(seconds: 2), (Timer timer) {
+      if (pageIndex.value == 1) {
+        end = true;
+      } else if (pageIndex.value == 0) {
+        end = false;
+      }
+
+      if (end == false) {
+        pageIndex.value++;
+      } else {}
+
+      imageController.animateToPage(
+        pageIndex.value,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeIn,
+      );
+    });
   }
 
   @override
@@ -37,12 +58,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: pageBodyWidget(),
-        floatingActionButton: ValueListenableBuilder(
-          valueListenable: pageIndex,
-          builder: (context, value, child) =>
-              value == 2 ? buildLastScreen() : Container(),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
@@ -50,10 +65,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget pageBodyWidget() {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
-      builder: (BuildContext context, int value, Widget? child) {
+      builder: (BuildContext context, int val, Widget? child) {
         return PageView.builder(
           onPageChanged: (value) {
             pageIndex.value = value;
+            if (val == 1) {
+              Future.delayed(
+                const Duration(seconds: 2),
+                () => Get.off(
+                  const LoginOneScreen(),
+                ),
+              );
+            }
           },
           itemBuilder: (context, index) {
             return Image.asset(
@@ -86,11 +109,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 List walkthroughList = [
-  //Assets.imagesBannerOne,
-  // Assets.imagesBannerTwo,
   Assets.imagesBannerThree,
   Assets.imagesBannerFour,
-  Assets.imagesBannerFive,
-  // Assets.imagesBannerSix,
-  //Assets.imagesBannerSeven,
 ];
