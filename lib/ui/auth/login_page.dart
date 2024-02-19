@@ -69,26 +69,17 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
               alignment: Alignment.bottomRight,
               children: [
                 CustomImageView(
-                  imagePath: Assets.imagesLoginbg,
+                  imagePath: Assets.imagesLoginBgFinal,
                   alignment: Alignment.center,
                   height: 0.5.sh,
                   width: 1.sw,
-                  fit: BoxFit.fitWidth,
                 ),
                 Positioned(
-                  bottom: 0.02.sh,
+                  bottom: 0.03.sh,
                   right: 0.01.sh,
                   child: CustomImageView(
                     imagePath: Assets.imagesLogo2,
                     scale: 13,
-                  ),
-                ),
-                Positioned(
-                  right: 0.16.sh,
-                  bottom: 0.05.sh,
-                  child: CustomImageView(
-                    height: 60.h,
-                    imagePath: Assets.imagesLoginText,
                   ),
                 ),
               ],
@@ -204,15 +195,15 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
                   20.horizontalSpace,
                   CustomImageView(
                     imagePath: Assets.imagesGoogleIcon,
-                    height: 45,
-                    width: 45,
+                    height: 45.h,
+                    width: 45.w,
                     alignment: Alignment.center,
                   ),
                   40.horizontalSpace,
                   CustomImageView(
                     imagePath: Assets.imagesFbIcon,
-                    height: 30,
-                    width: 30,
+                    height: 30.h,
+                    width: 30.w,
                     alignment: Alignment.center,
                   ),
                   const Spacer(),
