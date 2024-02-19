@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
@@ -15,6 +16,7 @@ import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/location_screen.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
@@ -36,11 +38,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
   late StreamSubscription connectivity;
   PageController pageController = PageController();
   var categoryController = Get.put(AllCatController());
+  ValueNotifier<int> hIndex = ValueNotifier(0);
   List<Worker> workers = [];
   String? customerData;
+  bool end = false;
 
   @override
   void initState() {
@@ -55,11 +60,31 @@ class _HomePageState extends State<HomePage> {
     debugPrint("City $customerData");
     checkConnectivity();
     initWorkers();
+    Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      if (hIndex.value == 5) {
+        end = true;
+      } else if (hIndex.value == 0) {
+        end = false;
+      }
+
+      if (end == false) {
+        hIndex.value++;
+      } else {
+        hIndex.value--;
+      }
+
+      pageController.animateToPage(
+        hIndex.value,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeIn,
+      );
+    });
   }
 
   @override
   void dispose() {
     connectivity.cancel();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -100,17 +125,26 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ).r,
-          child: SizedBox(
-            width: 200.w,
+        5.verticalSpace,
+        GestureDetector(
+          onTap: () {
+            Get.to(LocationPage(
+              location: customerData!,
+            ));
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15,
+            ).r,
             child: Row(
               children: [
-                Text(
-                  customerData ?? "Ahmedabad",
-                  style: CustomTextStyles.bodySmallff9b9b9b13,
+                SizedBox(
+                  width: 150.w,
+                  child: Text(
+                    customerData ?? "Ahmedabad",
+                    style: CustomTextStyles.bodySmallff9b9b9b13,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 3.horizontalSpace,
                 RotatedBox(
@@ -263,7 +297,6 @@ class _HomePageState extends State<HomePage> {
           height: 250.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            controller: pageController,
             itemCount: verticalBanner.length,
             itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8).r,
@@ -286,8 +319,10 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(
           height: 200.h,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
+          child: PageView.builder(
+            onPageChanged: (value) {
+              hIndex.value = value;
+            },
             controller: pageController,
             itemCount: horizontalBanners.length,
             itemBuilder: (context, index) => Padding(
