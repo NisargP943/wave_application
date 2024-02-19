@@ -23,8 +23,7 @@ import 'package:wave_app/widgets/custom_text_field.dart';
 
 // ignore_for_file: must_be_immutable
 class SignUpPageScreen extends StatefulWidget {
-  const SignUpPageScreen(
-      {Key? key, this.customerAuthResponseModel, this.mobileNumber})
+  const SignUpPageScreen({Key? key, this.customerAuthResponseModel, this.mobileNumber})
       : super(key: key);
   final CustomerAuthResponseModel? customerAuthResponseModel;
   final String? mobileNumber;
@@ -245,16 +244,14 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                               onTap: () {
                                 locationController.text =
                                     "${places[index]['description']}";
-                                convertAddressToLatLong(
-                                    locationController.text);
+                                convertAddressToLatLong(locationController.text);
                                 showPlaces.value = false;
                               },
                               child: Text(
                                 places[index]['description'],
                               ),
                             ),
-                            separatorBuilder:
-                                (BuildContext context, int index) {
+                            separatorBuilder: (BuildContext context, int index) {
                               return 15.verticalSpace;
                             },
                           ),
@@ -297,8 +294,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                   ),
                 ),
                 14.verticalSpace,
-                Text("Or sign up with social account",
-                    style: theme.textTheme.bodyMedium),
+                Text("Or sign up with social account", style: theme.textTheme.bodyMedium),
                 14.verticalSpace,
                 _buildSeventySeven(context),
                 30.verticalSpace,
@@ -326,30 +322,24 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          height: 64.h,
-          width: 92.w,
-          decoration: AppDecoration.outlineBlack9004
-              .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
-          child: CustomImageView(
-            imagePath: Assets.imagesGoogle,
-            height: 24.r,
-            width: 24.r,
-            alignment: Alignment.center,
-          ),
+        CustomImageView(
+          imagePath: Assets.imagesGoogleIcon,
+          /* height: 24.r,
+          width: 24.r,*/
+          height: 50.h,
+          width: 50.w,
+          fit: BoxFit.fill,
+          alignment: Alignment.center,
         ),
-        10.horizontalSpace,
-        Container(
-          height: 64.h,
-          width: 92.w,
-          decoration: AppDecoration.outlineBlack9004
-              .copyWith(borderRadius: BorderRadiusStyle.roundedBorder24),
-          child: CustomImageView(
-            imagePath: Assets.imagesFacebook,
-            height: 24.r,
-            width: 24.r,
-            alignment: Alignment.center,
-          ),
+        30.horizontalSpace,
+        CustomImageView(
+          imagePath: Assets.imagesFbIcon,
+          /*height: 24.r,
+          width: 24.r,*/
+          height: 35.h,
+          width: 35.w,
+          fit: BoxFit.fill,
+          alignment: Alignment.center,
         )
       ],
     );
@@ -481,8 +471,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   void checkConnectivity() {
     Connectivity().checkConnectivity().then((value) {
-      if (value == ConnectivityResult.mobile ||
-          value == ConnectivityResult.wifi) {
+      if (value == ConnectivityResult.mobile || value == ConnectivityResult.wifi) {
         authController.newUserSignUp(
           name: nameController.text,
           mobileNumber: widget.mobileNumber ?? "",
@@ -519,8 +508,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
       }
     });
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
-      if (event == ConnectivityResult.mobile ||
-          event == ConnectivityResult.wifi) {
+      if (event == ConnectivityResult.mobile || event == ConnectivityResult.wifi) {
         debugPrint("This is called");
         authController.newUserSignUp(
           name: nameController.text,
@@ -623,8 +611,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
   Future<List<Placemark>> convertLatLongToAddress(
       double latitude, double longitude) async {
     address = await placemarkFromCoordinates(latitude, longitude);
-    locationController.text =
-        "${locationController.text}, ${address[0].postalCode}";
+    locationController.text = "${locationController.text}, ${address[0].postalCode}";
     /* "${address[0].street}${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}";*/
     debugPrint(
         "----------------------------------------------------value after conversion : ${address[0].street}, ${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}");

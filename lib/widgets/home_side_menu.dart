@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/main.dart';
+
+import '../ui/auth/login_page.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key});
@@ -39,12 +43,15 @@ class NavDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.border_color),
             title: const Text('Feedback'),
-            onTap: () => {Navigator.of(context).pop()},
+            onTap: () => {},
           ),
           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
-            onTap: () => {Navigator.of(context).pop()},
+            onTap: () {
+              Get.off(const LoginOneScreen());
+              customerDB?.put("isLogin", false);
+            },
           ),
         ],
       ),

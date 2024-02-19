@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> {
                   child: CircularProgressIndicator(),
                 )
               : SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   child: serviceListNotifier.value == [] &&
                           amcListNotifier.value == [] &&
                           consultantListNotifier.value == [] &&
@@ -99,8 +100,6 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        labelWidgetTwo("Home"),
-        5.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
@@ -142,12 +141,24 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         10.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10).r,
+            child: CustomImageView(
+              imagePath:
+                  "http://kalasampurna.com/wavetech/webimages/home11.png",
+            ),
+          ),
+        ),
+        5.verticalSpace,
         ValueListenableBuilder(
             valueListenable: serviceListNotifier,
             builder: (context, value, child) => Container(
                   height: 0.3.sh,
                   decoration: const BoxDecoration(),
                   child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5)
                             .r,
@@ -212,9 +223,39 @@ class _HomePageState extends State<HomePage> {
         ),
         labelWidgetOne("Talk to Our Experts"),
         10.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10).r,
+            child: CustomImageView(
+              imagePath:
+                  "http://kalasampurna.com/wavetech/webimages/home12.png",
+            ),
+          ),
+        ),
+        5.verticalSpace,
         newCategoryListView(),
         Container(
           margin: const EdgeInsets.only(top: 10, bottom: 15).r,
+          height: 10.h,
+          color: const Color(0xfff5f5f5),
+        ),
+        labelWidgetOne("AMC Services"),
+        10.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10).r,
+            child: CustomImageView(
+              imagePath:
+                  "http://kalasampurna.com/wavetech/webimages/home13.png",
+            ),
+          ),
+        ),
+        10.verticalSpace,
+        amcCategoryListView(),
+        Container(
+          margin: const EdgeInsets.only(bottom: 15, top: 15).r,
           height: 10.h,
           color: const Color(0xfff5f5f5),
         ),
@@ -262,15 +303,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        //homeServicesListView(),
-        Container(
-          margin: const EdgeInsets.only(top: 15, bottom: 15).r,
-          height: 10.h,
-          color: const Color(0xfff5f5f5),
-        ),
-        labelWidgetOne("Find other services"),
-        10.verticalSpace,
-        amcCategoryListView(),
       ],
     );
   }
@@ -321,6 +353,7 @@ class _HomePageState extends State<HomePage> {
         //  color: Colors.red,
         child: ListView.separated(
           itemCount: value.length,
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
           ).r,
@@ -335,13 +368,20 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   5.verticalSpace,
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8),
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 5,
                     ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
                     child: CustomImageView(
-                      height: 90.r,
-                      width: 90.r,
+                      height: 60.r,
                       imagePath: secondList.thumbnail,
                     ),
                   ),
@@ -404,13 +444,20 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   5.verticalSpace,
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8),
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 5,
                     ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
                     child: CustomImageView(
-                      height: 70.r,
-                      width: 70.r,
+                      height: 60.r,
                       imagePath: secondList.thumbnail,
                     ),
                   ),

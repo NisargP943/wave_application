@@ -2,8 +2,15 @@
 class Assets {
   Assets._();
 
+  static const String fontsARIBL0 = 'assets/fonts/ARIBL0.ttf';
   static const String fontsAcmeRegular = 'assets/fonts/AcmeRegular.ttf';
   static const String fontsAntonRegular = 'assets/fonts/AntonRegular.ttf';
+  static const String fontsArial = 'assets/fonts/arial.ttf';
+  static const String fontsArialTh = 'assets/fonts/ArialTh.ttf';
+  static const String fontsArialn = 'assets/fonts/Arialn.ttf';
+  static const String fontsGAriBd = 'assets/fonts/G_ari_bd.TTF';
+  static const String fontsGAriI = 'assets/fonts/G_ari_i.TTF';
+  static const String fontsGEOAI = 'assets/fonts/GEO_AI__.TTF';
   static const String fontsInterBold = 'assets/fonts/InterBold.ttf';
   static const String fontsInterMedium = 'assets/fonts/InterMedium.ttf';
   static const String fontsInterRegular = 'assets/fonts/InterRegular.ttf';
@@ -31,6 +38,7 @@ class Assets {
   static const String imagesHeart = 'assets/images/heart.png';
   static const String imagesHelpdesk = 'assets/images/helpdesk.png';
   static const String imagesHome = 'assets/images/home.png';
+  static const String imagesLoginBgFinal = 'assets/images/loginBgFinal.jpg';
   static const String imagesLoginText = 'assets/images/loginText.png';
   static const String imagesLoginbg = 'assets/images/loginbg.png';
   static const String imagesLogo = 'assets/images/logo.png';
