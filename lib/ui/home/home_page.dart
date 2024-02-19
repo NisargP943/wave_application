@@ -94,7 +94,6 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         drawer: const NavDrawer(),
         drawerDragStartBehavior: DragStartBehavior.down,
-        appBar: pageAppBar(),
         backgroundColor: Colors.white,
         //const Color(0xfff5f5f5),
         body: GetBuilder<AllCatController>(
@@ -102,243 +101,240 @@ class _HomePageState extends State<HomePage> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: serviceListNotifier.value == [] &&
-                          amcListNotifier.value == [] &&
-                          consultantListNotifier.value == [] &&
-                          controller.loading.value == false &&
-                          controller.errorMessage.value != ""
-                      ? const Center(
-                          child: Text(
-                            "No Data Found",
-                          ),
-                        )
-                      : mainWidgetTwo(),
-                ),
+              : Container(child: mainWidgetTwo()),
         ),
       ),
     );
   }
 
   Widget mainWidgetTwo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        5.verticalSpace,
-        GestureDetector(
-          onTap: () {
-            Get.to(LocationPage(
-              location: customerData!,
-            ));
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-            ).r,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 150.w,
-                  child: Text(
-                    customerData ?? "Ahmedabad",
-                    style: CustomTextStyles.bodySmallff9b9b9b13,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                3.horizontalSpace,
-                RotatedBox(
-                  quarterTurns: 3,
-                  child: CustomImageView(
-                    imagePath: Assets.imagesBackIcon,
-                    scale: 3.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        10.verticalSpace,
-        TextFieldDesignPage(
-          readOnly: true,
-          onTap: () {
-            Get.to(const SearchPage());
-          },
-          edgeInsets: const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
-          textInputAction: TextInputAction.done,
-          textInputType: TextInputType.text,
-          controller: searchController,
-          labelText: "Search",
-          prefixWidget: const Icon(
-            Icons.search,
-            color: Colors.grey,
-          ),
-        ),
-        10.verticalSpace,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10).r,
-            child: CustomImageView(
-              imagePath:
-                  "http://kalasampurna.com/wavetech/webimages/home11.png",
-            ),
-          ),
-        ),
-        5.verticalSpace,
-        ValueListenableBuilder(
-            valueListenable: serviceListNotifier,
-            builder: (context, value, child) => Container(
-                  height: 0.3.sh,
-                  decoration: const BoxDecoration(),
-                  child: GridView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5)
-                            .r,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: value.length,
-                    itemBuilder: (context, index) {
-                      final firstList = value[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Get.to(
-                            ServiceDetailsPage(categoryModel: firstList),
-                          );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            5.verticalSpace,
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                              ).r,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 13,
-                                horizontal: 30,
-                              ).r,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(5).r,
-                              ),
-                              child: CustomImageView(
-                                alignment: Alignment.center,
-                                //margin: const EdgeInsets.only(left: 10),
-                                height: 40.h,
-                                imagePath: firstList.thumbnail,
-                              ),
-                            ),
-                            2.verticalSpace,
-                            SizedBox(
-                              width: 80.w,
-                              child: Text(
-                                firstList.servicename ?? "",
-                                style: CustomTextStyles.bodySmallErrorContainer,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
+    return CustomScrollView(
+      slivers: [
+        pageAppBar(),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              5.verticalSpace,
+              GestureDetector(
+                onTap: () {
+                  Get.to(LocationPage(
+                    location: customerData!,
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                  ).r,
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          customerData ?? "Ahmedabad",
+                          style: CustomTextStyles.bodySmallff9b9b9b13,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      );
-                    },
+                      ),
+                      3.horizontalSpace,
+                      RotatedBox(
+                        quarterTurns: 3,
+                        child: CustomImageView(
+                          imagePath: Assets.imagesBackIcon,
+                          scale: 3.5,
+                        ),
+                      ),
+                    ],
                   ),
-                )),
-        Container(
-          margin: const EdgeInsets.only(bottom: 15, top: 15).r,
-          height: 10.h,
-          color: const Color(0xfff5f5f5),
-        ),
-        labelWidgetOne("Talk to Our Experts"),
-        10.verticalSpace,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10).r,
-            child: CustomImageView(
-              imagePath:
-                  "http://kalasampurna.com/wavetech/webimages/home12.png",
-            ),
-          ),
-        ),
-        5.verticalSpace,
-        newCategoryListView(),
-        Container(
-          margin: const EdgeInsets.only(top: 10, bottom: 15).r,
-          height: 10.h,
-          color: const Color(0xfff5f5f5),
-        ),
-        labelWidgetOne("AMC Services"),
-        10.verticalSpace,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15).r,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10).r,
-            child: CustomImageView(
-              imagePath:
-                  "http://kalasampurna.com/wavetech/webimages/home13.png",
-            ),
-          ),
-        ),
-        10.verticalSpace,
-        amcCategoryListView(),
-        Container(
-          margin: const EdgeInsets.only(bottom: 15, top: 15).r,
-          height: 10.h,
-          color: const Color(0xfff5f5f5),
-        ),
-        SizedBox(
-          height: 250.h,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: verticalBanner.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8).r,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10).r,
-                child: CustomImageView(
-                  width: 130.w,
-                  fit: BoxFit.fill,
-                  imagePath: verticalBanner[index],
-                  placeHolder: "Please wait",
                 ),
               ),
-            ),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(bottom: 15, top: 15).r,
-          height: 10.h,
-          color: const Color(0xfff5f5f5),
-        ),
-        SizedBox(
-          height: 200.h,
-          child: PageView.builder(
-            onPageChanged: (value) {
-              hIndex.value = value;
-            },
-            controller: pageController,
-            itemCount: horizontalBanners.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10).r,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10).r,
-                child: CustomImageView(
-                  fit: BoxFit.fill,
-                  imagePath: horizontalBanners[index],
-                  placeHolder: "Please wait",
+              10.verticalSpace,
+              TextFieldDesignPage(
+                readOnly: true,
+                onTap: () {
+                  Get.to(const SearchPage());
+                },
+                edgeInsets:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
+                textInputAction: TextInputAction.done,
+                textInputType: TextInputType.text,
+                controller: searchController,
+                labelText: "Search",
+                prefixWidget: const Icon(
+                  Icons.search,
+                  color: Colors.grey,
                 ),
               ),
-            ),
+              10.verticalSpace,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10).r,
+                  child: CustomImageView(
+                    imagePath:
+                        "http://kalasampurna.com/wavetech/webimages/home11.png",
+                  ),
+                ),
+              ),
+              5.verticalSpace,
+              ValueListenableBuilder(
+                  valueListenable: serviceListNotifier,
+                  builder: (context, value, child) => Container(
+                        height: 0.3.sh,
+                        decoration: const BoxDecoration(),
+                        child: GridView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5)
+                              .r,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                          ),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: value.length,
+                          itemBuilder: (context, index) {
+                            final firstList = value[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                  ServiceDetailsPage(categoryModel: firstList),
+                                );
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  5.verticalSpace,
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                    ).r,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 13,
+                                      horizontal: 30,
+                                    ).r,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(5).r,
+                                    ),
+                                    child: CustomImageView(
+                                      alignment: Alignment.center,
+                                      //margin: const EdgeInsets.only(left: 10),
+                                      height: 40.h,
+                                      imagePath: firstList.thumbnail,
+                                    ),
+                                  ),
+                                  2.verticalSpace,
+                                  SizedBox(
+                                    width: 80.w,
+                                    child: Text(
+                                      firstList.servicename ?? "",
+                                      style: CustomTextStyles
+                                          .bodySmallErrorContainer,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      )),
+              Container(
+                margin: const EdgeInsets.only(bottom: 15, top: 15).r,
+                height: 10.h,
+                color: const Color(0xfff5f5f5),
+              ),
+              labelWidgetOne("Talk to Our Experts"),
+              10.verticalSpace,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10).r,
+                  child: CustomImageView(
+                    imagePath:
+                        "http://kalasampurna.com/wavetech/webimages/home12.png",
+                  ),
+                ),
+              ),
+              5.verticalSpace,
+              newCategoryListView(),
+              Container(
+                margin: const EdgeInsets.only(top: 10, bottom: 15).r,
+                height: 10.h,
+                color: const Color(0xfff5f5f5),
+              ),
+              labelWidgetOne("AMC Services"),
+              10.verticalSpace,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10).r,
+                  child: CustomImageView(
+                    imagePath:
+                        "http://kalasampurna.com/wavetech/webimages/home13.png",
+                  ),
+                ),
+              ),
+              10.verticalSpace,
+              amcCategoryListView(),
+              Container(
+                margin: const EdgeInsets.only(bottom: 15, top: 15).r,
+                height: 10.h,
+                color: const Color(0xfff5f5f5),
+              ),
+              SizedBox(
+                height: 250.h,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: verticalBanner.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8).r,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10).r,
+                      child: CustomImageView(
+                        width: 130.w,
+                        fit: BoxFit.fill,
+                        imagePath: verticalBanner[index],
+                        placeHolder: "Please wait",
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 15, top: 15).r,
+                height: 10.h,
+                color: const Color(0xfff5f5f5),
+              ),
+              SizedBox(
+                height: 200.h,
+                child: PageView.builder(
+                  onPageChanged: (value) {
+                    hIndex.value = value;
+                  },
+                  controller: pageController,
+                  itemCount: horizontalBanners.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10).r,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10).r,
+                      child: CustomImageView(
+                        fit: BoxFit.fill,
+                        imagePath: horizontalBanners[index],
+                        placeHolder: "Please wait",
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
+        )
       ],
+      physics: const BouncingScrollPhysics(),
     );
   }
 
@@ -557,17 +553,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AppBar pageAppBar() {
-    return AppBar(
-      systemOverlayStyle: const SystemUiOverlayStyle(
+  SliverAppBar pageAppBar() {
+    return const SliverAppBar(
+      systemOverlayStyle: SystemUiOverlayStyle(
         statusBarIconBrightness: Brightness.dark,
       ),
       backgroundColor: Colors.white,
+      expandedHeight: 50,
       elevation: 0,
       shadowColor: Colors.white,
-      iconTheme: const IconThemeData(
+      iconTheme: IconThemeData(
         color: Color(0xffA41C8E),
       ),
+      floating: true,
     );
   }
 
