@@ -69,7 +69,7 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
               alignment: Alignment.bottomRight,
               children: [
                 CustomImageView(
-                  imagePath: Assets.imagesBannerFour,
+                  imagePath: Assets.imagesThree,
                   alignment: Alignment.center,
                   height: 0.52.sh,
                   fit: BoxFit.fill,

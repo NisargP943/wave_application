@@ -19,6 +19,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   PageController imageController = PageController();
   ValueNotifier<int> pageIndex = ValueNotifier(0);
+  late Timer timer;
   bool end = false;
 
   @override
@@ -27,7 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
     );
-    Timer.periodic(const Duration(seconds: 2), (Timer timer) {
+    timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) {
       if (pageIndex.value == 1) {
         end = true;
       } else if (pageIndex.value == 0) {
@@ -36,10 +37,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
       if (end == false) {
         pageIndex.value++;
-      } else {}
+      }
 
-      imageController.animateToPage(
-        pageIndex.value,
+      imageController.nextPage(
         duration: const Duration(milliseconds: 1000),
         curve: Curves.easeIn,
       );
@@ -49,6 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void dispose() {
     imageController.dispose();
+    timer.cancel();
     super.dispose();
   }
 
@@ -73,6 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Future.delayed(
                 const Duration(seconds: 2),
                 () => Get.off(
+                  curve: Curves.easeIn,
                   const LoginOneScreen(),
                 ),
               );
