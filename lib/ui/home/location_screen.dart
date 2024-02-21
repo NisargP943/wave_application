@@ -11,6 +11,7 @@ import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/values/string.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
 import 'package:http/http.dart' as http;
+import 'package:wave_app/widgets/search_textfield_widget.dart';
 
 class LocationPage extends StatefulWidget {
   const LocationPage({super.key, required this.location});
@@ -53,7 +54,7 @@ class _LocationPageState extends State<LocationPage> {
             20.verticalSpace,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10).r,
-              child: TextFieldDesignPage(
+              child: TextFieldSearchPage(
                 onChanged: (p0) {
                   getPlacesSuggestion(p0);
                 },

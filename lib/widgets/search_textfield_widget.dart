@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wave_app/generated/assets.dart';
 
-class TextFieldDesignPage extends StatefulWidget {
-  const TextFieldDesignPage(
+class TextFieldSearchPage extends StatefulWidget {
+  const TextFieldSearchPage(
       {Key? key,
       required this.controller,
       required this.labelText,
@@ -32,10 +32,10 @@ class TextFieldDesignPage extends StatefulWidget {
   final EdgeInsets? edgeInsets;
 
   @override
-  _TextFieldDesignPageState createState() => _TextFieldDesignPageState();
+  _TextFieldSearchPageState createState() => _TextFieldSearchPageState();
 }
 
-class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
+class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
   // Use it to change color for border when textFiled in focus
   final FocusNode _focusNode = FocusNode();
 
@@ -75,10 +75,10 @@ class _TextFieldDesignPageState extends State<TextFieldDesignPage> {
                 blurRadius: 4,
               )
             ],
-            borderRadius: BorderRadius.circular(50).r,
+            borderRadius: BorderRadius.circular(5).r,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(50).r,
+            borderRadius: BorderRadius.circular(5).r,
             child: ValueListenableBuilder(
               valueListenable: widget.accepted ?? ValueNotifier(true),
               builder: (context, value, child) => TextField(

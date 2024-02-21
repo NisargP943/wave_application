@@ -189,7 +189,7 @@ class _OtpPageState extends State<OtpPage> {
                           if (widget.customerAuthResponseModel?.data?[i]
                                   .customername ==
                               null) {
-                            Get.off(
+                            Get.to(
                               SignUpPageScreen(
                                 mobileNumber: widget.mobileNumber,
                               ),

@@ -20,8 +20,8 @@ import 'package:wave_app/ui/home/location_screen.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
-import 'package:wave_app/widgets/custom_text_field.dart';
 import 'package:wave_app/widgets/home_side_menu.dart';
+import 'package:wave_app/widgets/search_textfield_widget.dart';
 
 ValueNotifier<List<ServicesModel>> serviceListNotifier = ValueNotifier([]);
 ValueNotifier<List<Consultant>> consultantListNotifier = ValueNotifier([]);
@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   List<Worker> workers = [];
   String? customerData;
   bool end = false;
+  late Timer timer;
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
     debugPrint("City $customerData");
     checkConnectivity();
     initWorkers();
-    Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+    timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       if (hIndex.value == 5) {
         end = true;
       } else if (hIndex.value == 0) {
@@ -83,6 +84,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    pageController.dispose();
+    timer.cancel();
     connectivity.cancel();
     searchController.dispose();
     super.dispose();
@@ -149,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               10.verticalSpace,
-              TextFieldDesignPage(
+              TextFieldSearchPage(
                 readOnly: true,
                 onTap: () {
                   Get.to(const SearchPage());

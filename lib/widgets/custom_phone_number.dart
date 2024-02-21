@@ -31,23 +31,23 @@ class CustomPhoneNumber extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(vertical: 20).r,
         border: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black, width: 1.w),
-          borderRadius: BorderRadius.circular(8).r,
+          borderRadius: BorderRadius.circular(50).r,
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black, width: 1.w),
-          borderRadius: BorderRadius.circular(8).r,
+          borderRadius: BorderRadius.circular(50).r,
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black, width: 1.w),
-          borderRadius: BorderRadius.circular(8).r,
+          borderRadius: BorderRadius.circular(50).r,
         ),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black, width: 1.w),
-          borderRadius: BorderRadius.circular(8).r,
+          borderRadius: BorderRadius.circular(50).r,
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black, width: 1.w),
-          borderRadius: BorderRadius.circular(8).r,
+          borderRadius: BorderRadius.circular(50).r,
         ),
         prefixIcon: InkWell(
           onTap: () {

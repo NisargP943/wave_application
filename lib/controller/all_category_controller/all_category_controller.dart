@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/service/category_service.dart';
 import 'package:wave_app/ui/home/home_page.dart';
+import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/sub_category_page.dart';
 
 import '../../model/response/all_category_response_model.dart';
@@ -26,6 +27,10 @@ class AllCatController extends GetxController {
   ).obs;
   Rx<SubCategoryResponseModel?> subCategoryResponseModel =
       SubCategoryResponseModel(
+    data: [],
+  ).obs;
+  Rx<AllCategoryResponseModel?> serviceSearchResponseModel =
+      AllCategoryResponseModel(
     data: [],
   ).obs;
   var loading = true.obs;
@@ -108,6 +113,31 @@ class AllCatController extends GetxController {
     } catch (e) {
       debugPrint("error ${e.toString()}");
       errorMessage.value = "Something is wrong";
+      loading.value = false;
+    }
+  }
+
+  Future<void> searchService(String category) async {
+    loading = true.obs;
+    try {
+      final authResp = await categoryService.searchServiceApi(category);
+      if (authResp.statusCode == 200) {
+        serviceSearchResponseModel.value?.data =
+            allCategoryResponseModelFromJson(
+          authResp.body,
+        ).data;
+        searchServiceNotifier.value =
+            serviceSearchResponseModel.value?.data ?? [];
+        loading.value = false;
+        update();
+        debugPrint("Response :::: $authResp");
+      }
+    } on SocketException catch (e) {
+      // errorMessage.value = "Connection Lost, Check Internet Connection";
+      update();
+    } catch (e) {
+      debugPrint("error ${e.toString()}");
+      //errorMessage.value = "Something is wrong from search";
       loading.value = false;
     }
   }

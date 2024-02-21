@@ -33,9 +33,12 @@ class Assets {
   static const String imagesFbIcon = 'assets/images/fb_icon.png';
   static const String imagesFilter = 'assets/images/filter.png';
   static const String imagesFour = 'assets/images/four.jpg';
+  static const String imagesFunds = 'assets/images/funds.png';
+  static const String imagesGlobe = 'assets/images/globe.png';
   static const String imagesGoogle = 'assets/images/google.png';
   static const String imagesGoogleIcon = 'assets/images/google_icon.png';
   static const String imagesHeart = 'assets/images/heart.png';
+  static const String imagesHelp = 'assets/images/help.png';
   static const String imagesHelpdesk = 'assets/images/helpdesk.png';
   static const String imagesHome = 'assets/images/home.png';
   static const String imagesLoginBgFinal = 'assets/images/loginBgFinal.jpg';
@@ -45,6 +48,7 @@ class Assets {
   static const String imagesLogo2 = 'assets/images/logo2.png';
   static const String imagesMoreVert = 'assets/images/more_vert.png';
   static const String imagesOne = 'assets/images/one.jpg';
+  static const String imagesOrders = 'assets/images/orders.png';
   static const String imagesPriceFilter = 'assets/images/priceFilter.png';
   static const String imagesProfile = 'assets/images/profile.png';
   static const String imagesReject = 'assets/images/reject.png';
@@ -52,6 +56,7 @@ class Assets {
   static const String imagesShare = 'assets/images/share.png';
   static const String imagesShopping = 'assets/images/shopping.png';
   static const String imagesShoppingCart = 'assets/images/shoppingCart.png';
+  static const String imagesTerms = 'assets/images/terms.png';
   static const String imagesThree = 'assets/images/three.jpg';
   static const String imagesTitleLogo = 'assets/images/title_logo.png';
   static const String imagesTwo = 'assets/images/two.jpg';
