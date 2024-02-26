@@ -31,20 +31,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
     );
     timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) {
+      print(pageIndex.value);
       if (pageIndex.value == 1) {
-        Get.off(
-          const LoginOneScreen(),
-          transition: Transition.fadeIn,
-          duration: const Duration(seconds: 2),
-        );
         end = true;
+
+        Future.delayed(
+          const Duration(seconds: 2),
+          () => Get.off(
+            const LoginOneScreen(),
+            transition: Transition.fadeIn,
+            duration: const Duration(seconds: 2),
+          ),
+        );
       } else if (pageIndex.value == 0) {
         end = false;
       }
 
       if (end == false) {
-        pageIndex.value++;
-      }
+        debugPrint("page index inceremented");
+        Future.delayed(const Duration(seconds: 1), () => pageIndex.value++);
+      } else {}
     });
   }
 
@@ -69,10 +75,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             height: 1.sh,
 
             // slow fade for newly loaded images:
-            duration: const Duration(seconds: 1),
+            duration: const Duration(seconds: 2),
 
             // if the image is loaded synchronously (ex. from memory), fade in faster:
-            syncDuration: const Duration(seconds: 5),
+            //syncDuration: const Duration(milliseconds: 1),
 
             // supports most properties of Image:
             alignment: Alignment.center,
@@ -128,7 +134,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               height: 1.sh,
 
               // slow fade for newly loaded images:
-              duration: const Duration(milliseconds: 900),
+              duration: const Duration(seconds: 3),
 
               // if the image is loaded synchronously (ex. from memory), fade in faster:
               syncDuration: const Duration(milliseconds: 150),

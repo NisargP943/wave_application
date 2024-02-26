@@ -47,7 +47,7 @@ class ServicesModel {
   int? rating;
   int? price;
   String? thumbnail;
-  bool? imageLoaded;
+  bool? isFav;
 
   ServicesModel({
     this.id,
@@ -60,7 +60,7 @@ class ServicesModel {
     this.rating,
     this.price,
     this.thumbnail,
-    this.imageLoaded,
+    this.isFav,
   });
 
   factory ServicesModel.fromJson(Map<String, dynamic> json) => ServicesModel(

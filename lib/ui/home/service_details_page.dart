@@ -7,11 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
+import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/sub_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
@@ -21,9 +24,11 @@ class ServiceDetailsPage extends StatefulWidget {
       this.categoryModel,
       this.consultant,
       this.subCategoryModel,
-      this.fromSubCategory});
+      this.fromSubCategory,
+      this.amcModel});
 
   final ServicesModel? categoryModel;
+  final ServiceModel? amcModel;
   final Consultant? consultant;
   final CategoryModel? subCategoryModel;
   final bool? fromSubCategory;
@@ -36,6 +41,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   int? dateTimeIndex;
   TextEditingController timeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  var catController = Get.put(AllCatController());
   ValueNotifier<bool> isLoading = ValueNotifier(true);
   List<DateTime?> _singleDatePickerValueWithDefaultValue = [
     DateTime.now(),
@@ -47,6 +53,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     initializeDateFormatting();
     debugPrint(widget.categoryModel?.id);
     Future.delayed(const Duration(seconds: 2), () => isLoading.value = false);
+    dateController.text = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    timeController.text = timeController.text =
+        DateFormat.jm().format(DateTime.now()).toLowerCase();
+    catController.searchService(widget.categoryModel?.catg ?? "Health Care");
   }
 
   @override
@@ -84,7 +94,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       title: Text(
         widget.fromSubCategory == true
             ? widget.subCategoryModel!.name!
-            : widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
+            : widget.amcModel != null
+                ? widget.amcModel?.catg ?? ""
+                : widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
         style: CustomTextStyles.titleMediumGray700,
         overflow: TextOverflow.ellipsis,
       ),
@@ -107,6 +119,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             )
           : widget.categoryModel == null &&
                   widget.consultant == null &&
+                  widget.amcModel == null &&
                   widget.subCategoryModel == null
               ? Center(
                   child: Text(
@@ -128,8 +141,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       children: [
         Center(
           child: CustomImageView(
-            imagePath:
-                widget.categoryModel?.thumbnail ?? widget.consultant?.thumbnail,
+            imagePath: widget.amcModel != null
+                ? widget.amcModel?.thumbnail
+                : widget.categoryModel?.thumbnail ??
+                    widget.consultant?.thumbnail,
             height: 0.4.sh,
             fit: BoxFit.fill,
           ),
@@ -141,7 +156,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         3.verticalSpace,
         serviceLabel(),
         5.verticalSpace,
-        ratingBarRow(),
+        ratingBarRow(4),
         30.verticalSpace,
         serviceDescription(),
         70.verticalSpace,
@@ -149,10 +164,22 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
             onTap: () {},
-            text: "BOOK SERVICE",
+            text: "Book Now",
           ),
         ),
-        20.verticalSpace,
+        10.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: AppButtonWidget(
+            onTap: () {},
+            text: "Schedule Booking",
+          ),
+        ),
+        15.verticalSpace,
+        labelWidgetOne("You Can Also Select"),
+        6.verticalSpace,
+        newCategoryListView(),
+        10.verticalSpace,
       ],
     );
   }
@@ -198,7 +225,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ),
         ),
         5.verticalSpace,
-        ratingBarRow(),
+        ratingBarRow(4),
         30.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
@@ -212,10 +239,22 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
             onTap: () {},
-            text: "BOOK SERVICE",
+            text: "Book Now",
+          ),
+        ),
+        10.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: AppButtonWidget(
+            onTap: () {},
+            text: "Schedule Booking",
           ),
         ),
         20.verticalSpace,
+        labelWidgetOne("You Can Also Select"),
+        6.verticalSpace,
+        newCategoryListView(),
+        10.verticalSpace,
       ],
     );
   }
@@ -224,7 +263,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Text(
-        widget.categoryModel?.sdesc ?? "${widget.consultant?.sdesc}",
+        widget.categoryModel?.sdesc ??
+            widget.consultant?.sdesc ??
+            widget.amcModel?.catg ??
+            "",
         style: CustomTextStyles.titleMediumff407bff,
       ),
     );
@@ -234,7 +276,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Text(
-        widget.categoryModel?.catg ?? "${widget.consultant?.catg}",
+        widget.categoryModel?.catg ??
+            widget.consultant?.catg ??
+            widget.amcModel?.catg ??
+            "",
         style: CustomTextStyles.bodySmallff9b9b9b,
       ),
     );
@@ -249,12 +294,14 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           Expanded(
             child: Text(
               widget.categoryModel?.servicename.toString() ??
-                  "${widget.consultant?.servicename}",
+                  widget.consultant?.servicename ??
+                  widget.amcModel?.catg ??
+                  "",
               style: CustomTextStyles.displaySmallBlack900,
             ),
           ),
           Text(
-            "₹ ${widget.categoryModel?.srate ?? widget.consultant?.srate}",
+            "₹ ${widget.categoryModel?.srate ?? widget.consultant?.srate ?? widget.amcModel?.srate}",
             style: CustomTextStyles.displaySmallBlack900,
           ),
         ],
@@ -366,10 +413,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     );
   }
 
-  Widget ratingBarRow() {
+  Widget ratingBarRow(int rating) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15).r,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RatingBar(
             initialRating: 5,
@@ -550,6 +598,128 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget newCategoryListView() {
+    return ValueListenableBuilder(
+      valueListenable: searchServiceNotifier,
+      builder: (context, value, widget) => SizedBox(
+        height: 205.h,
+        //  color: Colors.red,
+        child: ListView.separated(
+          itemCount: value.length,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final secondList = value[index];
+            return GestureDetector(
+              onTap: () {
+                //  Get.to(ServiceDetailsPage(: secondList));
+              },
+              child: Column(
+                children: [
+                  5.verticalSpace,
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
+                    child: CustomImageView(
+                      height: 60.r,
+                      imagePath: secondList.thumbnail,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      5.verticalSpace,
+                      SizedBox(
+                        width: 120.w,
+                        child: Text(
+                          secondList.servicename ?? "",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                      5.verticalSpace,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RatingBar(
+                            initialRating: 5,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            glowColor: Colors.orangeAccent,
+                            itemSize: 16,
+                            ratingWidget: RatingWidget(
+                              full: const Icon(
+                                Icons.star_sharp,
+                                color: Colors.orangeAccent,
+                              ),
+                              half: const Icon(
+                                Icons.star_half_sharp,
+                                color: Colors.yellow,
+                              ),
+                              empty: const Icon(
+                                Icons.star_border_sharp,
+                              ),
+                            ),
+                            onRatingUpdate: (double value) {},
+                          ),
+                          3.horizontalSpace,
+                          Text(
+                            "(10)",
+                            style: CustomTextStyles.bodySmallGrey11,
+                          )
+                        ],
+                      ),
+                      10.verticalSpace,
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: CustomTextStyles.bodySmallRed700,
+                            ),
+                          ],
+                          text: "₹${secondList.price}",
+                          style: CustomTextStyles.bodyMediumGrey13,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return 20.horizontalSpace;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget labelWidgetOne(String? labelText) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+      ).r,
+      child: Text(
+        labelText ?? "Talk to our Experts",
+        style: CustomTextStyles.bodyMediumBlack900,
+      ),
     );
   }
 }

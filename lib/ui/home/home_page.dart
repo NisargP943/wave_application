@@ -14,6 +14,7 @@ import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
+import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/location_screen.dart';
@@ -25,7 +26,7 @@ import 'package:wave_app/widgets/search_textfield_widget.dart';
 
 ValueNotifier<List<ServicesModel>> serviceListNotifier = ValueNotifier([]);
 ValueNotifier<List<Consultant>> consultantListNotifier = ValueNotifier([]);
-ValueNotifier<List<ServicesModel>> amcListNotifier = ValueNotifier([]);
+ValueNotifier<List<ServiceModel>> amcListNotifier = ValueNotifier([]);
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.customerAuthResponseModel});
@@ -155,7 +156,7 @@ class _HomePageState extends State<HomePage> {
               TextFieldSearchPage(
                 readOnly: true,
                 onTap: () {
-                  Get.to(const SearchPage());
+                  Get.to(const SearchServicePage());
                 },
                 edgeInsets:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
@@ -168,7 +169,9 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.grey,
                 ),
               ),
-              10.verticalSpace,
+              15.verticalSpace,
+              labelWidgetOne("Wave Home"),
+              15.verticalSpace,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15).r,
                 child: ClipRRect(
@@ -472,7 +475,7 @@ class _HomePageState extends State<HomePage> {
             final secondList = value[index];
             return GestureDetector(
               onTap: () {
-                Get.to(ServiceDetailsPage(categoryModel: secondList));
+                Get.to(ServiceDetailsPage(amcModel: secondList));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -516,7 +519,7 @@ class _HomePageState extends State<HomePage> {
                           style: CustomTextStyles.bodySmallRed700,
                         ),
                       ],
-                      text: "₹${secondList.price}",
+                      text: "₹${secondList.srate}",
                       style: CustomTextStyles.bodyMediumGrey13,
                     ),
                   )

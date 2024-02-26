@@ -69,20 +69,20 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
               alignment: Alignment.bottomRight,
               children: [
                 CustomImageView(
-                  imagePath: Assets.imagesThree,
+                  imagePath: Assets.imagesFour,
                   alignment: Alignment.center,
                   height: 0.52.sh,
                   fit: BoxFit.fill,
                   width: 1.sw,
                 ),
-                Positioned(
+                /* Positioned(
                   bottom: 0.03.sh,
                   right: 0.01.sh,
                   child: CustomImageView(
                     imagePath: Assets.imagesLogo2,
                     scale: 13,
                   ),
-                ),
+                ),*/
               ],
             ),
             20.verticalSpace,

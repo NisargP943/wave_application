@@ -24,9 +24,14 @@ class _SplashScreenState extends State<SplashScreen> {
       () {
         /// checking condition if the user is already logged in than redirect to home page
         if (temp.isLogin == true) {
-          Get.off(const MainPage());
+          Get.off(
+              transition: Transition.fadeIn,
+              duration: const Duration(seconds: 2),
+              const MainPage());
         } else {
           Get.off(
+            transition: Transition.fadeIn,
+            duration: const Duration(seconds: 2),
             const WelcomeScreen(),
           );
         }
@@ -63,7 +68,8 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 Text(
                   "Services Faster Than\nYour Next Coffee Break",
-                  style: TextStyle(color: const Color(0xff636363), fontSize: 23.spMin),
+                  style: TextStyle(
+                      color: const Color(0xff636363), fontSize: 23.spMin),
                 ),
                 SizedBox(height: 40.h),
                 Image(
@@ -77,7 +83,8 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 75.h),
             Text(
               "www.wavetechservices.in",
-              style: TextStyle(color: const Color(0xff636363), fontSize: 19.spMin),
+              style:
+                  TextStyle(color: const Color(0xff636363), fontSize: 19.spMin),
             ),
             SizedBox(height: 0.10.sh),
             Image(

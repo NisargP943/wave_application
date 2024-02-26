@@ -53,6 +53,7 @@ class Assets {
   static const String imagesProfile = 'assets/images/profile.png';
   static const String imagesReject = 'assets/images/reject.png';
   static const String imagesSearch = 'assets/images/search.png';
+  static const String imagesSelectedFav = 'assets/images/selected_fav.png';
   static const String imagesShare = 'assets/images/share.png';
   static const String imagesShopping = 'assets/images/shopping.png';
   static const String imagesShoppingCart = 'assets/images/shoppingCart.png';
@@ -60,6 +61,7 @@ class Assets {
   static const String imagesThree = 'assets/images/three.jpg';
   static const String imagesTitleLogo = 'assets/images/title_logo.png';
   static const String imagesTwo = 'assets/images/two.jpg';
+  static const String imagesUnselectedFav = 'assets/images/unselected_fav.png';
   static const String imagesWelcome1 = 'assets/images/welcome_1.jpeg';
   static const String imagesWelcome2 = 'assets/images/welcome_2.jpeg';
   static const String imagesWelcome3 = 'assets/images/welcome_3.jpeg';

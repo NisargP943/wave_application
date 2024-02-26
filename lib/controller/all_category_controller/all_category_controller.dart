@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
+import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/service/category_service.dart';
 import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
@@ -16,7 +17,7 @@ class AllCatController extends GetxController {
     data: [],
     success: 0,
   ).obs;
-  Rx<AllCategoryResponseModel?> allAmcProducts = AllCategoryResponseModel(
+  Rx<AmcResponseModel?> allAmcProducts = AmcResponseModel(
     data: [],
     success: 0,
   ).obs;
@@ -79,7 +80,7 @@ class AllCatController extends GetxController {
     try {
       final authResp = await categoryService.getAmcProducts();
       if (authResp.statusCode == 200) {
-        allAmcProducts.value?.data = allCategoryResponseModelFromJson(
+        allAmcProducts.value?.data = amcResponseModelFromJson(
           authResp.body,
         ).data;
         amcListNotifier.value = allAmcProducts.value!.data!;

@@ -31,7 +31,7 @@ class CategoryService {
   Future getAmcProducts() async {
     try {
       final response = await http.get(
-        Uri.parse("${Constant().baseUrl}get_all_amc.php"),
+        Uri.parse("http://wavetechservices.in/app/get_all_amc.php"),
       );
       debugPrint(response.body);
       return response;

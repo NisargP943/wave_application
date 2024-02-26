@@ -190,15 +190,20 @@ class _OtpPageState extends State<OtpPage> {
                                   .customername ==
                               null) {
                             Get.to(
+                              transition: Transition.fadeIn,
+                              duration: const Duration(seconds: 2),
                               SignUpPageScreen(
                                 mobileNumber: widget.mobileNumber,
                               ),
                             );
                           } else {
-                            Get.offAll(MainPage(
-                              customerAuthResponseModel:
-                                  widget.customerAuthResponseModel,
-                            ));
+                            Get.offAll(
+                                transition: Transition.fadeIn,
+                                duration: const Duration(seconds: 2),
+                                MainPage(
+                                  customerAuthResponseModel:
+                                      widget.customerAuthResponseModel,
+                                ));
                           }
                         }
                       }
