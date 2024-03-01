@@ -155,7 +155,7 @@ class CustomTextStyles {
 
   static get bodySmallff9b9b9b => theme.textTheme.bodySmall!.copyWith(
         color: const Color(0XFF9B9B9B),
-        fontSize: 11,
+        fontSize: 13,
       );
 
   static get bodySmallff9b9b9b11 => theme.textTheme.bodySmall!.copyWith(
@@ -174,9 +174,8 @@ class CustomTextStyles {
         fontSize: 20.spMin,
       );
 
-  static get displaySmallOnPrimary => theme.textTheme.displaySmall!.copyWith(
-        color: theme.colorScheme.onPrimary.withOpacity(1),
-      );
+  static get displaySmallOnPrimary => theme.textTheme.displaySmall!
+      .copyWith(color: Colors.black, fontSize: 28.spMin);
 
   // Headline text style
   static get headlineLargeAcmeGray900 =>

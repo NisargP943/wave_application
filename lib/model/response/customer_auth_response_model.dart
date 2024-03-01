@@ -12,7 +12,7 @@ String customerAuthResponseModelToJson(CustomerAuthResponseModel data) =>
 
 class CustomerAuthResponseModel {
   List<Datum>? data;
-  int? otp;
+  int? otp, code;
 
   CustomerAuthResponseModel({
     this.data,

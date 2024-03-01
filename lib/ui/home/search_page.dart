@@ -2,20 +2,18 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
-import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
-import 'package:wave_app/widgets/custom_text_field.dart';
-import 'package:wave_app/widgets/search_textfield_widget.dart';
+import 'package:wave_app/widgets/drop_down_textfield.dart';
 
 ValueNotifier<List<ServicesModel>> searchServiceNotifier = ValueNotifier([]);
 
@@ -27,7 +25,8 @@ class SearchServicePage extends StatefulWidget {
 }
 
 class _SearchServicePageState extends State<SearchServicePage> {
-  TextEditingController searchController = TextEditingController();
+  SingleValueDropDownController searchController =
+      SingleValueDropDownController();
   late StreamSubscription connectivity;
   ValueNotifier<bool> showSearchBar = ValueNotifier(false);
   List<String> category = [
@@ -37,6 +36,7 @@ class _SearchServicePageState extends State<SearchServicePage> {
     "Bike Service",
     "Consultants - Advisory Service",
     "Contractors",
+    "Health Care",
     "Electrical Service",
     "Electronics Service",
     "Event Organizer",
@@ -129,13 +129,16 @@ class _SearchServicePageState extends State<SearchServicePage> {
         ValueListenableBuilder(
           valueListenable: showSearchBar,
           builder: (context, value, child) => value
-              ? TextFieldSearchPage(
+              ? DropDownTextFieldSearchPage(
                   onChanged: (val) {
-                    categoryController.getSubCategory(val);
+                    if (searchController.dropDownValue?.value != null) {
+                      categoryController
+                          .searchService(searchController.dropDownValue?.value);
+                    }
                   },
                   edgeInsets: const EdgeInsets.symmetric(
-                    vertical: 5,
-                    horizontal: 15,
+                    vertical: 15,
+                    horizontal: 0,
                   ).r,
                   textInputAction: TextInputAction.done,
                   textInputType: TextInputType.text,

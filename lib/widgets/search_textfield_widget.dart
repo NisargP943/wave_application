@@ -6,7 +6,7 @@ import 'package:wave_app/generated/assets.dart';
 class TextFieldSearchPage extends StatefulWidget {
   const TextFieldSearchPage(
       {Key? key,
-      required this.controller,
+      this.controller,
       required this.labelText,
       this.textInputType,
       this.textInputAction,
@@ -17,9 +17,10 @@ class TextFieldSearchPage extends StatefulWidget {
       this.prefixWidget,
       this.edgeInsets,
       this.readOnly,
-      this.onTap})
+      this.onTap,
+      this.padding})
       : super(key: key);
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String labelText;
   final TextInputType? textInputType;
   final TextInputAction? textInputAction;
@@ -30,6 +31,7 @@ class TextFieldSearchPage extends StatefulWidget {
   final Widget? prefixWidget;
   final void Function()? onTap;
   final EdgeInsets? edgeInsets;
+  final double? padding;
 
   @override
   _TextFieldSearchPageState createState() => _TextFieldSearchPageState();
@@ -64,7 +66,7 @@ class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15).r,
+      padding: EdgeInsets.symmetric(horizontal: widget.padding ?? 15).r,
       child: Center(
         child: Container(
           decoration: BoxDecoration(
@@ -82,24 +84,13 @@ class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
             child: ValueListenableBuilder(
               valueListenable: widget.accepted ?? ValueNotifier(true),
               builder: (context, value, child) => TextField(
-                onChanged: widget.onChanged,
-                controller: widget.controller,
                 onTap: widget.onTap,
-                obscureText: widget.visiblePassword ?? false,
-                focusNode: _focusNode,
+                controller: widget.controller,
                 readOnly: widget.readOnly ?? false,
+                focusNode: _focusNode,
                 style: TextStyle(color: Colors.black, fontSize: 16.spMin),
-                keyboardType: widget.textInputType,
-                textInputAction: widget.textInputAction,
-                inputFormatters: widget.inputFormatters,
                 decoration: InputDecoration(
                   prefixIcon: widget.prefixWidget,
-                  suffixIcon: widget.controller.text.isNotEmpty
-                      ? Image.asset(
-                          value ? Assets.imagesAccepted : Assets.imagesReject,
-                          scale: 1.6,
-                        )
-                      : const SizedBox.shrink(),
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding: widget.edgeInsets ??
@@ -116,7 +107,7 @@ class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
                     minHeight: 0,
                   ),
                 ),
-                cursorColor: Colors.black,
+                onChanged: widget.onChanged,
               ),
             ),
           ),

@@ -4,9 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:wave_app/model/customer_data.dart';
+import 'package:wave_app/ui/home/order_details_page.dart';
 import 'package:wave_app/ui/welcome/splash_screen.dart';
 
-Box? customerDB, locationDB;
+Box? customerDB, locationDB, nameDB, totalServiceCostDB, serviceBookingTime;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,9 @@ void main() async {
   Hive.registerAdapter(CustomerDataAdapter());
   customerDB = await Hive.openBox<CustomerData>("customerDataBox");
   locationDB = await Hive.openBox("locationBox");
+  serviceBookingTime = await Hive.openBox("serviceBox");
+  nameDB = await Hive.openBox("nameBox");
+  totalServiceCostDB = await Hive.openBox("priceBox");
   if (customerDB?.get("isLogin") == null) {
     customerDB?.put("isLogin", CustomerData(isLogin: false));
   }

@@ -13,7 +13,6 @@ import 'package:uuid/uuid.dart';
 import 'package:wave_app/controller/auth_controller/auth_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
-import 'package:wave_app/theme/app_decoration.dart';
 import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/auth/login_page.dart';
 import 'package:wave_app/values/string.dart';
@@ -23,7 +22,8 @@ import 'package:wave_app/widgets/custom_text_field.dart';
 
 // ignore_for_file: must_be_immutable
 class SignUpPageScreen extends StatefulWidget {
-  const SignUpPageScreen({Key? key, this.customerAuthResponseModel, this.mobileNumber})
+  const SignUpPageScreen(
+      {Key? key, this.customerAuthResponseModel, this.mobileNumber})
       : super(key: key);
   final CustomerAuthResponseModel? customerAuthResponseModel;
   final String? mobileNumber;
@@ -70,7 +70,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   List<Placemark> address = [];
 
-  late StreamSubscription connectivity;
+  StreamSubscription? connectivity;
   var authController = Get.put(AuthController());
 
   @override
@@ -94,7 +94,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   @override
   void dispose() {
-    connectivity.cancel();
+    connectivity?.cancel();
     super.dispose();
   }
 
@@ -244,14 +244,16 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                               onTap: () {
                                 locationController.text =
                                     "${places[index]['description']}";
-                                convertAddressToLatLong(locationController.text);
+                                convertAddressToLatLong(
+                                    locationController.text);
                                 showPlaces.value = false;
                               },
                               child: Text(
                                 places[index]['description'],
                               ),
                             ),
-                            separatorBuilder: (BuildContext context, int index) {
+                            separatorBuilder:
+                                (BuildContext context, int index) {
                               return 15.verticalSpace;
                             },
                           ),
@@ -294,7 +296,8 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                   ),
                 ),
                 14.verticalSpace,
-                Text("Or sign up with social account", style: theme.textTheme.bodyMedium),
+                Text("Or sign up with social account",
+                    style: theme.textTheme.bodyMedium),
                 14.verticalSpace,
                 _buildSeventySeven(context),
                 30.verticalSpace,
@@ -471,7 +474,8 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   void checkConnectivity() {
     Connectivity().checkConnectivity().then((value) {
-      if (value == ConnectivityResult.mobile || value == ConnectivityResult.wifi) {
+      if (value == ConnectivityResult.mobile ||
+          value == ConnectivityResult.wifi) {
         authController.newUserSignUp(
           name: nameController.text,
           mobileNumber: widget.mobileNumber ?? "",
@@ -508,7 +512,8 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
       }
     });
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
-      if (event == ConnectivityResult.mobile || event == ConnectivityResult.wifi) {
+      if (event == ConnectivityResult.mobile ||
+          event == ConnectivityResult.wifi) {
         debugPrint("This is called");
         authController.newUserSignUp(
           name: nameController.text,
@@ -588,7 +593,7 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     position = await Geolocator.getCurrentPosition();
-    debugPrint(position.longitude.toString());
+    debugPrint("current location ${position.longitude.toString()}");
     return await Geolocator.getCurrentPosition();
   }
 
@@ -611,7 +616,8 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
   Future<List<Placemark>> convertLatLongToAddress(
       double latitude, double longitude) async {
     address = await placemarkFromCoordinates(latitude, longitude);
-    locationController.text = "${locationController.text}, ${address[0].postalCode}";
+    locationController.text =
+        "${locationController.text}, ${address[0].postalCode}";
     /* "${address[0].street}${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}";*/
     debugPrint(
         "----------------------------------------------------value after conversion : ${address[0].street}, ${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}");

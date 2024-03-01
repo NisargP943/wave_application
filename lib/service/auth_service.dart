@@ -29,7 +29,7 @@ class AuthApiService {
     lang,
   }) async {
     try {
-      final response = await http.get(
+      final response = await http.put(
         Uri.parse(
           "http://wavetechservices.in/app/register_new_customer.php?username=$name&mobile=$mobileNumber&password=$password&email=$email&street=$street&city=$city&pincode=$pincode&glat=$lat&glong=$lang",
         ),

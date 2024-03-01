@@ -1,13 +1,13 @@
 // To parse this JSON data, do
 //
-//     final allCategoryResponseModel = allCategoryResponseModelFromJson(jsonString);
+//     final amcResponseModel = amcResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
 AmcResponseModel amcResponseModelFromJson(String str) =>
     AmcResponseModel.fromJson(json.decode(str));
 
-String allCategoryResponseModelToJson(AmcResponseModel data) =>
+String amcResponseModelToJson(AmcResponseModel data) =>
     json.encode(data.toJson());
 
 class AmcResponseModel {
@@ -42,12 +42,11 @@ class ServiceModel {
   String? sdesc;
   int? srate;
   String? catg;
-  Priority? priority;
-  Stype? stype;
+  String? priority;
+  String? stype;
   int? rating;
   int? price;
   String? thumbnail;
-  bool? imageLoaded;
 
   ServiceModel({
     this.id,
@@ -60,7 +59,6 @@ class ServiceModel {
     this.rating,
     this.price,
     this.thumbnail,
-    this.imageLoaded,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
@@ -69,8 +67,8 @@ class ServiceModel {
         sdesc: json["sdesc"],
         srate: json["srate"],
         catg: json["catg"],
-        priority: priorityValues.map[json["priority"]]!,
-        stype: stypeValues.map[json["stype"]]!,
+        priority: json["priority"],
+        stype: json["stype"],
         rating: json["rating"],
         price: json["price"],
         thumbnail: json["thumbnail"],
@@ -82,31 +80,10 @@ class ServiceModel {
         "sdesc": sdesc,
         "srate": srate,
         "catg": catg,
-        "priority": priorityValues.reverse[priority],
-        "stype": stypeValues.reverse[stype],
+        "priority": priority,
+        "stype": stype,
         "rating": rating,
         "price": price,
         "thumbnail": thumbnail,
       };
-}
-
-enum Priority { PRIORITY_1, PRIORITY_2 }
-
-final priorityValues = EnumValues(
-    {"Priority-1": Priority.PRIORITY_1, "Priority-2": Priority.PRIORITY_2});
-
-enum Stype { SERVICES }
-
-final stypeValues = EnumValues({"Services": Stype.SERVICES});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

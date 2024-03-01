@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +10,14 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/main.dart';
+import 'package:wave_app/model/my_cart_model.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/sub_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
@@ -57,6 +61,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     timeController.text = timeController.text =
         DateFormat.jm().format(DateTime.now()).toLowerCase();
     catController.searchService(widget.categoryModel?.catg ?? "Health Care");
+    serviceBookingTime?.put(
+        "serviceTime", "${dateController.text} and ${timeController.text}");
   }
 
   @override
@@ -163,7 +169,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
-            onTap: () {},
+            onTap: () {
+              validate();
+            },
             text: "Book Now",
           ),
         ),
@@ -182,6 +190,40 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         10.verticalSpace,
       ],
     );
+  }
+
+  void validate() {
+    if (dateController.text.isEmpty) {
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please select booking date",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ).show(context);
+      return;
+    } else if (timeController.text.isEmpty) {
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please select booking time",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ).show(context);
+      return;
+    } else {
+      pageNotifier.value = 2;
+      myCartList.add(widget.categoryModel!);
+      Get.back();
+    }
   }
 
   Widget servicesDetailsFromSubCategoryWidget() {
@@ -238,7 +280,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
-            onTap: () {},
+            onTap: () {
+              pageNotifier.value = 2;
+              myCartList.add(widget.categoryModel!);
+              Get.back();
+            },
             text: "Book Now",
           ),
         ),
@@ -589,6 +635,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                 child: AppButtonWidget(
                   text: "Ok",
                   onTap: () {
+                    serviceBookingTime?.put("serviceTime",
+                        "${dateController.text} and ${timeController.text}");
                     Get.back();
                   },
                 ),

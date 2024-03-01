@@ -4,8 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/helpdesk_page.dart';
 import 'package:wave_app/ui/home/home_page.dart';
+import 'package:wave_app/ui/home/order_details_page.dart';
 import 'package:wave_app/ui/home/sub_category_page.dart';
+import 'package:wave_app/ui/home/wave_cart_page.dart';
+
+ValueNotifier<int> pageNotifier = ValueNotifier(0);
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, this.customerAuthResponseModel});
@@ -17,7 +22,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  ValueNotifier<int> pageNotifier = ValueNotifier(0);
   List<Widget> pages = [];
 
   @override
@@ -32,9 +36,10 @@ class _MainPageState extends State<MainPage> {
     pages = [
       HomePage(customerAuthResponseModel: widget.customerAuthResponseModel),
       const HomePage(),
-      const HomePage(),
+      const WaveCartPage(),
       const SubCategoryPage(),
-      const HomePage(),
+      const OrderDetailsPage(),
+      HelpdeskPage()
     ];
   }
 
@@ -120,6 +125,15 @@ class _MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   color: value == 4 ? const Color(0xffDB3022) : null,
+                  height: 45.h,
+                  width: 30.w,
+                  Assets.imagesShopping,
+                ),
+                label: "Orders",
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  color: value == 5 ? const Color(0xffDB3022) : null,
                   height: 45.h,
                   width: 30.w,
                   Assets.imagesProfile,

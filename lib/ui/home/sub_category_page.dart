@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -15,6 +16,7 @@ import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/custom_text_field.dart';
+import 'package:wave_app/widgets/drop_down_textfield.dart';
 
 ValueNotifier<List<CategoryModel>> subCategoryNotifier = ValueNotifier([]);
 
@@ -26,7 +28,8 @@ class SubCategoryPage extends StatefulWidget {
 }
 
 class _SubCategoryPageState extends State<SubCategoryPage> {
-  TextEditingController searchController = TextEditingController();
+  SingleValueDropDownController searchController =
+      SingleValueDropDownController();
   late StreamSubscription connectivity;
   ValueNotifier<bool> showSearchBar = ValueNotifier(false);
   List<String> category = [
@@ -128,12 +131,15 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         ValueListenableBuilder(
           valueListenable: showSearchBar,
           builder: (context, value, child) => value
-              ? TextFieldDesignPage(
+              ? DropDownTextFieldSearchPage(
                   onChanged: (val) {
-                    categoryController.getSubCategory(val);
+                    if (searchController.dropDownValue?.value != null) {
+                      categoryController.getSubCategory(
+                          searchController.dropDownValue?.value);
+                    }
                   },
                   edgeInsets: const EdgeInsets.symmetric(
-                    vertical: 5,
+                    vertical: 15,
                     horizontal: 15,
                   ).r,
                   textInputAction: TextInputAction.done,

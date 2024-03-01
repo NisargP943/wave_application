@@ -48,6 +48,7 @@ class ServicesModel {
   int? price;
   String? thumbnail;
   bool? isFav;
+  int? count;
 
   ServicesModel({
     this.id,
@@ -61,6 +62,7 @@ class ServicesModel {
     this.price,
     this.thumbnail,
     this.isFav,
+    this.count = 1,
   });
 
   factory ServicesModel.fromJson(Map<String, dynamic> json) => ServicesModel(

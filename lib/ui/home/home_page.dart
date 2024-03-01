@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
@@ -45,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   var categoryController = Get.put(AllCatController());
   ValueNotifier<int> hIndex = ValueNotifier(0);
   List<Worker> workers = [];
-  String? customerData;
+  String? customerData, custName;
   bool end = false;
   late Timer timer;
 
@@ -59,7 +58,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     customerData = locationDB?.get("city").toString();
-    debugPrint("City $customerData");
+    custName = nameDB?.get("customername");
+    debugPrint("City $customerData  Name $custName");
     checkConnectivity();
     initWorkers();
     timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
@@ -162,7 +162,6 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
                 textInputAction: TextInputAction.done,
                 textInputType: TextInputType.text,
-                controller: searchController,
                 labelText: "",
                 prefixWidget: const Icon(
                   Icons.search,
@@ -170,6 +169,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               15.verticalSpace,
+              labelWidgetOne("Welcome, $custName"),
+              3.verticalSpace,
               labelWidgetOne("Wave Home"),
               15.verticalSpace,
               Padding(
@@ -463,7 +464,7 @@ class _HomePageState extends State<HomePage> {
     return ValueListenableBuilder(
       valueListenable: amcListNotifier,
       builder: (context, value, widget) => SizedBox(
-        height: 140.h,
+        height: 150.h,
         //  color: Colors.red,
         child: ListView.separated(
           itemCount: value.length,

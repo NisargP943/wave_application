@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wave_app/main.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/amc_response_model.dart';
+import 'package:wave_app/model/response/book_service_response_model.dart';
 import 'package:wave_app/service/category_service.dart';
 import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
@@ -34,6 +36,8 @@ class AllCatController extends GetxController {
       AllCategoryResponseModel(
     data: [],
   ).obs;
+  Rx<BookServiceResponseModel> bookServiceResponseModel =
+      BookServiceResponseModel(bookingid: "", status: "").obs;
   var loading = true.obs;
   var errorMessage = "".obs;
   CategoryService categoryService = CategoryService();
@@ -129,6 +133,50 @@ class AllCatController extends GetxController {
         ).data;
         searchServiceNotifier.value =
             serviceSearchResponseModel.value?.data ?? [];
+        loading.value = false;
+        update();
+        debugPrint("Response :::: $authResp");
+      }
+    } on SocketException catch (e) {
+      // errorMessage.value = "Connection Lost, Check Internet Connection";
+      update();
+    } catch (e) {
+      debugPrint("error ${e.toString()}");
+      //errorMessage.value = "Something is wrong from search";
+      loading.value = false;
+    }
+  }
+
+  Future<void> bookService(
+      {required String name,
+      required String number,
+      required String cityLat,
+      required String cityLong,
+      required String address,
+      required String bookingDate,
+      required String bookingTime,
+      required String landmark,
+      required String sdetails,
+      required String amcDetails,
+      required String couponCode}) async {
+    loading = true.obs;
+    try {
+      final authResp = await categoryService.bookServiceApi(
+          name: name,
+          number: number,
+          address: address,
+          cityLat: cityLat,
+          cityLong: cityLong,
+          bookingDate: bookingDate,
+          bookingTime: bookingTime,
+          landmark: landmark,
+          sdetails: sdetails,
+          amcDetails: amcDetails,
+          couponCode: couponCode);
+      if (authResp.statusCode == 200) {
+        bookServiceResponseModel.value = bookServiceResponseModelFromJson(
+          authResp.body,
+        );
         loading.value = false;
         update();
         debugPrint("Response :::: $authResp");

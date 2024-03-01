@@ -308,10 +308,11 @@ class _LoginOneScreenState extends State<LoginOneScreen> {
 
             for (int i = 0; i < callback.data!.length; i++) {
               print("location ${callback.data?[i].city}");
-              locationDB?.put(
+              /* locationDB?.put(
                 "city",
                 callback.data?[i].city,
-              );
+              );*/
+              nameDB?.put("customername", callback.data?[i].customername);
             }
           }
         },

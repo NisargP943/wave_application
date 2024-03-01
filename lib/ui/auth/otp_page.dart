@@ -198,12 +198,13 @@ class _OtpPageState extends State<OtpPage> {
                             );
                           } else {
                             Get.offAll(
-                                transition: Transition.fadeIn,
-                                duration: const Duration(seconds: 2),
-                                MainPage(
-                                  customerAuthResponseModel:
-                                      widget.customerAuthResponseModel,
-                                ));
+                              transition: Transition.fadeIn,
+                              duration: const Duration(seconds: 2),
+                              MainPage(
+                                customerAuthResponseModel:
+                                    widget.customerAuthResponseModel,
+                              ),
+                            );
                           }
                         }
                       }
