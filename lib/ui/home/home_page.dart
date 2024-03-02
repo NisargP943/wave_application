@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
@@ -20,8 +23,8 @@ import 'package:wave_app/ui/home/location_screen.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
+import 'package:wave_app/widgets/drop_down_textfield.dart';
 import 'package:wave_app/widgets/home_side_menu.dart';
-import 'package:wave_app/widgets/search_textfield_widget.dart';
 
 ValueNotifier<List<ServicesModel>> serviceListNotifier = ValueNotifier([]);
 ValueNotifier<List<Consultant>> consultantListNotifier = ValueNotifier([]);
@@ -37,7 +40,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController searchController = TextEditingController();
+  SingleValueDropDownController searchController =
+      SingleValueDropDownController();
   TextEditingController locationController = TextEditingController();
   late StreamSubscription connectivity;
   PageController pageController = PageController();
@@ -45,6 +49,11 @@ class _HomePageState extends State<HomePage> {
   ValueNotifier<int> hIndex = ValueNotifier(0);
   List<Worker> workers = [];
   String? customerData, custName;
+  List<DropDownValueModel> dropDownList = [];
+  bool? serviceEnabled;
+  late LocationPermission permission;
+  late Position position;
+  List<Placemark> address = [];
   bool end = false;
   late Timer timer;
 
@@ -62,6 +71,7 @@ class _HomePageState extends State<HomePage> {
     debugPrint("City $customerData  Name $custName");
     checkConnectivity();
     initWorkers();
+    _determinePosition();
     timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       if (hIndex.value == 5) {
         end = true;
@@ -153,20 +163,25 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               10.verticalSpace,
-              TextFieldSearchPage(
-                readOnly: true,
-                onTap: () {
-                  Get.to(const SearchServicePage());
+              DropDownTextFieldSearchPage(
+                controller: searchController,
+                onChanged: (p0) {
+                  if (searchController.dropDownValue?.value != null) {
+                    Get.to(SearchServicePage(
+                      serviceName: searchController.dropDownValue?.value,
+                    ));
+                  }
                 },
                 edgeInsets:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15).r,
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15).r,
                 textInputAction: TextInputAction.done,
                 textInputType: TextInputType.text,
-                labelText: "",
+                labelText: "Click to search",
                 prefixWidget: const Icon(
                   Icons.search,
                   color: Colors.grey,
                 ),
+                dropDownList: dropDownList,
               ),
               15.verticalSpace,
               labelWidgetOne("Welcome, $custName"),
@@ -595,7 +610,16 @@ class _HomePageState extends State<HomePage> {
     Connectivity().checkConnectivity().then((value) {
       if (value == ConnectivityResult.mobile ||
           value == ConnectivityResult.wifi) {
-        categoryController.getAllCategory();
+        categoryController.getAllCategory().then((value) {
+          for (int i = 0; i < serviceListNotifier.value.length; i++) {
+            dropDownList.add(
+              DropDownValueModel(
+                name: serviceListNotifier.value[i].servicename ?? "",
+                value: serviceListNotifier.value[i].servicename,
+              ),
+            );
+          }
+        });
         categoryController.getAllConsultants();
         categoryController.getAmcProducts();
       } else {
@@ -618,7 +642,16 @@ class _HomePageState extends State<HomePage> {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
         debugPrint("This is called");
-        categoryController.getAllCategory();
+        categoryController.getAllCategory().then((value) {
+          for (int i = 0; i < serviceListNotifier.value.length; i++) {
+            dropDownList.add(
+              DropDownValueModel(
+                name: serviceListNotifier.value[i].servicename ?? "",
+                value: serviceListNotifier.value[i].servicename,
+              ),
+            );
+          }
+        });
         categoryController.getAllConsultants();
         categoryController.getAmcProducts();
       }
@@ -637,6 +670,53 @@ class _HomePageState extends State<HomePage> {
         ).show(context);
       }
     });
+  }
+
+  Future<Position> _determinePosition() async {
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (serviceEnabled == false) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    position = await Geolocator.getCurrentPosition();
+    convertLatLongToAddress(position.latitude, position.longitude);
+    debugPrint("current location ${position.longitude.toString()}");
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future<List<Placemark>> convertLatLongToAddress(
+      double latitude, double longitude) async {
+    address = await placemarkFromCoordinates(latitude, longitude);
+    locationDB?.put("city",
+        "${address[0].street},${address[0].subLocality},${address[0].locality},${address[0].postalCode}");
+    debugPrint(
+        "----------------------------------------------------value after conversion : ${address[0].street}, ${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}");
+    return address;
   }
 }
 

@@ -18,6 +18,7 @@ class DropDownTextFieldSearchPage extends StatefulWidget {
     this.prefixWidget,
     this.edgeInsets,
     this.readOnly,
+    required this.dropDownList,
   }) : super(key: key);
   final SingleValueDropDownController? controller;
   final String labelText;
@@ -29,6 +30,7 @@ class DropDownTextFieldSearchPage extends StatefulWidget {
   final ValueNotifier<bool>? accepted;
   final Widget? prefixWidget;
   final EdgeInsets? edgeInsets;
+  final List<DropDownValueModel> dropDownList;
 
   @override
   _DropDownTextFieldSearchPageState createState() =>
@@ -102,54 +104,7 @@ class _DropDownTextFieldSearchPageState
                 ),
                 onChanged: widget.onChanged,
                 searchShowCursor: false,
-                dropDownList: const [
-                  DropDownValueModel(name: "Astrologer", value: "Astrologer"),
-                  DropDownValueModel(name: "Caterers", value: "Caterers"),
-                  DropDownValueModel(
-                      name: "Bike Service", value: "Bike Service"),
-                  DropDownValueModel(name: "CAR Serivce", value: "CAR Service"),
-                  DropDownValueModel(
-                      name: "Consultants - Advisory Service",
-                      value: "Consultants - Advisory Service"),
-                  DropDownValueModel(name: "Contractors", value: "Contractors"),
-                  DropDownValueModel(
-                      name: "Electrical Service", value: "Electrical Service"),
-                  DropDownValueModel(
-                      name: "Electronics Service",
-                      value: "Electronics Service"),
-                  DropDownValueModel(
-                      name: "Event Organizer", value: "Event Organizer"),
-                  DropDownValueModel(name: "GYM-FITNESS", value: "GYM-FITNESS"),
-                  DropDownValueModel(name: "Freelancer", value: "Freelancer"),
-                  DropDownValueModel(name: "Homes Needs", value: "Homes Needs"),
-                  DropDownValueModel(
-                      name: "Jewellery Showrooms",
-                      value: "Jewellery Showrooms"),
-                  DropDownValueModel(
-                      name: "NGO-Old Age Homes-Care Centers",
-                      value: "NGO-Old Age Homes-Care Centers"),
-                  DropDownValueModel(
-                      name: "Pest Control Services",
-                      value: "Pest Control Services"),
-                  DropDownValueModel(
-                      name: "Part Time Job-Wave", value: "Part Time Job-Wave"),
-                  DropDownValueModel(name: "Pet Shops", value: "Pet Shops"),
-                  DropDownValueModel(
-                      name: "Real Estate Agents", value: "Real Estate Agents"),
-                  DropDownValueModel(name: "Rent Hire", value: "Rent Hire"),
-                  DropDownValueModel(name: "Spa-Saloon", value: "Spa-Saloon"),
-                  DropDownValueModel(
-                      name: "TRAINING AND CERTIFICATION",
-                      value: "TRAINING AND CERTIFICATION"),
-                  DropDownValueModel(
-                      name: "Transports Service", value: "Transports Service"),
-                  DropDownValueModel(
-                      name: "Travel And Tourism", value: "Travel and Tourism"),
-                  DropDownValueModel(
-                      name: "Wedding Planners", value: "Wedding Planners"),
-                  DropDownValueModel(
-                      name: "YOGA-MEDITATION", value: "YOGA-MEDITATION"),
-                ],
+                dropDownList: widget.dropDownList,
               ),
             ),
           ),

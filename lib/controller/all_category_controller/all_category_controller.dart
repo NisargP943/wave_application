@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wave_app/main.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/book_service_response_model.dart';

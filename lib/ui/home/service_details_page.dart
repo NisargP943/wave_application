@@ -18,24 +18,25 @@ import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/sub_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/main_page.dart';
-import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
-  const ServiceDetailsPage(
+  ServiceDetailsPage(
       {super.key,
       this.categoryModel,
       this.consultant,
       this.subCategoryModel,
       this.fromSubCategory,
+      this.fromSearchPage,
       this.amcModel});
 
-  final ServicesModel? categoryModel;
-  final ServiceModel? amcModel;
-  final Consultant? consultant;
-  final CategoryModel? subCategoryModel;
+  ServicesModel? categoryModel;
+  ServiceModel? amcModel;
+  Consultant? consultant;
+  CategoryModel? subCategoryModel;
   final bool? fromSubCategory;
+  final bool? fromSearchPage;
 
   @override
   State<ServiceDetailsPage> createState() => _ServiceDetailsPageState();
@@ -60,7 +61,15 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     dateController.text = DateFormat("yyyy-MM-dd").format(DateTime.now());
     timeController.text = timeController.text =
         DateFormat.jm().format(DateTime.now()).toLowerCase();
-    catController.searchService(widget.categoryModel?.catg ?? "Health Care");
+    if (widget.consultant != null) {
+      catController.getAllConsultants();
+    } else if (widget.amcModel != null) {
+      catController.getAmcProducts();
+    } else if (widget.subCategoryModel != null) {
+      catController.searchService(widget.categoryModel?.catg ?? "Health Care");
+    } else {
+      catController.searchService(widget.categoryModel?.catg ?? "Health Care");
+    }
     serviceBookingTime?.put(
         "serviceTime", "${dateController.text} and ${timeController.text}");
   }
@@ -179,14 +188,34 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
-            onTap: () {},
+            onTap: () {
+              pageNotifier.value = 2;
+              if (widget.categoryModel != null) {
+                myCartList.add(widget.categoryModel!);
+              } else if (widget.consultant != null) {
+                myConsultantModel.add(widget.consultant!);
+              } else if (widget.amcModel != null) {
+                myAMCList.add(widget.amcModel!);
+              }
+              if (widget.fromSearchPage == true) {
+                Get.back();
+                Future.delayed(
+                    const Duration(milliseconds: 100), () => Get.back());
+              } else {
+                Get.back();
+              }
+            },
             text: "Schedule Booking",
           ),
         ),
         15.verticalSpace,
         labelWidgetOne("You Can Also Select"),
         6.verticalSpace,
-        newCategoryListView(),
+        widget.consultant != null
+            ? consultantListView()
+            : widget.amcModel != null
+                ? amcListView()
+                : newCategoryListView(),
         10.verticalSpace,
       ],
     );
@@ -221,8 +250,19 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       return;
     } else {
       pageNotifier.value = 2;
-      myCartList.add(widget.categoryModel!);
-      Get.back();
+      if (widget.categoryModel != null) {
+        myCartList.add(widget.categoryModel!);
+      } else if (widget.consultant != null) {
+        myConsultantModel.add(widget.consultant!);
+      } else if (widget.amcModel != null) {
+        myAMCList.add(widget.amcModel!);
+      }
+      if (widget.fromSearchPage == true) {
+        Get.back();
+        Future.delayed(const Duration(milliseconds: 100), () => Get.back());
+      } else {
+        Get.back();
+      }
     }
   }
 
@@ -282,7 +322,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           child: AppButtonWidget(
             onTap: () {
               pageNotifier.value = 2;
-              myCartList.add(widget.categoryModel!);
+              myCategory.add(widget.subCategoryModel!);
               Get.back();
             },
             text: "Book Now",
@@ -292,16 +332,464 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
-            onTap: () {},
+            onTap: () {
+              pageNotifier.value = 2;
+              myCategory.add(widget.subCategoryModel!);
+              Get.back();
+            },
             text: "Schedule Booking",
           ),
         ),
         20.verticalSpace,
         labelWidgetOne("You Can Also Select"),
         6.verticalSpace,
-        newCategoryListView(),
+        categoryListView(),
         10.verticalSpace,
       ],
+    );
+  }
+
+  Widget newCategoryListView() {
+    return GetBuilder<AllCatController>(
+      builder: (controller) => SizedBox(
+        height: 205.h,
+        //  color: Colors.red,
+        child: ListView.separated(
+          itemCount: controller.allServicesResponse.value?.data?.length ?? 0,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final secondList =
+                controller.allServicesResponse.value?.data?[index];
+            return GestureDetector(
+              onTap: () {
+                widget.categoryModel = secondList;
+                setState(() {});
+              },
+              child: Column(
+                children: [
+                  5.verticalSpace,
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
+                    child: CustomImageView(
+                      height: 60.r,
+                      imagePath: secondList?.thumbnail,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      5.verticalSpace,
+                      SizedBox(
+                        width: 120.w,
+                        child: Text(
+                          secondList?.servicename ?? "",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                      5.verticalSpace,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RatingBar(
+                            initialRating: 5,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            glowColor: Colors.orangeAccent,
+                            itemSize: 16,
+                            ratingWidget: RatingWidget(
+                              full: const Icon(
+                                Icons.star_sharp,
+                                color: Colors.orangeAccent,
+                              ),
+                              half: const Icon(
+                                Icons.star_half_sharp,
+                                color: Colors.yellow,
+                              ),
+                              empty: const Icon(
+                                Icons.star_border_sharp,
+                              ),
+                            ),
+                            onRatingUpdate: (double value) {},
+                          ),
+                          3.horizontalSpace,
+                          Text(
+                            "(10)",
+                            style: CustomTextStyles.bodySmallGrey11,
+                          )
+                        ],
+                      ),
+                      10.verticalSpace,
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: CustomTextStyles.bodySmallRed700,
+                            ),
+                          ],
+                          text: "₹${secondList?.price}",
+                          style: CustomTextStyles.bodyMediumGrey13,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return 20.horizontalSpace;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget categoryListView() {
+    return GetBuilder<AllCatController>(
+      builder: (controller) => SizedBox(
+        height: 205.h,
+        //  color: Colors.red,
+        child: ListView.separated(
+          itemCount:
+              controller.subCategoryResponseModel.value?.data?.length ?? 0,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final secondList =
+                controller.subCategoryResponseModel.value?.data?[index];
+            return GestureDetector(
+              onTap: () {
+                widget.subCategoryModel = secondList;
+                setState(() {});
+              },
+              child: Column(
+                children: [
+                  5.verticalSpace,
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
+                    child: CustomImageView(
+                      height: 60.r,
+                      imagePath: secondList?.thumbnail,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      5.verticalSpace,
+                      SizedBox(
+                        width: 120.w,
+                        child: Text(
+                          secondList?.name ?? "",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                      5.verticalSpace,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RatingBar(
+                            initialRating: 5,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            glowColor: Colors.orangeAccent,
+                            itemSize: 16,
+                            ratingWidget: RatingWidget(
+                              full: const Icon(
+                                Icons.star_sharp,
+                                color: Colors.orangeAccent,
+                              ),
+                              half: const Icon(
+                                Icons.star_half_sharp,
+                                color: Colors.yellow,
+                              ),
+                              empty: const Icon(
+                                Icons.star_border_sharp,
+                              ),
+                            ),
+                            onRatingUpdate: (double value) {},
+                          ),
+                          3.horizontalSpace,
+                          Text(
+                            "(10)",
+                            style: CustomTextStyles.bodySmallGrey11,
+                          )
+                        ],
+                      ),
+                      10.verticalSpace,
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: CustomTextStyles.bodySmallRed700,
+                            ),
+                          ],
+                          text: "₹${secondList?.price}",
+                          style: CustomTextStyles.bodyMediumGrey13,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return 20.horizontalSpace;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget consultantListView() {
+    return GetBuilder<AllCatController>(
+      builder: (controller) => SizedBox(
+        height: 205.h,
+        //  color: Colors.red,
+        child: ListView.separated(
+          itemCount: controller.allConsultantResponse.value?.data.length ?? 0,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final secondList =
+                controller.allConsultantResponse.value?.data[index];
+            return GestureDetector(
+              onTap: () {
+                widget.consultant = secondList;
+                setState(() {});
+              },
+              child: Column(
+                children: [
+                  5.verticalSpace,
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
+                    child: CustomImageView(
+                      height: 60.r,
+                      imagePath: secondList?.thumbnail,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      5.verticalSpace,
+                      SizedBox(
+                        width: 120.w,
+                        child: Text(
+                          secondList?.servicename ?? "",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                      5.verticalSpace,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RatingBar(
+                            initialRating: 5,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            glowColor: Colors.orangeAccent,
+                            itemSize: 16,
+                            ratingWidget: RatingWidget(
+                              full: const Icon(
+                                Icons.star_sharp,
+                                color: Colors.orangeAccent,
+                              ),
+                              half: const Icon(
+                                Icons.star_half_sharp,
+                                color: Colors.yellow,
+                              ),
+                              empty: const Icon(
+                                Icons.star_border_sharp,
+                              ),
+                            ),
+                            onRatingUpdate: (double value) {},
+                          ),
+                          3.horizontalSpace,
+                          Text(
+                            "(10)",
+                            style: CustomTextStyles.bodySmallGrey11,
+                          )
+                        ],
+                      ),
+                      10.verticalSpace,
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: CustomTextStyles.bodySmallRed700,
+                            ),
+                          ],
+                          text: "₹${secondList?.price}",
+                          style: CustomTextStyles.bodyMediumGrey13,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return 20.horizontalSpace;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget amcListView() {
+    return GetBuilder<AllCatController>(
+      builder: (controller) => SizedBox(
+        height: 205.h,
+        //  color: Colors.red,
+        child: ListView.separated(
+          itemCount: controller.allAmcProducts.value?.data?.length ?? 0,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+          ).r,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final secondList = controller.allAmcProducts.value?.data?[index];
+            return GestureDetector(
+              onTap: () {
+                widget.amcModel = secondList;
+                setState(() {});
+              },
+              child: Column(
+                children: [
+                  5.verticalSpace,
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ).r,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 30,
+                    ).r,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(5).r,
+                    ),
+                    child: CustomImageView(
+                      height: 60.r,
+                      imagePath: secondList?.thumbnail ?? "",
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      5.verticalSpace,
+                      SizedBox(
+                        width: 120.w,
+                        child: Text(
+                          secondList?.servicename ?? "",
+                          style: CustomTextStyles.bodySmallErrorContainer,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                      5.verticalSpace,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RatingBar(
+                            initialRating: 5,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            glowColor: Colors.orangeAccent,
+                            itemSize: 16,
+                            ratingWidget: RatingWidget(
+                              full: const Icon(
+                                Icons.star_sharp,
+                                color: Colors.orangeAccent,
+                              ),
+                              half: const Icon(
+                                Icons.star_half_sharp,
+                                color: Colors.yellow,
+                              ),
+                              empty: const Icon(
+                                Icons.star_border_sharp,
+                              ),
+                            ),
+                            onRatingUpdate: (double value) {},
+                          ),
+                          3.horizontalSpace,
+                          Text(
+                            "(10)",
+                            style: CustomTextStyles.bodySmallGrey11,
+                          )
+                        ],
+                      ),
+                      10.verticalSpace,
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: CustomTextStyles.bodySmallRed700,
+                            ),
+                          ],
+                          text: "₹${secondList?.price}",
+                          style: CustomTextStyles.bodyMediumGrey13,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return 20.horizontalSpace;
+          },
+        ),
+      ),
     );
   }
 
@@ -311,7 +799,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       child: Text(
         widget.categoryModel?.sdesc ??
             widget.consultant?.sdesc ??
-            widget.amcModel?.catg ??
+            widget.amcModel?.sdesc ??
             "",
         style: CustomTextStyles.titleMediumff407bff,
       ),
@@ -341,7 +829,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             child: Text(
               widget.categoryModel?.servicename.toString() ??
                   widget.consultant?.servicename ??
-                  widget.amcModel?.catg ??
+                  widget.amcModel?.servicename ??
                   "",
               style: CustomTextStyles.displaySmallBlack900,
             ),
@@ -646,116 +1134,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget newCategoryListView() {
-    return ValueListenableBuilder(
-      valueListenable: searchServiceNotifier,
-      builder: (context, value, widget) => SizedBox(
-        height: 205.h,
-        //  color: Colors.red,
-        child: ListView.separated(
-          itemCount: value.length,
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-          ).r,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            final secondList = value[index];
-            return GestureDetector(
-              onTap: () {
-                //  Get.to(ServiceDetailsPage(: secondList));
-              },
-              child: Column(
-                children: [
-                  5.verticalSpace,
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                    ).r,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 30,
-                      horizontal: 30,
-                    ).r,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(5).r,
-                    ),
-                    child: CustomImageView(
-                      height: 60.r,
-                      imagePath: secondList.thumbnail,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      5.verticalSpace,
-                      SizedBox(
-                        width: 120.w,
-                        child: Text(
-                          secondList.servicename ?? "",
-                          style: CustomTextStyles.bodySmallErrorContainer,
-                          overflow: TextOverflow.visible,
-                        ),
-                      ),
-                      5.verticalSpace,
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RatingBar(
-                            initialRating: 5,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            glowColor: Colors.orangeAccent,
-                            itemSize: 16,
-                            ratingWidget: RatingWidget(
-                              full: const Icon(
-                                Icons.star_sharp,
-                                color: Colors.orangeAccent,
-                              ),
-                              half: const Icon(
-                                Icons.star_half_sharp,
-                                color: Colors.yellow,
-                              ),
-                              empty: const Icon(
-                                Icons.star_border_sharp,
-                              ),
-                            ),
-                            onRatingUpdate: (double value) {},
-                          ),
-                          3.horizontalSpace,
-                          Text(
-                            "(10)",
-                            style: CustomTextStyles.bodySmallGrey11,
-                          )
-                        ],
-                      ),
-                      10.verticalSpace,
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "",
-                              style: CustomTextStyles.bodySmallRed700,
-                            ),
-                          ],
-                          text: "₹${secondList.price}",
-                          style: CustomTextStyles.bodyMediumGrey13,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return 20.horizontalSpace;
-          },
-        ),
-      ),
     );
   }
 

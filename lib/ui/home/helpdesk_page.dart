@@ -1,54 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wave_app/generated/assets.dart';
+import 'package:wave_app/widgets/custom_image_view.dart';
 
 class HelpdeskPage extends StatefulWidget {
-  HelpdeskPage({super.key});
+  const HelpdeskPage({super.key});
 
   @override
   State<HelpdeskPage> createState() => _HelpdeskPageState();
 }
 
 class _HelpdeskPageState extends State<HelpdeskPage> {
-  late WebViewController controller;
-
   @override
   void initState() {
     super.initState();
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse('https://www.wavetechservices.in'));
   }
 
   @override
   void dispose() {
-    controller.clearCache();
-    controller.clearLocalStorage();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WebViewWidget(
-        controller: controller,
+      body: Center(
+        child: CustomImageView(
+          onTap: () {
+            _launchURL("https://www.wavetechservices.in");
+          },
+          imagePath: Assets.imagesHelpdesk,
+        ),
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

@@ -128,30 +128,26 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     return Column(
       children: [
         10.verticalSpace,
-        ValueListenableBuilder(
-          valueListenable: showSearchBar,
-          builder: (context, value, child) => value
-              ? DropDownTextFieldSearchPage(
-                  onChanged: (val) {
-                    if (searchController.dropDownValue?.value != null) {
-                      categoryController.getSubCategory(
-                          searchController.dropDownValue?.value);
-                    }
-                  },
-                  edgeInsets: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
-                  ).r,
-                  textInputAction: TextInputAction.done,
-                  textInputType: TextInputType.text,
-                  controller: searchController,
-                  labelText: "Search Category",
-                  prefixWidget: const Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
-                )
-              : const SizedBox.shrink(),
+        DropDownTextFieldSearchPage(
+          dropDownList: [],
+          onChanged: (val) {
+            if (searchController.dropDownValue?.value != null) {
+              categoryController
+                  .getSubCategory(searchController.dropDownValue?.value);
+            }
+          },
+          edgeInsets: const EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: 15,
+          ).r,
+          textInputAction: TextInputAction.done,
+          textInputType: TextInputType.text,
+          controller: searchController,
+          labelText: "Search Category",
+          prefixWidget: const Icon(
+            Icons.search,
+            color: Colors.grey,
+          ),
         ),
         15.verticalSpace,
         SizedBox(

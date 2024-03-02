@@ -47,6 +47,7 @@ class ServiceModel {
   int? rating;
   int? price;
   String? thumbnail;
+  int? count;
 
   ServiceModel({
     this.id,
@@ -59,6 +60,7 @@ class ServiceModel {
     this.rating,
     this.price,
     this.thumbnail,
+    this.count = 1,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(

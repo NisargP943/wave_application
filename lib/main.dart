@@ -7,7 +7,12 @@ import 'package:wave_app/model/customer_data.dart';
 import 'package:wave_app/ui/home/order_details_page.dart';
 import 'package:wave_app/ui/welcome/splash_screen.dart';
 
-Box? customerDB, locationDB, nameDB, totalServiceCostDB, serviceBookingTime;
+Box? customerDB,
+    locationDB,
+    nameDB,
+    totalServiceCostDB,
+    serviceBookingTime,
+    catDB;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +20,7 @@ void main() async {
   Hive.registerAdapter(CustomerDataAdapter());
   customerDB = await Hive.openBox<CustomerData>("customerDataBox");
   locationDB = await Hive.openBox("locationBox");
+  catDB = await Hive.openBox("catBox");
   serviceBookingTime = await Hive.openBox("serviceBox");
   nameDB = await Hive.openBox("nameBox");
   totalServiceCostDB = await Hive.openBox("priceBox");

@@ -43,6 +43,7 @@ class Consultant {
   int rating;
   int price;
   String thumbnail;
+  int? count;
 
   Consultant({
     required this.id,
@@ -55,6 +56,7 @@ class Consultant {
     required this.rating,
     required this.price,
     required this.thumbnail,
+    this.count = 1,
   });
 
   factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(

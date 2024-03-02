@@ -24,7 +24,8 @@ class WaveCartPage extends StatefulWidget {
 
 class _WaveCartPageState extends State<WaveCartPage> {
   ValueNotifier<bool> showSearchBar = ValueNotifier(false);
-  ValueNotifier<int> totalPrice = ValueNotifier(0);
+  ValueNotifier<bool> dummyCouponCode = ValueNotifier(false);
+  ValueNotifier<double> totalPrice = ValueNotifier(0);
   TextEditingController searchController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   var categoryController = Get.put(AllCatController());
@@ -36,13 +37,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.white),
     );
-    if (myCartList.isNotEmpty) {
-      for (int i = 0; i < myCartList.length; i++) {
-        totalPrice.value += myCartList[i].price! * myCartList[i].count!;
-        print("dfgdfg ${totalPrice.value}");
-        totalServiceCostDB?.put("cost", totalPrice.value);
-      }
-    }
+    calculateTotalPrice();
     initWorkers();
   }
 
@@ -70,7 +65,13 @@ class _WaveCartPageState extends State<WaveCartPage> {
           searchTextField(),
           10.verticalSpace,
           myCartTextRow(),
-          bookingServiceList(),
+          myCartList.isNotEmpty
+              ? bookingServiceList()
+              : myConsultantModel.isNotEmpty
+                  ? bookingConsultantList()
+                  : myCategory.isNotEmpty
+                      ? bookingCategoryList()
+                      : bookingAMCList(),
           promoCodeList(),
           const ThinTextField(labelText: "Express Service"),
           10.verticalSpace,
@@ -87,14 +88,16 @@ class _WaveCartPageState extends State<WaveCartPage> {
                 pageNotifier.value = 0;
               }),
           10.verticalSpace,
-          ThinTextField(
-            controller: codeController,
-            labelText:
-                codeController.text.isEmpty ? "Enter your promo code" : "1234",
-            onTap: () {
-              showPromoCodeBottomSheet();
-            },
-          ),
+          ValueListenableBuilder(
+              valueListenable: dummyCouponCode,
+              builder: (context, value, child) {
+                return ThinTextField(
+                  labelText: value ? "1234" : "Enter your promo code",
+                  onTap: () {
+                    showPromoCodeBottomSheet();
+                  },
+                );
+              }),
           30.verticalSpace,
           totalPriceRow(),
           30.verticalSpace,
@@ -102,7 +105,25 @@ class _WaveCartPageState extends State<WaveCartPage> {
             padding: const EdgeInsets.symmetric(horizontal: 15).r,
             child: AppButtonWidget(
               onTap: () {
-                callBookServiceApi();
+                if (myCartList.isEmpty &&
+                    myConsultantModel.isEmpty &&
+                    myAMCList.isEmpty &&
+                    myCategory.isEmpty) {
+                  Flushbar(
+                    duration: const Duration(seconds: 3),
+                    backgroundColor: const Color(0xffA41C8E),
+                    flushbarPosition: FlushbarPosition.BOTTOM,
+                    messageText: const Text(
+                      "Nothing added in the cart",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ).show(context);
+                  return;
+                } else {
+                  callBookServiceApi();
+                }
               },
               text: "Book Service",
             ),
@@ -114,17 +135,26 @@ class _WaveCartPageState extends State<WaveCartPage> {
   }
 
   void callBookServiceApi() {
+    print(nameDB!.get("mobile").toString());
     categoryController.bookService(
       name: nameDB!.get("customername").toString(),
-      number: "9327053587",
+      number: nameDB!.get("mobile").toString(),
       cityLat: "23.0039",
       cityLong: "72.5461",
-      address: "Vasna Ahmedabad",
+      address: locationDB?.get("city").toString() ?? "",
       bookingDate: DateFormat("yyyy-MM-dd").format(DateTime.now()),
       bookingTime: DateFormat.jm().format(DateTime.now()).toLowerCase(),
       landmark: "Indian oil petrol pump",
-      sdetails: "3883-Inverterservice-1-300 ",
-      amcDetails: "4023-AMC-1-1499",
+      sdetails: myCartList.isNotEmpty
+          ? "${myCartList.first.id}-${myCartList.first.servicename}-${myCartList.first.count}-${myCartList.first.srate}"
+          : myAMCList.isNotEmpty
+              ? "${myAMCList.first.id}-${myAMCList.first.servicename}-${myAMCList.first.count}-${myAMCList.first.srate}"
+              : myCategory.isNotEmpty
+                  ? "${myCategory.first.id}-${myCategory.first.subcatg}-${myCategory.first.count}-${myCategory.first.price}"
+                  : "${myConsultantModel.first.id}-${myConsultantModel.first.servicename}-${myConsultantModel.first.count}-${myConsultantModel.first.price}",
+      amcDetails: myAMCList.isNotEmpty
+          ? "${myAMCList.first.id}-${myAMCList.first.servicename}-${myAMCList.first.count}-${myAMCList.first.srate}"
+          : "4023-AMC-1-1499",
       couponCode: "123",
     );
   }
@@ -279,6 +309,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                         ),
                         GestureDetector(
                           onTap: () {
+                            dummyCouponCode.value = true;
                             Get.back();
                           },
                           child: Container(
@@ -401,6 +432,413 @@ class _WaveCartPageState extends State<WaveCartPage> {
                                                 "cost", totalPrice.value);*/
                                           } else {
                                             myCartList.removeAt(index);
+                                            totalPrice.value =
+                                                totalPrice.value - item.price!;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);
+                                          }
+                                          setState(() {});
+                                        },
+                                        imagePath: Assets.imagesMinus,
+                                        height: 40.r,
+                                        width: 40.r,
+                                      ),
+                                      10.horizontalSpace,
+                                      Text(
+                                        item.count.toString(),
+                                        style: CustomTextStyles
+                                            .bodyMediumGray50013,
+                                      ),
+                                      10.horizontalSpace,
+                                      CustomImageView(
+                                        onTap: () {
+                                          /*  item.count = item.count! + 1;
+                                          totalPrice.value =
+                                              item.price! * item.count!;
+                                          totalServiceCostDB?.put(
+                                              "cost", totalPrice.value);*/
+                                          setState(() {});
+                                        },
+                                        imagePath: Assets.imagesPlus,
+                                        height: 40.r,
+                                        width: 40.r,
+                                      ),
+                                    ],
+                                  ),
+                                  Text("₹${item.price}")
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+  }
+
+  Widget bookingConsultantList() {
+    return myConsultantModel.isEmpty
+        ? const Center(
+            child: Text("Nothing to show in cart"),
+          )
+        : StatefulBuilder(
+            builder: (context, setState) => ListView.builder(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: myConsultantModel.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final item = myConsultantModel[index];
+                return Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 13, horizontal: 15)
+                          .r,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8).r,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 5,
+                      )
+                    ],
+                  ),
+                  padding: const EdgeInsets.only(left: 15, top: 3, bottom: 3).r,
+                  child: Row(
+                    children: [
+                      CustomImageView(
+                        height: 100.h,
+                        imagePath: item.thumbnail,
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10).r,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.catg,
+                                      style:
+                                          CustomTextStyles.bodyMediumBlack900,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.more_vert,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            3.verticalSpace,
+                            Text(
+                              item.servicename,
+                              style: CustomTextStyles.bodyMediumGray50013,
+                            ),
+                            10.verticalSpace,
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10).r,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CustomImageView(
+                                        onTap: () {
+                                          if (item.count! > 1) {
+                                            /* item.count = item.count! - 1;
+                                            totalPrice.value =
+                                                item.price! * item.count!;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);*/
+                                          } else {
+                                            myConsultantModel.removeAt(index);
+                                            totalPrice.value =
+                                                totalPrice.value - item.price;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);
+                                          }
+                                          setState(() {});
+                                        },
+                                        imagePath: Assets.imagesMinus,
+                                        height: 40.r,
+                                        width: 40.r,
+                                      ),
+                                      10.horizontalSpace,
+                                      Text(
+                                        item.count.toString(),
+                                        style: CustomTextStyles
+                                            .bodyMediumGray50013,
+                                      ),
+                                      10.horizontalSpace,
+                                      CustomImageView(
+                                        onTap: () {
+                                          /*  item.count = item.count! + 1;
+                                          totalPrice.value =
+                                              item.price! * item.count!;
+                                          totalServiceCostDB?.put(
+                                              "cost", totalPrice.value);*/
+                                          setState(() {});
+                                        },
+                                        imagePath: Assets.imagesPlus,
+                                        height: 40.r,
+                                        width: 40.r,
+                                      ),
+                                    ],
+                                  ),
+                                  Text("₹${item.price}")
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+  }
+
+  Widget bookingAMCList() {
+    return myAMCList.isEmpty
+        ? const Center(
+            child: Text("Nothing to show in cart"),
+          )
+        : StatefulBuilder(
+            builder: (context, setState) => ListView.builder(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: myAMCList.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final item = myAMCList[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 13,
+                    horizontal: 15,
+                  ).r,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8).r,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 5,
+                      )
+                    ],
+                  ),
+                  padding: const EdgeInsets.only(left: 15, top: 3, bottom: 3).r,
+                  child: Row(
+                    children: [
+                      CustomImageView(
+                        height: 100.h,
+                        imagePath: item.thumbnail ?? "",
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10).r,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.catg ?? "",
+                                      style:
+                                          CustomTextStyles.bodyMediumBlack900,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.more_vert,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            3.verticalSpace,
+                            Text(
+                              item.servicename ?? "",
+                              style: CustomTextStyles.bodyMediumGray50013,
+                            ),
+                            10.verticalSpace,
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10).r,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CustomImageView(
+                                        onTap: () {
+                                          if (item.count! > 1) {
+                                            /* item.count = item.count! - 1;
+                                            totalPrice.value =
+                                                item.price! * item.count!;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);*/
+                                          } else {
+                                            myAMCList.removeAt(index);
+                                            totalPrice.value =
+                                                totalPrice.value - item.price!;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);
+                                          }
+                                          setState(() {});
+                                        },
+                                        imagePath: Assets.imagesMinus,
+                                        height: 40.r,
+                                        width: 40.r,
+                                      ),
+                                      10.horizontalSpace,
+                                      Text(
+                                        item.count.toString(),
+                                        style: CustomTextStyles
+                                            .bodyMediumGray50013,
+                                      ),
+                                      10.horizontalSpace,
+                                      CustomImageView(
+                                        onTap: () {
+                                          /*  item.count = item.count! + 1;
+                                          totalPrice.value =
+                                              item.price! * item.count!;
+                                          totalServiceCostDB?.put(
+                                              "cost", totalPrice.value);*/
+                                          setState(() {});
+                                        },
+                                        imagePath: Assets.imagesPlus,
+                                        height: 40.r,
+                                        width: 40.r,
+                                      ),
+                                    ],
+                                  ),
+                                  Text("₹${item.price}")
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+  }
+
+  Widget bookingCategoryList() {
+    return myCategory.isEmpty
+        ? const Center(
+            child: Text("Nothing to show in cart"),
+          )
+        : StatefulBuilder(
+            builder: (context, setState) => ListView.builder(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: myCategory.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final item = myCategory[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 13,
+                    horizontal: 15,
+                  ).r,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8).r,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 5,
+                      )
+                    ],
+                  ),
+                  padding: const EdgeInsets.only(left: 15, top: 3, bottom: 3).r,
+                  child: Row(
+                    children: [
+                      CustomImageView(
+                        height: 100.h,
+                        imagePath: item.thumbnail ?? "",
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10).r,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.subcatg ?? "",
+                                      style:
+                                          CustomTextStyles.bodyMediumBlack900,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.more_vert,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            3.verticalSpace,
+                            Text(
+                              item.name ?? "",
+                              style: CustomTextStyles.bodyMediumGray50013,
+                            ),
+                            10.verticalSpace,
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10).r,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CustomImageView(
+                                        onTap: () {
+                                          if (item.count! > 1) {
+                                            /* item.count = item.count! - 1;
+                                            totalPrice.value =
+                                                item.price! * item.count!;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);*/
+                                          } else {
+                                            myCategory.removeAt(index);
+                                            totalPrice.value =
+                                                totalPrice.value -
+                                                    double.tryParse(
+                                                        item.price ?? "")!;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);
                                           }
                                           setState(() {});
                                         },
@@ -490,6 +928,36 @@ class _WaveCartPageState extends State<WaveCartPage> {
     );
   }
 
+  void calculateTotalPrice() {
+    if (myCartList.isNotEmpty) {
+      for (int i = 0; i < myCartList.length; i++) {
+        totalPrice.value += myCartList[i].price! * myCartList[i].count!;
+        print("dfgdfg ${totalPrice.value}");
+        totalServiceCostDB?.put("cost", totalPrice.value);
+      }
+    } else if (myConsultantModel.isNotEmpty) {
+      for (int i = 0; i < myConsultantModel.length; i++) {
+        totalPrice.value +=
+            myConsultantModel[i].price * myConsultantModel[i].count!;
+        print("dfgdfg ${totalPrice.value}");
+        totalServiceCostDB?.put("cost", totalPrice.value);
+      }
+    } else if (myAMCList.isNotEmpty) {
+      for (int i = 0; i < myAMCList.length; i++) {
+        totalPrice.value += myAMCList[i].price! * myAMCList[i].count!;
+        print("dfgdfg ${totalPrice.value}");
+        totalServiceCostDB?.put("cost", totalPrice.value);
+      }
+    } else {
+      for (int i = 0; i < myCategory.length; i++) {
+        totalPrice.value +=
+            double.tryParse(myCategory[i].price!)! * myCategory[i].count!;
+        print("dfgdfg ${totalPrice.value}");
+        totalServiceCostDB?.put("cost", totalPrice.value);
+      }
+    }
+  }
+
   void initWorkers() {
     workers = [
       ever(
@@ -514,6 +982,9 @@ class _WaveCartPageState extends State<WaveCartPage> {
             serviceBookingTime?.clear();
             totalServiceCostDB?.clear();
             myCartList.clear();
+            myConsultantModel.clear();
+            myAMCList.clear();
+            myCategory.clear();
           }
         },
       ),

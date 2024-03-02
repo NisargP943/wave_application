@@ -57,7 +57,8 @@ class AuthController extends GetxController {
         /*customerLoginSignupResponseModel.value =
             customerAuthResponseModelFromJson(authResp.body);*/
         locationDB?.put("city", "$street,$city,$pincode");
-        Get.off(
+        nameDB?.put("customername", name);
+        Get.offAll(
           const MainPage(),
           transition: Transition.fadeIn,
           duration: const Duration(seconds: 1),

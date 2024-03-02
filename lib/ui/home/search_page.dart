@@ -12,13 +12,17 @@ import 'package:wave_app/controller/all_category_controller/all_category_control
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/ui/home/home_page.dart';
+import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/drop_down_textfield.dart';
 
 ValueNotifier<List<ServicesModel>> searchServiceNotifier = ValueNotifier([]);
 
 class SearchServicePage extends StatefulWidget {
-  const SearchServicePage({super.key});
+  const SearchServicePage({super.key, this.serviceName});
+
+  final String? serviceName;
 
   @override
   State<SearchServicePage> createState() => _SearchServicePageState();
@@ -28,7 +32,8 @@ class _SearchServicePageState extends State<SearchServicePage> {
   SingleValueDropDownController searchController =
       SingleValueDropDownController();
   late StreamSubscription connectivity;
-  ValueNotifier<bool> showSearchBar = ValueNotifier(false);
+  List<ServicesModel> serviceList = [];
+  List<DropDownValueModel> dropDownList = [];
   List<String> category = [
     "Astrologers",
     "Caterers",
@@ -57,12 +62,14 @@ class _SearchServicePageState extends State<SearchServicePage> {
     "Wedding Planners",
     "YOGA - MEDITATION"
   ];
+  String cat = "";
   var categoryController = Get.put(AllCatController());
 
   @override
   void initState() {
     super.initState();
     checkConnectivity();
+    serviceList = serviceListNotifier.value;
     ever(categoryController.errorMessage, (callback) {
       Future.delayed(const Duration(seconds: 1), () {
         Flushbar(
@@ -78,6 +85,14 @@ class _SearchServicePageState extends State<SearchServicePage> {
         ).show(context);
       });
     });
+    for (int i = 0; i < serviceListNotifier.value.length; i++) {
+      dropDownList.add(
+        DropDownValueModel(
+          name: serviceListNotifier.value[i].servicename ?? "",
+          value: serviceListNotifier.value[i].servicename,
+        ),
+      );
+    }
   }
 
   @override
@@ -102,9 +117,7 @@ class _SearchServicePageState extends State<SearchServicePage> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
-              showSearchBar.value = !showSearchBar.value;
-            },
+            onTap: () {},
             child: Image.asset(
               Assets.imagesSearch,
               scale: 1.3,
@@ -126,30 +139,36 @@ class _SearchServicePageState extends State<SearchServicePage> {
     return Column(
       children: [
         5.verticalSpace,
-        ValueListenableBuilder(
-          valueListenable: showSearchBar,
-          builder: (context, value, child) => value
-              ? DropDownTextFieldSearchPage(
-                  onChanged: (val) {
-                    if (searchController.dropDownValue?.value != null) {
-                      categoryController
-                          .searchService(searchController.dropDownValue?.value);
-                    }
-                  },
-                  edgeInsets: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 0,
-                  ).r,
-                  textInputAction: TextInputAction.done,
-                  textInputType: TextInputType.text,
-                  controller: searchController,
-                  labelText: "Search Service",
-                  prefixWidget: const Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
-                )
-              : const SizedBox.shrink(),
+        DropDownTextFieldSearchPage(
+          dropDownList: dropDownList,
+          onChanged: (val) {
+            if (searchController.dropDownValue?.value != null) {
+              searchServiceNotifier.value.clear();
+              cat = "";
+              categoryController
+                  .searchService(searchController.dropDownValue?.value);
+              Future.delayed(const Duration(seconds: 1), () {
+                for (int i = 0; i < searchServiceNotifier.value.length; i++) {
+                  cat = searchServiceNotifier.value[i].catg!;
+                }
+                final tempList =
+                    serviceList.where((element) => element.catg == cat);
+                searchServiceNotifier.value = tempList.toList();
+              });
+            }
+          },
+          edgeInsets: const EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: 0,
+          ).r,
+          textInputAction: TextInputAction.done,
+          textInputType: TextInputType.text,
+          controller: searchController,
+          labelText: "Search Service",
+          prefixWidget: const Icon(
+            Icons.search,
+            color: Colors.grey,
+          ),
         ),
         10.verticalSpace,
         Padding(
@@ -272,7 +291,14 @@ class _SearchServicePageState extends State<SearchServicePage> {
                       itemBuilder: (context, index) {
                         final subCategory = value[index];
                         return GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(
+                              ServiceDetailsPage(
+                                categoryModel: subCategory,
+                                fromSearchPage: true,
+                              ),
+                            );
+                          },
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 13).r,
                             decoration: BoxDecoration(
@@ -295,9 +321,7 @@ class _SearchServicePageState extends State<SearchServicePage> {
                                       setState(() {});*/
                                     },
                                     child: Image.asset(
-                                      subCategory.isFav == true
-                                          ? Assets.imagesSelectedFav
-                                          : Assets.imagesUnselectedFav,
+                                      Assets.imagesUnselectedFav,
                                       scale: 2,
                                     ),
                                   ),
@@ -388,7 +412,18 @@ class _SearchServicePageState extends State<SearchServicePage> {
     Connectivity().checkConnectivity().then((value) {
       if (value == ConnectivityResult.mobile ||
           value == ConnectivityResult.wifi) {
-        categoryController.searchService("Health Care");
+        categoryController
+            .searchService(widget.serviceName ?? "Health Care")
+            .then((value) {
+          Future.delayed(const Duration(seconds: 1), () {
+            for (int i = 0; i < searchServiceNotifier.value.length; i++) {
+              cat = searchServiceNotifier.value[i].catg!;
+            }
+            final tempList =
+                serviceList.where((element) => element.catg == cat);
+            searchServiceNotifier.value = tempList.toList();
+          });
+        });
       } else {
         categoryController.loading.value = false;
         categoryController.update();
@@ -411,7 +446,18 @@ class _SearchServicePageState extends State<SearchServicePage> {
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
-        categoryController.searchService("Health Care");
+        categoryController
+            .searchService(widget.serviceName ?? "Health Care")
+            .then((value) {
+          Future.delayed(const Duration(seconds: 1), () {
+            for (int i = 0; i < searchServiceNotifier.value.length; i++) {
+              cat = searchServiceNotifier.value[i].catg!;
+            }
+            final tempList =
+                serviceList.where((element) => element.catg == cat);
+            searchServiceNotifier.value = tempList.toList();
+          });
+        });
       } else {
         Flushbar(
           duration: const Duration(seconds: 4),

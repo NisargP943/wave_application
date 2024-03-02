@@ -38,6 +38,7 @@ class CategoryModel {
   String? subcatg;
   String? price;
   String? thumbnail;
+  int? count;
 
   CategoryModel({
     this.id,
@@ -45,6 +46,7 @@ class CategoryModel {
     this.subcatg,
     this.price,
     this.thumbnail,
+    this.count = 1,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(

@@ -42,12 +42,11 @@ class ServicesModel {
   String? sdesc;
   String? srate;
   String? catg;
-  Priority? priority;
-  Stype? stype;
+  String? priority;
+  String? stype;
   int? rating;
   int? price;
   String? thumbnail;
-  bool? isFav;
   int? count;
 
   ServicesModel({
@@ -61,7 +60,6 @@ class ServicesModel {
     this.rating,
     this.price,
     this.thumbnail,
-    this.isFav,
     this.count = 1,
   });
 
@@ -71,8 +69,8 @@ class ServicesModel {
         sdesc: json["sdesc"],
         srate: json["srate"],
         catg: json["catg"],
-        priority: priorityValues.map[json["priority"]]!,
-        stype: stypeValues.map[json["stype"]]!,
+        priority: json["priority"],
+        stype: json["stype"],
         rating: json["rating"],
         price: json["price"],
         thumbnail: json["thumbnail"],
@@ -84,31 +82,10 @@ class ServicesModel {
         "sdesc": sdesc,
         "srate": srate,
         "catg": catg,
-        "priority": priorityValues.reverse[priority],
-        "stype": stypeValues.reverse[stype],
+        "priority": priority,
+        "stype": stype,
         "rating": rating,
         "price": price,
         "thumbnail": thumbnail,
       };
-}
-
-enum Priority { PRIORITY_1, PRIORITY_2 }
-
-final priorityValues = EnumValues(
-    {"Priority-1": Priority.PRIORITY_1, "Priority-2": Priority.PRIORITY_2});
-
-enum Stype { SERVICES }
-
-final stypeValues = EnumValues({"Services": Stype.SERVICES});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

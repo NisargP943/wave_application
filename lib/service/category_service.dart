@@ -84,7 +84,7 @@ class CategoryService {
     try {
       final response = await http.get(
         Uri.parse(
-            "http://kalasampurna.com/wavetech/app/customer_book_service.php?name=$name&number=$number&citylat=$cityLat.1&citylng=$cityLong&addr=$address&bdate=$bookingDate&btime=$bookingTime&landmark=$landmark&sdetails=3883-Inverter service-1-300&amcdetails=4023-AMC-1-1499&couponcode=$couponCode"),
+            "http://kalasampurna.com/wavetech/app/customer_book_service.php?name=$name&number=$number&citylat=$cityLat&citylng=$cityLong&addr=$address&bdate=$bookingDate&btime=$bookingTime&landmark=$landmark&sdetails=$sdetails&amcdetails=$amcDetails&couponcode=$couponCode"),
       );
       debugPrint(response.body);
       return response;

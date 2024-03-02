@@ -18,7 +18,8 @@ class TextFieldSearchPage extends StatefulWidget {
       this.edgeInsets,
       this.readOnly,
       this.onTap,
-      this.padding})
+      this.padding,
+      this.hintText})
       : super(key: key);
   final TextEditingController? controller;
   final String labelText;
@@ -32,6 +33,7 @@ class TextFieldSearchPage extends StatefulWidget {
   final void Function()? onTap;
   final EdgeInsets? edgeInsets;
   final double? padding;
+  final String? hintText;
 
   @override
   _TextFieldSearchPageState createState() => _TextFieldSearchPageState();
@@ -97,6 +99,7 @@ class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 15)
                           .r,
                   border: InputBorder.none,
+                  hintText: widget.hintText,
                   labelText: widget.labelText,
                   labelStyle: TextStyle(
                     color: labelColor,
