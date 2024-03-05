@@ -208,15 +208,28 @@ class _WaveCartPageState extends State<WaveCartPage> {
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: const EdgeInsets.only(right: 20).r,
-        child: GestureDetector(
-          onTap: () {
-            showSearchBar.value = !showSearchBar.value;
-          },
-          child: Image.asset(
-            Assets.imagesSearch,
-            scale: 1.3,
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: 15).r,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomImageView(
+              width: 24.r,
+              height: 24.r,
+              imagePath: Assets.imagesBackIcon,
+              onTap: () {
+                pageNotifier.value = 0;
+              },
+            ),
+            GestureDetector(
+              onTap: () {
+                showSearchBar.value = !showSearchBar.value;
+              },
+              child: Image.asset(
+                Assets.imagesSearch,
+                scale: 1.3,
+              ),
+            ),
+          ],
         ),
       ),
     );
