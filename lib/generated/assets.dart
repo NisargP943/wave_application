@@ -66,6 +66,8 @@ class Assets {
   static const String imagesTitleLogo = 'assets/images/title_logo.png';
   static const String imagesTwo = 'assets/images/two.jpg';
   static const String imagesUnselectedFav = 'assets/images/unselected_fav.png';
+  static const String imagesWaveSpalsh = 'assets/images/wave_spalsh.gif';
+  static const String imagesWaveVideo = 'assets/images/wave_video.MP4';
   static const String imagesWelcome1 = 'assets/images/welcome_1.jpeg';
   static const String imagesWelcome2 = 'assets/images/welcome_2.jpeg';
   static const String imagesWelcome3 = 'assets/images/welcome_3.jpeg';

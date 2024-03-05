@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:gif/gif.dart';
+import 'package:video_player/video_player.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
 import 'package:wave_app/model/customer_data.dart';
@@ -15,9 +17,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late VideoPlayerController _controller;
+
   @override
   void initState() {
     super.initState();
+    _controller = VideoPlayerController.asset(Assets.imagesWaveVideo);
+    _controller.initialize();
+    _controller.play();
+
     CustomerData temp = customerDB?.get("isLogin");
     Future.delayed(
       const Duration(seconds: 2),
@@ -26,12 +34,12 @@ class _SplashScreenState extends State<SplashScreen> {
         if (temp.isLogin == true) {
           Get.off(
               transition: Transition.fadeIn,
-              duration: const Duration(seconds: 2),
+              duration: const Duration(seconds: 1),
               const MainPage());
         } else {
           Get.off(
             transition: Transition.fadeIn,
-            duration: const Duration(seconds: 2),
+            duration: const Duration(seconds: 1),
             const WelcomeScreen(),
           );
         }
@@ -40,62 +48,23 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 10.h),
-            Image(
-              height: ScreenUtil().setHeight(180),
-              width: ScreenUtil().setWidth(210),
-              image: const AssetImage(Assets.imagesLogo),
-            ),
-            SizedBox(height: 35.h),
-            Image(
-              height: ScreenUtil().setHeight(162),
-              width: ScreenUtil().setWidth(300),
-              fit: BoxFit.fill,
-              image: const AssetImage(Assets.imagesBanner),
-            ),
-            SizedBox(height: 25.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "Services Faster Than\nYour Next Coffee Break",
-                  style: TextStyle(
-                      color: const Color(0xff636363), fontSize: 23.spMin),
-                ),
-                SizedBox(height: 40.h),
-                Image(
-                  height: ScreenUtil().setHeight(54),
-                  width: ScreenUtil().setWidth(66),
-                  fit: BoxFit.fill,
-                  image: const AssetImage(Assets.imagesTitleLogo),
-                ),
-              ],
-            ),
-            SizedBox(height: 75.h),
-            Text(
-              "www.wavetechservices.in",
-              style:
-                  TextStyle(color: const Color(0xff636363), fontSize: 19.spMin),
-            ),
-            SizedBox(height: 0.10.sh),
-            Image(
-              height: ScreenUtil().setHeight(126),
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
-              image: const AssetImage(Assets.imagesBottomImg),
-            ),
-          ],
-        ),
-      ),
+      body: _controller.value.isInitialized
+          ? SizedBox(
+              width: 1.sw,
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

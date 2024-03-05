@@ -48,6 +48,8 @@ dependencies:
   uuid:
   http:
   geocoding: ^2.1.1
+  gif: ^2.3.0
+  video_player: ^2.8.2
   dio:
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.2.4
