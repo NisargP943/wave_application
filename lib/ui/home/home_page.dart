@@ -133,9 +133,12 @@ class _HomePageState extends State<HomePage> {
               5.verticalSpace,
               GestureDetector(
                 onTap: () {
-                  Get.to(LocationPage(
-                    location: customerData!,
-                  ));
+                  Get.to(
+                      LocationPage(
+                        location: customerData!,
+                      ),
+                      transition: Transition.fadeIn,
+                      duration: const Duration(seconds: 1));
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -167,9 +170,13 @@ class _HomePageState extends State<HomePage> {
                 controller: searchController,
                 onChanged: (p0) {
                   if (searchController.dropDownValue?.value != null) {
-                    Get.to(SearchServicePage(
-                      serviceName: searchController.dropDownValue?.value,
-                    ));
+                    Get.to(
+                      SearchServicePage(
+                        serviceName: searchController.dropDownValue?.value,
+                      ),
+                      transition: Transition.fadeIn,
+                      duration: const Duration(seconds: 1),
+                    );
                   }
                 },
                 edgeInsets:
@@ -220,6 +227,8 @@ class _HomePageState extends State<HomePage> {
                             return GestureDetector(
                               onTap: () {
                                 Get.to(
+                                  transition: Transition.fadeIn,
+                                  duration: const Duration(seconds: 1),
                                   ServiceDetailsPage(categoryModel: firstList),
                                 );
                               },
@@ -415,7 +424,10 @@ class _HomePageState extends State<HomePage> {
             final secondList = value[index];
             return GestureDetector(
               onTap: () {
-                Get.to(ServiceDetailsPage(consultant: secondList));
+                Get.to(
+                    transition: Transition.fadeIn,
+                    duration: const Duration(seconds: 1),
+                    ServiceDetailsPage(consultant: secondList));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,7 +503,11 @@ class _HomePageState extends State<HomePage> {
             final secondList = value[index];
             return GestureDetector(
               onTap: () {
-                Get.to(ServiceDetailsPage(amcModel: secondList));
+                Get.to(
+                  ServiceDetailsPage(amcModel: secondList),
+                  transition: Transition.fadeIn,
+                  duration: const Duration(seconds: 1),
+                );
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
