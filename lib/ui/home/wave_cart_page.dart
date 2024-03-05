@@ -414,61 +414,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10).r,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CustomImageView(
-                                        onTap: () {
-                                          if (item.count! > 1) {
-                                            /* item.count = item.count! - 1;
-                                            totalPrice.value =
-                                                item.price! * item.count!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);*/
-                                          } else {
-                                            myCartList.removeAt(index);
-                                            totalPrice.value =
-                                                totalPrice.value - item.price!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);
-                                          }
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesMinus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                      10.horizontalSpace,
-                                      Text(
-                                        item.count.toString(),
-                                        style: CustomTextStyles
-                                            .bodyMediumGray50013,
-                                      ),
-                                      10.horizontalSpace,
-                                      CustomImageView(
-                                        onTap: () {
-                                          /*  item.count = item.count! + 1;
-                                          totalPrice.value =
-                                              item.price! * item.count!;
-                                          totalServiceCostDB?.put(
-                                              "cost", totalPrice.value);*/
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesPlus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                    ],
-                                  ),
-                                  Text("₹${item.price}")
-                                ],
-                              ),
-                            ),
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
@@ -547,61 +493,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10).r,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CustomImageView(
-                                        onTap: () {
-                                          if (item.count! > 1) {
-                                            /* item.count = item.count! - 1;
-                                            totalPrice.value =
-                                                item.price! * item.count!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);*/
-                                          } else {
-                                            myConsultantModel.removeAt(index);
-                                            totalPrice.value =
-                                                totalPrice.value - item.price;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);
-                                          }
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesMinus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                      10.horizontalSpace,
-                                      Text(
-                                        item.count.toString(),
-                                        style: CustomTextStyles
-                                            .bodyMediumGray50013,
-                                      ),
-                                      10.horizontalSpace,
-                                      CustomImageView(
-                                        onTap: () {
-                                          /*  item.count = item.count! + 1;
-                                          totalPrice.value =
-                                              item.price! * item.count!;
-                                          totalServiceCostDB?.put(
-                                              "cost", totalPrice.value);*/
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesPlus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                    ],
-                                  ),
-                                  Text("₹${item.price}")
-                                ],
-                              ),
-                            ),
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
@@ -681,61 +573,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10).r,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CustomImageView(
-                                        onTap: () {
-                                          if (item.count! > 1) {
-                                            /* item.count = item.count! - 1;
-                                            totalPrice.value =
-                                                item.price! * item.count!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);*/
-                                          } else {
-                                            myAMCList.removeAt(index);
-                                            totalPrice.value =
-                                                totalPrice.value - item.price!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);
-                                          }
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesMinus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                      10.horizontalSpace,
-                                      Text(
-                                        item.count.toString(),
-                                        style: CustomTextStyles
-                                            .bodyMediumGray50013,
-                                      ),
-                                      10.horizontalSpace,
-                                      CustomImageView(
-                                        onTap: () {
-                                          /*  item.count = item.count! + 1;
-                                          totalPrice.value =
-                                              item.price! * item.count!;
-                                          totalServiceCostDB?.put(
-                                              "cost", totalPrice.value);*/
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesPlus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                    ],
-                                  ),
-                                  Text("₹${item.price}")
-                                ],
-                              ),
-                            ),
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
