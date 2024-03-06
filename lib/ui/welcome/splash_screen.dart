@@ -58,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: _controller.value.isInitialized
           ? SizedBox(
               width: 1.sw,
+              height: 1.sh,
               child: AspectRatio(
                 aspectRatio: _controller.value.aspectRatio,
                 child: VideoPlayer(_controller),

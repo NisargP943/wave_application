@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wave_app/generated/assets.dart';
@@ -8,6 +9,8 @@ import 'package:wave_app/model/my_cart_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
 import 'package:wave_app/widgets/search_textfield_widget.dart';
+
+import '../../widgets/custom_elevated_button.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({super.key});
@@ -18,11 +21,33 @@ class OrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   ValueNotifier<bool> showSearchBar = ValueNotifier(false);
+  late TextEditingController reviewController;
+
+  @override
+  void initState() {
+    super.initState();
+    reviewController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    reviewController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: Image.asset(
+            Assets.imagesBackIcon,
+            scale: 1.5,
+          ),
+        ),
         centerTitle: true,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.dark,
@@ -244,7 +269,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        Get.back();
+                        reviewSheet();
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -378,5 +403,81 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
       );
     }
+  }
+
+  void reviewSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: const Radius.circular(24).r,
+          topLeft: const Radius.circular(24).r,
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return Container(
+          margin:
+              EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+          height: 0.5.sh,
+          decoration: const BoxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15).r,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                15.verticalSpace,
+                Text(
+                  "What is your rating ?",
+                  textAlign: TextAlign.center,
+                  style: CustomTextStyles.bodyLargeBlack900_1,
+                ),
+                20.verticalSpace,
+                RatingBar(
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 5).r,
+                  initialRating: 0,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  glowColor: Colors.orangeAccent,
+                  ratingWidget: RatingWidget(
+                    full: const Icon(
+                      Icons.star_rate_rounded,
+                      color: Colors.yellow,
+                    ),
+                    half: const Icon(
+                      Icons.star_half_rounded,
+                      color: Colors.yellow,
+                    ),
+                    empty: const Icon(
+                      Icons.star_border_rounded,
+                    ),
+                  ),
+                  onRatingUpdate: (double value) {},
+                ),
+                10.verticalSpace,
+                Text(
+                  "Please share your opinion about the service",
+                  textAlign: TextAlign.center,
+                  style: CustomTextStyles.bodyLargeBlack900_1,
+                ),
+                10.verticalSpace,
+                TextFieldSearchPage(
+                  padding: 0,
+                  maxLines: 4,
+                  controller: reviewController,
+                  labelText: 'Your review',
+                ),
+                34.verticalSpace,
+                AppButtonWidget(
+                  text: "Send Review",
+                  onTap: () {},
+                ),
+                10.verticalSpace,
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

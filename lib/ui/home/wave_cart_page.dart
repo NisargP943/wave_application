@@ -306,9 +306,14 @@ class _WaveCartPageState extends State<WaveCartPage> {
                             "Wave Amc offer",
                             style: CustomTextStyles.bodyMediumBlack900,
                           ),
-                          Text(
-                            "6 days remaining",
-                            style: CustomTextStyles.bodyMediumGray50013,
+                          20.horizontalSpace,
+                          SizedBox(
+                            width: 70.w,
+                            child: Text(
+                              overflow: TextOverflow.ellipsis,
+                              "6 days remaining",
+                              style: CustomTextStyles.bodyMediumGray50013,
+                            ),
                           ),
                         ],
                       ),
@@ -666,63 +671,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10).r,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CustomImageView(
-                                        onTap: () {
-                                          if (item.count! > 1) {
-                                            /* item.count = item.count! - 1;
-                                            totalPrice.value =
-                                                item.price! * item.count!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);*/
-                                          } else {
-                                            myCategory.removeAt(index);
-                                            totalPrice.value =
-                                                totalPrice.value -
-                                                    double.tryParse(
-                                                        item.price ?? "")!;
-                                            totalServiceCostDB?.put(
-                                                "cost", totalPrice.value);
-                                          }
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesMinus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                      10.horizontalSpace,
-                                      Text(
-                                        item.count.toString(),
-                                        style: CustomTextStyles
-                                            .bodyMediumGray50013,
-                                      ),
-                                      10.horizontalSpace,
-                                      CustomImageView(
-                                        onTap: () {
-                                          /*  item.count = item.count! + 1;
-                                          totalPrice.value =
-                                              item.price! * item.count!;
-                                          totalServiceCostDB?.put(
-                                              "cost", totalPrice.value);*/
-                                          setState(() {});
-                                        },
-                                        imagePath: Assets.imagesPlus,
-                                        height: 40.r,
-                                        width: 40.r,
-                                      ),
-                                    ],
-                                  ),
-                                  Text("₹${item.price}")
-                                ],
-                              ),
-                            ),
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
@@ -741,7 +690,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "My Cart",
+            "Wave Cart",
             style: CustomTextStyles.displaySmallOnPrimary,
           ),
           CustomImageView(
@@ -815,22 +764,54 @@ class _WaveCartPageState extends State<WaveCartPage> {
         categoryController.bookServiceResponseModel,
         (callback) {
           if (callback.status == "Done") {
-            Flushbar(
-              duration: const Duration(seconds: 3),
-              backgroundColor: const Color(0xffA41C8E),
-              flushbarPosition: FlushbarPosition.BOTTOM,
-              messageText: const Text(
-                "Service Booked Successfully",
-                style: TextStyle(
-                  color: Colors.white,
+            showDialog(
+              builder: (context) => AlertDialog(
+                title: const Text("Service Booked"),
+                actions: [
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                        pageNotifier.value = 0;
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.purple,
+                          borderRadius: BorderRadius.circular(40).r,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ).r,
+                        child: Text(
+                          "Ok / Confirm",
+                          style: TextStyle(
+                              color: Colors.white, fontSize: 14.spMin),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Booking ID : ${callback.bookingid.toString()}"),
+                    5.verticalSpace,
+                    Text(
+                      "Booking Date and Time : ${serviceBookingTime?.get("serviceTime")}",
+                    ),
+                    5.verticalSpace,
+                    Text(
+                      "Service Name : ${catDB!.get("category")}",
+                    ),
+                  ],
                 ),
               ),
-            ).show(context);
-            Future.delayed(
-              const Duration(seconds: 2),
-              () => pageNotifier.value = 0,
+              context: context,
+              barrierDismissible: false,
             );
-            serviceBookingTime?.clear();
+            // serviceBookingTime?.clear();
             totalServiceCostDB?.clear();
             myCartList.clear();
             myConsultantModel.clear();

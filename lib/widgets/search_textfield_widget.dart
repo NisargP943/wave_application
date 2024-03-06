@@ -7,7 +7,7 @@ class TextFieldSearchPage extends StatefulWidget {
   const TextFieldSearchPage(
       {Key? key,
       this.controller,
-      required this.labelText,
+      this.labelText,
       this.textInputType,
       this.textInputAction,
       this.visiblePassword,
@@ -19,10 +19,11 @@ class TextFieldSearchPage extends StatefulWidget {
       this.readOnly,
       this.onTap,
       this.padding,
-      this.hintText})
+      this.hintText,
+      this.maxLines})
       : super(key: key);
   final TextEditingController? controller;
-  final String labelText;
+  final String? labelText;
   final TextInputType? textInputType;
   final TextInputAction? textInputAction;
   final bool? visiblePassword, readOnly;
@@ -34,6 +35,7 @@ class TextFieldSearchPage extends StatefulWidget {
   final EdgeInsets? edgeInsets;
   final double? padding;
   final String? hintText;
+  final int? maxLines;
 
   @override
   _TextFieldSearchPageState createState() => _TextFieldSearchPageState();
@@ -90,6 +92,7 @@ class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
                 controller: widget.controller,
                 readOnly: widget.readOnly ?? false,
                 focusNode: _focusNode,
+                maxLines: widget.maxLines,
                 style: TextStyle(color: Colors.black, fontSize: 16.spMin),
                 decoration: InputDecoration(
                   prefixIcon: widget.prefixWidget,

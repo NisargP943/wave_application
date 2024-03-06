@@ -58,7 +58,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     initializeDateFormatting();
     debugPrint(widget.categoryModel?.id);
     Future.delayed(const Duration(seconds: 2), () => isLoading.value = false);
-    dateController.text = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    dateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
     timeController.text = timeController.text =
         DateFormat.jm().format(DateTime.now()).toLowerCase();
     if (widget.consultant != null) {
@@ -165,8 +165,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ),
         ),
         30.verticalSpace,
-        dateTimePicker(),
-        20.verticalSpace,
         serviceDetails(),
         3.verticalSpace,
         serviceLabel(),
@@ -174,7 +172,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         ratingBarRow(4),
         30.verticalSpace,
         serviceDescription(),
-        70.verticalSpace,
+        10.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
@@ -184,7 +182,33 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             text: "Book Now",
           ),
         ),
-        10.verticalSpace,
+        20.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: RichText(
+            text: TextSpan(
+              text: "Note : ",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 16.spMin,
+              ),
+              children: [
+                TextSpan(
+                  text: "To schedule booking please select date and time",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16.spMin,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        15.verticalSpace,
+        dateTimePicker(),
+        15.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
@@ -192,10 +216,13 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
               pageNotifier.value = 2;
               if (widget.categoryModel != null) {
                 myCartList.add(widget.categoryModel!);
+                catDB?.put("category", widget.categoryModel?.servicename);
               } else if (widget.consultant != null) {
                 myConsultantModel.add(widget.consultant!);
+                catDB?.put("category", widget.consultant?.servicename);
               } else if (widget.amcModel != null) {
                 myAMCList.add(widget.amcModel!);
+                catDB?.put("category", widget.amcModel?.servicename);
               }
               if (widget.fromSearchPage == true) {
                 Get.back();
@@ -208,7 +235,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             text: "Schedule Booking",
           ),
         ),
-        15.verticalSpace,
+        20.verticalSpace,
         labelWidgetOne("You Can Also Select"),
         6.verticalSpace,
         widget.consultant != null
@@ -252,10 +279,15 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       pageNotifier.value = 2;
       if (widget.categoryModel != null) {
         myCartList.add(widget.categoryModel!);
+        catDB?.put("category", widget.categoryModel?.servicename);
+
+        //  serviceBookingTime?.put("serviceType", myCartList[0].servicename);
       } else if (widget.consultant != null) {
         myConsultantModel.add(widget.consultant!);
+        catDB?.put("category", widget.consultant?.servicename);
       } else if (widget.amcModel != null) {
         myAMCList.add(widget.amcModel!);
+        catDB?.put("category", widget.amcModel?.servicename);
       }
       if (widget.fromSearchPage == true) {
         Get.back();
@@ -278,8 +310,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           ),
         ),
         30.verticalSpace,
-        dateTimePicker(),
-        20.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: Row(
@@ -316,18 +346,45 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             style: CustomTextStyles.titleMediumff407bff,
           ),
         ),
-        70.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
             onTap: () {
               pageNotifier.value = 2;
               myCategory.add(widget.subCategoryModel!);
+              catDB?.put("category", widget.subCategoryModel?.subcatg);
+
               Get.back();
             },
             text: "Book Now",
           ),
         ),
+        10.verticalSpace,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15).r,
+          child: RichText(
+            text: TextSpan(
+              text: "Note : ",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 16.spMin,
+              ),
+              children: [
+                TextSpan(
+                  text: "To schedule booking please select date and time",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16.spMin,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        10.verticalSpace,
+        dateTimePicker(),
         10.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
@@ -1039,7 +1096,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           value: _singleDatePickerValueWithDefaultValue,
           onValueChanged: (dates) {
             dateController.text =
-                DateFormat("yyyy-MM-dd").format(dates.last ?? DateTime.now());
+                DateFormat("dd-MM-yyyy").format(dates.last ?? DateTime.now());
             setState(() => _singleDatePickerValueWithDefaultValue = dates);
           },
         ),

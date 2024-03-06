@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animated_icon/animated_icon.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
@@ -20,6 +22,7 @@ import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/location_screen.dart';
+import 'package:wave_app/ui/home/order_details_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
@@ -121,6 +124,162 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget serviceDetailsItem() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5).r,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 25,
+        vertical: 15,
+      ).r,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 4,
+          ),
+        ],
+        borderRadius: BorderRadius.circular(8).r,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: "OrderNo : ",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.spMin,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "123456",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16.spMin,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                DateFormat("dd-MM-yyyy").format(DateTime.now()).toString(),
+                style: TextStyle(
+                  fontSize: 13.spMin,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey,
+                ),
+              )
+            ],
+          ),
+          10.verticalSpace,
+          RichText(
+            text: TextSpan(
+              text: "Tracking number: ",
+              style: CustomTextStyles.bodySmallff9b9b9b,
+              children: [
+                TextSpan(
+                  text: "IW3475453455",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13.spMin,
+                      fontFamily: "Arial"),
+                ),
+              ],
+            ),
+          ),
+          10.verticalSpace,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: "Quantity: ",
+                  style: CustomTextStyles.bodySmallff9b9b9b,
+                  children: [
+                    TextSpan(
+                      text: "1",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13.spMin,
+                        fontFamily: "Arial",
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: "Total Amount: ",
+                  style: CustomTextStyles.bodySmallff9b9b9b,
+                  children: [
+                    TextSpan(
+                      text: "Rs350",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13.spMin,
+                        fontFamily: "Arial",
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          15.verticalSpace,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Get.to(
+                    const OrderDetailsPage(),
+                    duration: const Duration(seconds: 1),
+                    transition: Transition.fadeIn,
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 10,
+                  ).r,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30).r,
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: const Text("Details"),
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    "In Progress",
+                    style: CustomTextStyles.bodyMediumGreen600,
+                  ),
+                  5.horizontalSpace,
+                  AnimateIcon(
+                    height: 25.r,
+                    width: 25.r,
+                    onTap: () {},
+                    iconType: IconType.continueAnimation,
+                    animateIcon: AnimateIcons.bell,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget mainWidgetTwo() {
     return CustomScrollView(
       slivers: [
@@ -194,6 +353,8 @@ class _HomePageState extends State<HomePage> {
               labelWidgetOne("Welcome, $custName"),
               3.verticalSpace,
               labelWidgetOne("Wave Home"),
+              10.verticalSpace,
+              serviceDetailsItem(),
               15.verticalSpace,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15).r,
@@ -361,6 +522,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+              10.verticalSpace,
             ],
           ),
         )

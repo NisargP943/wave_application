@@ -75,7 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             height: 1.sh,
 
             // slow fade for newly loaded images:
-            duration: const Duration(seconds: 2),
+            duration: const Duration(seconds: 1),
 
             // if the image is loaded synchronously (ex. from memory), fade in faster:
             //syncDuration: const Duration(milliseconds: 1),

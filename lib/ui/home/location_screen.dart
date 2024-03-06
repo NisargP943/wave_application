@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,9 +9,7 @@ import 'package:wave_app/main.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/values/string.dart';
-import 'package:wave_app/widgets/custom_text_field.dart';
 import 'package:http/http.dart' as http;
-import 'package:wave_app/widgets/drop_down_textfield.dart';
 import 'package:wave_app/widgets/search_textfield_widget.dart';
 
 class LocationPage extends StatefulWidget {
