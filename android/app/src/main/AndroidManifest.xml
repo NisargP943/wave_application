@@ -1,4 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.wave_app">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
         <!-- If your app checks for SMS support -->
@@ -20,10 +24,6 @@
             <data android:scheme="https" />
         </intent>
     </queries>
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"

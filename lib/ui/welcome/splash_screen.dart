@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wave_app/generated/assets.dart';
@@ -21,9 +22,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(Assets.imagesWaveVideo);
+    _controller = VideoPlayerController.asset("assets/images/wave_video.MP4");
     _controller.initialize();
     _controller.play();
+    _controller.addListener(() {
+      if (_controller.value.hasError) {
+        print(_controller.value.errorDescription);
+      }
+    });
 
     CustomerData temp = customerDB?.get("isLogin");
     Future.delayed(
@@ -55,16 +61,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _controller.value.isInitialized
-          ? SizedBox(
-              width: 1.sw,
-              height: 1.sh,
-              child: AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              ),
-            )
-          : const SizedBox.shrink(),
+      body: Image.asset(
+        fit: BoxFit.fill,
+        Assets.imagesWaveSpalsh,
+        width: 1.sw,
+        height: 1.sh,
+      ),
     );
   }
 }
