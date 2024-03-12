@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/book_service_response_model.dart';
+import 'package:wave_app/model/response/booked_service_response_model.dart';
 import 'package:wave_app/service/category_service.dart';
 import 'package:wave_app/ui/home/home_page.dart';
+import 'package:wave_app/ui/home/my_orders_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/sub_category_page.dart';
 
@@ -37,6 +39,9 @@ class AllCatController extends GetxController {
   ).obs;
   Rx<BookServiceResponseModel> bookServiceResponseModel =
       BookServiceResponseModel(bookingid: "", status: "").obs;
+  Rx<BookedServiceResponseModel> bookedServiceListResponseModel =
+      BookedServiceResponseModel(data: []).obs;
+  var isBookingCompleted = "".obs;
   var loading = true.obs;
   var errorMessage = "".obs;
   CategoryService categoryService = CategoryService();
@@ -179,6 +184,80 @@ class AllCatController extends GetxController {
         loading.value = false;
         update();
         debugPrint("Response :::: $authResp");
+      }
+    } on SocketException catch (e) {
+      // errorMessage.value = "Connection Lost, Check Internet Connection";
+      update();
+    } catch (e) {
+      debugPrint("error ${e.toString()}");
+      //errorMessage.value = "Something is wrong from search";
+      loading.value = false;
+    }
+  }
+
+  Future<void> getBookedServiceApi(String phoneNumber) async {
+    loading = true.obs;
+    try {
+      final authResp = await categoryService.getBookedServiceApi(phoneNumber);
+      if (authResp.statusCode == 200) {
+        bookedServiceListResponseModel.value.data =
+            bookedServiceResponseModelFromJson(
+          authResp.body,
+        ).data;
+        bookedServiceModel.value = bookedServiceListResponseModel.value.data!;
+        bookedList = bookedServiceModel.value
+            .where((element) => element.status == "Booked")
+            .toList();
+        completedList = bookedServiceModel.value
+            .where((element) => element.status == "Completed")
+            .toList();
+        cancelledList = bookedServiceModel.value
+            .where((element) => element.status == "Cancelled")
+            .toList();
+        Future.delayed(const Duration(seconds: 1), () {
+          loading.value = false;
+        });
+        update();
+        debugPrint("Response Booked Service :::: $authResp");
+      }
+    } on SocketException catch (e) {
+      // errorMessage.value = "Connection Lost, Check Internet Connection";
+      update();
+    } catch (e) {
+      debugPrint("error ${e.toString()}");
+      //errorMessage.value = "Something is wrong from search";
+      loading.value = false;
+    }
+  }
+
+  Future<void> getCompleteBookedServiceApi(
+    String status,
+    String sid,
+    String custid,
+    String rating,
+    String phoneNumber,
+    String commentes,
+    String feedback,
+    String amc,
+    String amountpaid,
+  ) async {
+    loading = true.obs;
+    try {
+      final authResp = await categoryService.getCompleteBookedServiceApi(
+        status,
+        sid,
+        custid,
+        rating,
+        phoneNumber,
+        commentes,
+        feedback,
+        amc,
+        amountpaid,
+      );
+      if (authResp.statusCode == 200) {
+        isBookingCompleted.value = "Done";
+        update();
+        debugPrint("Response Booked Service :::: $authResp");
       }
     } on SocketException catch (e) {
       // errorMessage.value = "Connection Lost, Check Internet Connection";

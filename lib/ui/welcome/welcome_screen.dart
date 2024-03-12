@@ -36,7 +36,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         end = true;
 
         Future.delayed(
-          const Duration(seconds: 2),
+          const Duration(milliseconds: 500),
           () => Get.off(
             const LoginOneScreen(),
             transition: Transition.fadeIn,
@@ -49,7 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
       if (end == false) {
         debugPrint("page index inceremented");
-        Future.delayed(const Duration(seconds: 1), () => pageIndex.value++);
+        pageIndex.value++;
       } else {}
     });
   }

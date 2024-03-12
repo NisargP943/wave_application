@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -15,7 +14,7 @@ import 'package:wave_app/model/response/sub_category_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
-import 'package:wave_app/widgets/custom_text_field.dart';
+import 'package:wave_app/widgets/dp_textfield.dart';
 import 'package:wave_app/widgets/drop_down_textfield.dart';
 
 ValueNotifier<List<CategoryModel>> subCategoryNotifier = ValueNotifier([]);

@@ -43,6 +43,11 @@ class Assets {
   static const String imagesHelp = 'assets/images/help.png';
   static const String imagesHelpdesk = 'assets/images/helpdesk.png';
   static const String imagesHome = 'assets/images/home.png';
+  static const String imagesImageFive = 'assets/images/imageFive.jpg';
+  static const String imagesImageFour = 'assets/images/imageFour.jpg';
+  static const String imagesImageOne = 'assets/images/imageOne.jpg';
+  static const String imagesImageThree = 'assets/images/imageThree.jpg';
+  static const String imagesImageTwo = 'assets/images/imageTwo.jpg';
   static const String imagesLoginBgFinal = 'assets/images/loginBgFinal.jpg';
   static const String imagesLoginText = 'assets/images/loginText.png';
   static const String imagesLoginbg = 'assets/images/loginbg.png';
@@ -61,6 +66,7 @@ class Assets {
   static const String imagesShare = 'assets/images/share.png';
   static const String imagesShopping = 'assets/images/shopping.png';
   static const String imagesShoppingCart = 'assets/images/shoppingCart.png';
+  static const String imagesSuccess = 'assets/images/success.gif';
   static const String imagesTerms = 'assets/images/terms.png';
   static const String imagesThree = 'assets/images/three.jpg';
   static const String imagesTitleLogo = 'assets/images/title_logo.png';

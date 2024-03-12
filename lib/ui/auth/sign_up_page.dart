@@ -35,10 +35,6 @@ class SignUpPageScreen extends StatefulWidget {
 class _SignUpPageScreenState extends State<SignUpPageScreen> {
   TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController = TextEditingController();
-
-  TextEditingController passwordAgainController = TextEditingController();
-
   TextEditingController nameController = TextEditingController();
 
   TextEditingController locationController = TextEditingController();
@@ -163,46 +159,6 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                       emailAccepted.value = false;
                     } else {
                       emailAccepted.value = true;
-                    }
-                  },
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.emailAddress,
-                ),
-                10.verticalSpace,
-                TextFieldDesignPage(
-                  prefixWidget: const Icon(
-                    Icons.lock_outline_rounded,
-                    color: Colors.grey,
-                  ),
-                  accepted: passwordAccepted,
-                  controller: passwordController,
-                  labelText: "Password",
-                  onChanged: (p0) {
-                    if (p0.length < 6) {
-                      passwordAccepted.value = false;
-                    } else {
-                      passwordAccepted.value = true;
-                    }
-                  },
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.visiblePassword,
-                ),
-                10.verticalSpace,
-                TextFieldDesignPage(
-                  prefixWidget: const Icon(
-                    Icons.lock_outline_rounded,
-                    color: Colors.grey,
-                  ),
-                  accepted: passwordAgainAccepted,
-                  controller: passwordAgainController,
-                  labelText: "Password Again",
-                  onChanged: (p0) {
-                    if (p0.length < 6) {
-                      passwordAgainAccepted.value = false;
-                    } else if (p0 != passwordController.text) {
-                      passwordAgainAccepted.value = false;
-                    } else {
-                      passwordAgainAccepted.value = true;
                     }
                   },
                   textInputAction: TextInputAction.next,
@@ -402,45 +358,6 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
         ),
       ).show(context);
       return;
-    } else if (passwordController.text.isEmpty) {
-      Flushbar(
-        duration: const Duration(seconds: 3),
-        backgroundColor: const Color(0xffA41C8E),
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        messageText: const Text(
-          "Please enter password",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ).show(context);
-      return;
-    } else if (passwordController.text.length < 6) {
-      Flushbar(
-        duration: const Duration(seconds: 3),
-        backgroundColor: const Color(0xffA41C8E),
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        messageText: const Text(
-          "Please enter valid password",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ).show(context);
-      return;
-    } else if (passwordAgainController.text != passwordController.text) {
-      Flushbar(
-        duration: const Duration(seconds: 3),
-        backgroundColor: const Color(0xffA41C8E),
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        messageText: const Text(
-          "Password doesn't matched",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ).show(context);
-      return;
     } else if (locationController.text.isEmpty) {
       Flushbar(
         duration: const Duration(seconds: 3),
@@ -480,7 +397,6 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
           name: nameController.text,
           mobileNumber: widget.mobileNumber ?? "",
           email: emailController.text,
-          password: passwordController.text,
           street: address[0].subLocality,
           city: address[0].locality,
           pincode: address[0].postalCode,
@@ -519,7 +435,6 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
           name: nameController.text,
           mobileNumber: widget.mobileNumber ?? "",
           email: emailController.text,
-          password: passwordController.text,
           street: address[0].subLocality,
           city: address[0].locality,
           pincode: address[0].postalCode,

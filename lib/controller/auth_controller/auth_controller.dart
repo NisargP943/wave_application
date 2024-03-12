@@ -37,7 +37,6 @@ class AuthController extends GetxController {
       pincode,
       street,
       city,
-      required String password,
       double? lat,
       double? lang}) async {
     loading.value = true;
@@ -45,7 +44,6 @@ class AuthController extends GetxController {
       final authResp = await authApiService.signUpNewUser(
           name: name,
           mobileNumber: mobileNumber,
-          password: password,
           email: email,
           street: street,
           city: city,

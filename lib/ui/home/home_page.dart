@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:animated_icon/animated_icon.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,20 +11,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
+import 'package:wave_app/model/home_model.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/customer_auth_response_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/location_screen.dart';
+import 'package:wave_app/ui/home/my_orders_page.dart';
 import 'package:wave_app/ui/home/order_details_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
+import 'package:wave_app/widgets/dp_textfield.dart';
 import 'package:wave_app/widgets/drop_down_textfield.dart';
 import 'package:wave_app/widgets/home_side_menu.dart';
 
@@ -43,11 +47,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  SpeechToText speechToText = SpeechToText();
   SingleValueDropDownController searchController =
       SingleValueDropDownController();
   TextEditingController locationController = TextEditingController();
   late StreamSubscription connectivity;
   PageController pageController = PageController();
+  PageController firstScrollerController = PageController();
   var categoryController = Get.put(AllCatController());
   ValueNotifier<int> hIndex = ValueNotifier(0);
   List<Worker> workers = [];
@@ -58,7 +64,9 @@ class _HomePageState extends State<HomePage> {
   late Position position;
   List<Placemark> address = [];
   bool end = false;
+  bool _speechEnabled = false;
   late Timer timer;
+  String _lastWords = '';
 
   @override
   void initState() {
@@ -93,7 +101,68 @@ class _HomePageState extends State<HomePage> {
         duration: const Duration(milliseconds: 1000),
         curve: Curves.easeIn,
       );
+      firstScrollerController.animateToPage(
+        hIndex.value,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeIn,
+      );
     });
+  }
+
+  Future _initSpeech() async {
+    try {
+      _speechEnabled = await speechToText.initialize(
+        onStatus: (status) {},
+        onError: (errorNotification) {},
+      );
+      _startListening();
+    } on SpeechToTextNotInitializedException catch (e) {
+      if (mounted) {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "Voice Search is Supported only in Device above Android 11",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "Voice Search is Supported only in Device above Android 11",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    }
+  }
+
+  void _startListening() async {
+    debugPrint(_speechEnabled.toString());
+    if (_speechEnabled) {
+      await speechToText.listen(onResult: _onSpeechResult);
+      setState(() {});
+    }
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
+
+    searchController
+        .setDropDown(DropDownValueModel(name: _lastWords, value: _lastWords));
+    debugPrint(_lastWords);
   }
 
   @override
@@ -102,6 +171,8 @@ class _HomePageState extends State<HomePage> {
     timer.cancel();
     connectivity.cancel();
     searchController.dispose();
+    firstScrollerController.dispose();
+    speechToText.cancel();
     super.dispose();
   }
 
@@ -125,159 +196,163 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget serviceDetailsItem() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5).r,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 25,
-        vertical: 15,
-      ).r,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 4,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(8).r,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                text: TextSpan(
-                  text: "OrderNo : ",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16.spMin,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: "123456",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16.spMin,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                DateFormat("dd-MM-yyyy").format(DateTime.now()).toString(),
-                style: TextStyle(
-                  fontSize: 13.spMin,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey,
-                ),
-              )
-            ],
-          ),
-          10.verticalSpace,
-          RichText(
-            text: TextSpan(
-              text: "Tracking number: ",
-              style: CustomTextStyles.bodySmallff9b9b9b,
-              children: [
-                TextSpan(
-                  text: "IW3475453455",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13.spMin,
-                      fontFamily: "Arial"),
+    return bookedList.isEmpty
+        ? const SizedBox.shrink()
+        : Container(
+            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5).r,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 25,
+              vertical: 15,
+            ).r,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 4,
                 ),
               ],
+              borderRadius: BorderRadius.circular(8).r,
             ),
-          ),
-          10.verticalSpace,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                text: TextSpan(
-                  text: "Quantity: ",
-                  style: CustomTextStyles.bodySmallff9b9b9b,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextSpan(
-                      text: "1",
+                    RichText(
+                      text: TextSpan(
+                        text: "OrderNo : ",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16.spMin,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: bookedList.last.id,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16.spMin,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      bookedList.last.bookdate ?? "",
                       style: TextStyle(
-                        color: Colors.black,
                         fontSize: 13.spMin,
-                        fontFamily: "Arial",
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                ),
+                10.verticalSpace,
+                RichText(
+                  text: TextSpan(
+                    text: "Tracking number: ",
+                    style: CustomTextStyles.bodySmallff9b9b9b,
+                    children: [
+                      TextSpan(
+                        text: bookedList.last.id,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13.spMin,
+                            fontFamily: "Arial"),
+                      ),
+                    ],
+                  ),
+                ),
+                10.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        text: "Quantity: ",
+                        style: CustomTextStyles.bodySmallff9b9b9b,
+                        children: [
+                          TextSpan(
+                            text: bookedList.last.quantity,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13.spMin,
+                              fontFamily: "Arial",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        text: "Total Amount: ",
+                        style: CustomTextStyles.bodySmallff9b9b9b,
+                        children: [
+                          TextSpan(
+                            text: "Rs${bookedList.last.price}",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13.spMin,
+                              fontFamily: "Arial",
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              RichText(
-                text: TextSpan(
-                  text: "Total Amount: ",
-                  style: CustomTextStyles.bodySmallff9b9b9b,
+                15.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextSpan(
-                      text: "Rs350",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 13.spMin,
-                        fontFamily: "Arial",
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          OrderDetailsPage(
+                              bookedServiceModel: bookedList.last,
+                              fromHomePage: true),
+                          duration: const Duration(seconds: 1),
+                          transition: Transition.fadeIn,
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 10,
+                        ).r,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30).r,
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: const Text("Details"),
                       ),
                     ),
+                    Row(
+                      children: [
+                        Text(
+                          "In Progress",
+                          style: CustomTextStyles.bodyMediumGreen600,
+                        ),
+                        5.horizontalSpace,
+                        AnimateIcon(
+                          height: 25.r,
+                          width: 25.r,
+                          onTap: () {},
+                          iconType: IconType.continueAnimation,
+                          animateIcon: AnimateIcons.loading6,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
                   ],
-                ),
-              ),
-            ],
-          ),
-          15.verticalSpace,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.to(
-                    const OrderDetailsPage(),
-                    duration: const Duration(seconds: 1),
-                    transition: Transition.fadeIn,
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 10,
-                  ).r,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30).r,
-                    border: Border.all(color: Colors.black),
-                  ),
-                  child: const Text("Details"),
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    "In Progress",
-                    style: CustomTextStyles.bodyMediumGreen600,
-                  ),
-                  5.horizontalSpace,
-                  AnimateIcon(
-                    height: 25.r,
-                    width: 25.r,
-                    onTap: () {},
-                    iconType: IconType.continueAnimation,
-                    animateIcon: AnimateIcons.bell,
-                    color: Colors.green,
-                  ),
-                ],
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+                )
+              ],
+            ),
+          );
   }
 
   Widget mainWidgetTwo() {
@@ -326,6 +401,9 @@ class _HomePageState extends State<HomePage> {
               ),
               10.verticalSpace,
               DropDownTextFieldSearchPage(
+                suffixCallBack: () {
+                  checkPermission();
+                },
                 controller: searchController,
                 onChanged: (p0) {
                   if (searchController.dropDownValue?.value != null) {
@@ -356,13 +434,35 @@ class _HomePageState extends State<HomePage> {
               10.verticalSpace,
               serviceDetailsItem(),
               15.verticalSpace,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10).r,
-                  child: CustomImageView(
-                    imagePath:
-                        "http://kalasampurna.com/wavetech/webimages/home11.png",
+              SizedBox(
+                height: 200.h,
+                child: PageView.builder(
+                  controller: firstScrollerController,
+                  onPageChanged: (value) {
+                    hIndex.value = value;
+                  },
+                  itemCount: homeModelList.length,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Get.to(
+                        duration: const Duration(seconds: 1),
+                        transition: Transition.fadeIn,
+                        SearchServicePage(
+                          serviceName: homeModelList[index].name,
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10).r,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10).r,
+                        child: CustomImageView(
+                          fit: BoxFit.fill,
+                          imagePath: homeModelList[index].image,
+                          placeHolder: "Please wait",
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -482,15 +582,26 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: verticalBanner.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8).r,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10).r,
-                      child: CustomImageView(
-                        width: 130.w,
-                        fit: BoxFit.fill,
-                        imagePath: verticalBanner[index],
-                        placeHolder: "Please wait",
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Get.to(
+                        SearchServicePage(
+                          serviceName: verticalBanner[index].name,
+                        ),
+                        transition: Transition.fadeIn,
+                        duration: const Duration(seconds: 1),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8).r,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10).r,
+                        child: CustomImageView(
+                          width: 130.w,
+                          fit: BoxFit.fill,
+                          imagePath: verticalBanner[index].image,
+                          placeHolder: "Please wait",
+                        ),
                       ),
                     ),
                   ),
@@ -509,14 +620,25 @@ class _HomePageState extends State<HomePage> {
                   },
                   controller: pageController,
                   itemCount: horizontalBanners.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10).r,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10).r,
-                      child: CustomImageView(
-                        fit: BoxFit.fill,
-                        imagePath: horizontalBanners[index],
-                        placeHolder: "Please wait",
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Get.to(
+                        SearchServicePage(
+                          serviceName: horizontalBanners[index].name,
+                        ),
+                        transition: Transition.fadeIn,
+                        duration: const Duration(seconds: 1),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10).r,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10).r,
+                        child: CustomImageView(
+                          fit: BoxFit.fill,
+                          imagePath: horizontalBanners[index].image,
+                          placeHolder: "Please wait",
+                        ),
                       ),
                     ),
                   ),
@@ -788,6 +910,8 @@ class _HomePageState extends State<HomePage> {
     Connectivity().checkConnectivity().then((value) {
       if (value == ConnectivityResult.mobile ||
           value == ConnectivityResult.wifi) {
+        debugPrint("This is called : ${nameDB?.get("mobile")}");
+        categoryController.getBookedServiceApi(nameDB?.get("mobile"));
         categoryController.getAllCategory().then((value) {
           for (int i = 0; i < serviceListNotifier.value.length; i++) {
             dropDownList.add(
@@ -820,6 +944,8 @@ class _HomePageState extends State<HomePage> {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
         debugPrint("This is called");
+        debugPrint("This is called : ${nameDB?.get("mobile")}");
+        categoryController.getBookedServiceApi(nameDB?.get("mobile"));
         categoryController.getAllCategory().then((value) {
           for (int i = 0; i < serviceListNotifier.value.length; i++) {
             dropDownList.add(
@@ -896,21 +1022,38 @@ class _HomePageState extends State<HomePage> {
         "----------------------------------------------------value after conversion : ${address[0].street}, ${address[0].subLocality}, ${address[0].locality}, ${address[0].postalCode}");
     return address;
   }
+
+  Future checkPermission() async {
+    var permission = await Permission.audio.status;
+    if (permission.isDenied || permission.isPermanentlyDenied) {
+      permission = await Permission.audio.request();
+      await _initSpeech();
+    }
+  }
 }
 
-List horizontalBanners = [
-  "http://wavetechservices.in/appimages/homebanners/h1.png",
-  "http://wavetechservices.in/appimages/homebanners/h2.png",
-  "http://wavetechservices.in/appimages/homebanners/h3.png",
-  "http://wavetechservices.in/appimages/homebanners/h4.png",
-  "http://wavetechservices.in/appimages/homebanners/h5.png",
-  "http://wavetechservices.in/appimages/homebanners/h6.png",
+List<HomeModel> horizontalBanners = [
+  HomeModel("http://wavetechservices.in/appimages/homebanners/h1.png",
+      "Spa - Saloon"),
+  HomeModel("http://wavetechservices.in/appimages/homebanners/h2.png", "Event"),
+  HomeModel(
+      "http://wavetechservices.in/appimages/homebanners/h3.png", "Health Care"),
+  HomeModel("http://wavetechservices.in/appimages/homebanners/h4.png",
+      "Electronics Service"),
+  HomeModel(
+      "http://wavetechservices.in/appimages/homebanners/h5.png", "Plumbers"),
+  HomeModel("http://wavetechservices.in/appimages/homebanners/h6.png", "Home"),
 ];
 
-List verticalBanner = [
-  "http://wavetechservices.in/appimages/homebanners/v1.png",
-  "http://wavetechservices.in/appimages/homebanners/v2.png",
-  "http://wavetechservices.in/appimages/homebanners/v3.png",
-  "http://wavetechservices.in/appimages/homebanners/v4.png",
-  "http://wavetechservices.in/appimages/homebanners/v5.png",
+List<HomeModel> verticalBanner = [
+  HomeModel(
+      "http://wavetechservices.in/appimages/homebanners/v1.png", "Astrologers"),
+  HomeModel(
+      "http://wavetechservices.in/appimages/homebanners/v2.png", "Contractors"),
+  HomeModel("http://wavetechservices.in/appimages/homebanners/v3.png",
+      "Consultants - Advisory Service"),
+  HomeModel(
+      "http://wavetechservices.in/appimages/homebanners/v4.png", "Caterers"),
+  HomeModel(
+      "http://wavetechservices.in/appimages/homebanners/v5.png", "CAR Service"),
 ];

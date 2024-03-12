@@ -56,7 +56,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   void initState() {
     super.initState();
     initializeDateFormatting();
-    debugPrint(widget.categoryModel?.id);
+    debugPrint(widget.categoryModel?.srate);
     Future.delayed(const Duration(seconds: 2), () => isLoading.value = false);
     dateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
     timeController.text = timeController.text =
@@ -116,12 +116,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         overflow: TextOverflow.ellipsis,
       ),
       centerTitle: true,
-      actions: [
-        Image.asset(
-          Assets.imagesShare,
-          scale: 1.8,
-        ),
-      ],
     );
   }
 
@@ -390,7 +384,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
           child: AppButtonWidget(
             onTap: () {
-              pageNotifier.value = 2;
+              pageNotifier.value = 3;
               myCategory.add(widget.subCategoryModel!);
               Get.back();
             },

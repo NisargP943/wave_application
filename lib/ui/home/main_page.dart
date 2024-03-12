@@ -7,8 +7,6 @@ import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/helpdesk_page.dart';
 import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/ui/home/my_orders_page.dart';
-import 'package:wave_app/ui/home/order_details_page.dart';
-import 'package:wave_app/ui/home/sub_category_page.dart';
 import 'package:wave_app/ui/home/wave_cart_page.dart';
 
 ValueNotifier<int> pageNotifier = ValueNotifier(0);
@@ -36,7 +34,6 @@ class _MainPageState extends State<MainPage> {
     );
     pages = [
       HomePage(customerAuthResponseModel: widget.customerAuthResponseModel),
-      const HomePage(),
       const MyOrderPage(),
       const WaveCartPage(),
       const HelpdeskPage()
@@ -102,7 +99,7 @@ class _MainPageState extends State<MainPage> {
                   width: 30.w,
                   Assets.imagesShoppingCart,
                 ),
-                label: "Book",
+                label: "My Orders",
               ),
               BottomNavigationBarItem(
                 icon: Image.asset(
@@ -111,20 +108,11 @@ class _MainPageState extends State<MainPage> {
                   width: 30.w,
                   Assets.imagesShopping,
                 ),
-                label: "My Orders",
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  color: value == 3 ? const Color(0xffDB3022) : null,
-                  height: 45.h,
-                  width: 30.w,
-                  Assets.imagesShopping,
-                ),
                 label: "Orders",
               ),
               BottomNavigationBarItem(
                 icon: Image.asset(
-                  color: value == 4 ? const Color(0xffDB3022) : null,
+                  color: value == 3 ? const Color(0xffDB3022) : null,
                   height: 45.h,
                   width: 30.w,
                   Assets.imagesProfile,

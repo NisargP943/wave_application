@@ -23,7 +23,6 @@ class WaveCartPage extends StatefulWidget {
 }
 
 class _WaveCartPageState extends State<WaveCartPage> {
-  ValueNotifier<bool> showSearchBar = ValueNotifier(false);
   ValueNotifier<bool> dummyCouponCode = ValueNotifier(false);
   ValueNotifier<double> totalPrice = ValueNotifier(0);
   TextEditingController searchController = TextEditingController();
@@ -61,9 +60,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
         children: [
           40.verticalSpace,
           searchIcon(),
-          10.verticalSpace,
-          searchTextField(),
-          10.verticalSpace,
+          20.verticalSpace,
           myCartTextRow(),
           myCartList.isNotEmpty
               ? bookingServiceList()
@@ -142,7 +139,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
       cityLat: "23.0039",
       cityLong: "72.5461",
       address: locationDB?.get("city").toString() ?? "",
-      bookingDate: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+      bookingDate: DateFormat("dd-MM-yyyy").format(DateTime.now()),
       bookingTime: DateFormat.jm().format(DateTime.now()).toLowerCase(),
       landmark: "Indian oil petrol pump",
       sdetails: myCartList.isNotEmpty
@@ -206,30 +203,16 @@ class _WaveCartPageState extends State<WaveCartPage> {
 
   Align searchIcon() {
     return Align(
-      alignment: Alignment.centerRight,
+      alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15).r,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CustomImageView(
-              width: 24.r,
-              height: 24.r,
-              imagePath: Assets.imagesBackIcon,
-              onTap: () {
-                pageNotifier.value = 0;
-              },
-            ),
-            GestureDetector(
-              onTap: () {
-                showSearchBar.value = !showSearchBar.value;
-              },
-              child: Image.asset(
-                Assets.imagesSearch,
-                scale: 1.3,
-              ),
-            ),
-          ],
+        child: CustomImageView(
+          width: 24.r,
+          height: 24.r,
+          imagePath: Assets.imagesBackIcon,
+          onTap: () {
+            pageNotifier.value = 0;
+          },
         ),
       ),
     );
@@ -245,7 +228,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
           children: [
             const Text("Total Amount:"),
             Text(
-              "₹ ${totalServiceCostDB?.get("cost")}",
+              "₹ ${totalServiceCostDB?.get("cost") ?? 0.0}",
               style: CustomTextStyles.bodyMediumGray50013,
             )
           ],
@@ -432,7 +415,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Text("₹${item.price}")
+                            Text("₹${item.srate}")
                           ],
                         ),
                       ),
@@ -511,7 +494,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Text("₹${item.price}")
+                            Text("₹${item.srate}")
                           ],
                         ),
                       ),
@@ -591,7 +574,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Text("₹${item.price}")
+                            Text("₹${item.srate}")
                           ],
                         ),
                       ),
@@ -703,31 +686,6 @@ class _WaveCartPageState extends State<WaveCartPage> {
     );
   }
 
-  ValueListenableBuilder<bool> searchTextField() {
-    return ValueListenableBuilder(
-      valueListenable: showSearchBar,
-      builder: (context, value, child) => value
-          ? TextFieldSearchPage(
-              onChanged: (val) {
-                // categoryController.searchService(val);
-              },
-              edgeInsets: const EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 15,
-              ).r,
-              textInputAction: TextInputAction.done,
-              textInputType: TextInputType.text,
-              controller: searchController,
-              labelText: "Search Cart",
-              prefixWidget: const Icon(
-                Icons.search,
-                color: Colors.grey,
-              ),
-            )
-          : const SizedBox.shrink(),
-    );
-  }
-
   void calculateTotalPrice() {
     if (myCartList.isNotEmpty) {
       for (int i = 0; i < myCartList.length; i++) {
@@ -796,15 +754,12 @@ class _WaveCartPageState extends State<WaveCartPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("Booking ID : ${callback.bookingid.toString()}"),
-                    5.verticalSpace,
-                    Text(
-                      "Booking Date and Time : ${serviceBookingTime?.get("serviceTime")}",
+                    Center(
+                      child: Image.asset(Assets.imagesSuccess),
                     ),
                     5.verticalSpace,
                     Text(
-                      "Service Name : ${catDB!.get("category")}",
-                    ),
+                        "Your Booking is confirmed with Booking ID : ${callback.bookingid.toString()}"),
                   ],
                 ),
               ),

@@ -20,7 +20,8 @@ class TextFieldSearchPage extends StatefulWidget {
       this.onTap,
       this.padding,
       this.hintText,
-      this.maxLines})
+      this.maxLines,
+      this.onSubmitted})
       : super(key: key);
   final TextEditingController? controller;
   final String? labelText;
@@ -36,6 +37,7 @@ class TextFieldSearchPage extends StatefulWidget {
   final double? padding;
   final String? hintText;
   final int? maxLines;
+  final void Function(String)? onSubmitted;
 
   @override
   _TextFieldSearchPageState createState() => _TextFieldSearchPageState();
@@ -89,8 +91,12 @@ class _TextFieldSearchPageState extends State<TextFieldSearchPage> {
               valueListenable: widget.accepted ?? ValueNotifier(true),
               builder: (context, value, child) => TextField(
                 onTap: widget.onTap,
+                onSubmitted: widget.onSubmitted,
                 controller: widget.controller,
                 readOnly: widget.readOnly ?? false,
+                textInputAction: widget.textInputAction,
+                keyboardType: widget.textInputType,
+                inputFormatters: widget.inputFormatters,
                 focusNode: _focusNode,
                 maxLines: widget.maxLines,
                 style: TextStyle(color: Colors.black, fontSize: 16.spMin),

@@ -1,8 +1,7 @@
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wave_app/generated/assets.dart';
+import 'dp_textfield.dart';
 
 class DropDownTextFieldSearchPage extends StatefulWidget {
   const DropDownTextFieldSearchPage({
@@ -18,6 +17,7 @@ class DropDownTextFieldSearchPage extends StatefulWidget {
     this.prefixWidget,
     this.edgeInsets,
     this.readOnly,
+    this.suffixCallBack,
     required this.dropDownList,
   }) : super(key: key);
   final SingleValueDropDownController? controller;
@@ -29,6 +29,7 @@ class DropDownTextFieldSearchPage extends StatefulWidget {
   final void Function(dynamic)? onChanged;
   final ValueNotifier<bool>? accepted;
   final Widget? prefixWidget;
+  final VoidCallback? suffixCallBack;
   final EdgeInsets? edgeInsets;
   final List<DropDownValueModel> dropDownList;
 
@@ -87,6 +88,7 @@ class _DropDownTextFieldSearchPageState
               builder: (context, value, child) => DropDownTextField(
                 controller: widget.controller,
                 readOnly: widget.readOnly ?? false,
+                suffixCallback: widget.suffixCallBack,
                 textFieldDecoration: InputDecoration(
                   prefixIcon: widget.prefixWidget,
                   filled: true,
@@ -95,12 +97,34 @@ class _DropDownTextFieldSearchPageState
                   contentPadding: widget.edgeInsets ??
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 15)
                           .r,
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5).r,
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5).r,
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5).r,
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5).r,
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
                   prefixIconConstraints: const BoxConstraints(
                     minWidth: 30,
                     minHeight: 0,
                   ),
-                  suffixIcon: const SizedBox.shrink(),
                 ),
                 onChanged: widget.onChanged,
                 searchShowCursor: false,

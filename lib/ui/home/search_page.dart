@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -15,6 +14,7 @@ import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/ui/home/service_details_page.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
+import 'package:wave_app/widgets/dp_textfield.dart';
 import 'package:wave_app/widgets/drop_down_textfield.dart';
 
 ValueNotifier<List<ServicesModel>> searchServiceNotifier = ValueNotifier([]);
@@ -93,6 +93,7 @@ class _SearchServicePageState extends State<SearchServicePage> {
         ),
       );
     }
+    debugPrint("Hello ${widget.serviceName}");
   }
 
   @override
@@ -412,16 +413,14 @@ class _SearchServicePageState extends State<SearchServicePage> {
     Connectivity().checkConnectivity().then((value) {
       if (value == ConnectivityResult.mobile ||
           value == ConnectivityResult.wifi) {
-        categoryController
-            .searchService(widget.serviceName ?? "Health Care")
-            .then((value) {
+        categoryController.searchService(widget.serviceName!).then((value) {
           Future.delayed(const Duration(seconds: 1), () {
             for (int i = 0; i < searchServiceNotifier.value.length; i++) {
               cat = searchServiceNotifier.value[i].catg!;
             }
             final tempList =
                 serviceList.where((element) => element.catg == cat);
-            searchServiceNotifier.value = tempList.toList();
+            searchServiceNotifier.value += tempList.toList();
           });
         });
       } else {
@@ -446,16 +445,14 @@ class _SearchServicePageState extends State<SearchServicePage> {
     connectivity = Connectivity().onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
-        categoryController
-            .searchService(widget.serviceName ?? "Health Care")
-            .then((value) {
+        categoryController.searchService(widget.serviceName!).then((value) {
           Future.delayed(const Duration(seconds: 1), () {
             for (int i = 0; i < searchServiceNotifier.value.length; i++) {
               cat = searchServiceNotifier.value[i].catg!;
             }
             final tempList =
                 serviceList.where((element) => element.catg == cat);
-            searchServiceNotifier.value = tempList.toList();
+            searchServiceNotifier.value += tempList.toList();
           });
         });
       } else {
