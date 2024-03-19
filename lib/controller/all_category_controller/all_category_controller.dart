@@ -11,7 +11,6 @@ import 'package:wave_app/ui/home/home_page.dart';
 import 'package:wave_app/ui/home/my_orders_page.dart';
 import 'package:wave_app/ui/home/search_page.dart';
 import 'package:wave_app/ui/home/sub_category_page.dart';
-
 import '../../model/response/all_category_response_model.dart';
 import '../../model/response/sub_category_response_model.dart';
 
@@ -42,6 +41,7 @@ class AllCatController extends GetxController {
   Rx<BookedServiceResponseModel> bookedServiceListResponseModel =
       BookedServiceResponseModel(data: []).obs;
   var isBookingCompleted = "".obs;
+  var isPaymentSuccessfully = "".obs;
   var loading = true.obs;
   var errorMessage = "".obs;
   CategoryService categoryService = CategoryService();
@@ -151,32 +151,36 @@ class AllCatController extends GetxController {
     }
   }
 
-  Future<void> bookService(
-      {required String name,
-      required String number,
-      required String cityLat,
-      required String cityLong,
-      required String address,
-      required String bookingDate,
-      required String bookingTime,
-      required String landmark,
-      required String sdetails,
-      required String amcDetails,
-      required String couponCode}) async {
+  Future<void> bookService({
+    required String name,
+    required String number,
+    required String cityLat,
+    required String cityLong,
+    required String address,
+    required String bookingDate,
+    required String bookingTime,
+    required String landmark,
+    required String sdetails,
+    required String amcDetails,
+    required String couponCode,
+    required String bookissues,
+  }) async {
     loading = true.obs;
     try {
       final authResp = await categoryService.bookServiceApi(
-          name: name,
-          number: number,
-          address: address,
-          cityLat: cityLat,
-          cityLong: cityLong,
-          bookingDate: bookingDate,
-          bookingTime: bookingTime,
-          landmark: landmark,
-          sdetails: sdetails,
-          amcDetails: amcDetails,
-          couponCode: couponCode);
+        name: name,
+        number: number,
+        address: address,
+        cityLat: cityLat,
+        cityLong: cityLong,
+        bookingDate: bookingDate,
+        bookingTime: bookingTime,
+        landmark: landmark,
+        sdetails: sdetails,
+        amcDetails: amcDetails,
+        couponCode: couponCode,
+        bookissues: bookissues,
+      );
       if (authResp.statusCode == 200) {
         bookServiceResponseModel.value = bookServiceResponseModelFromJson(
           authResp.body,
@@ -256,6 +260,41 @@ class AllCatController extends GetxController {
       );
       if (authResp.statusCode == 200) {
         isBookingCompleted.value = "Done";
+        update();
+        debugPrint("Response Booked Service :::: $authResp");
+      }
+    } on SocketException catch (e) {
+      // errorMessage.value = "Connection Lost, Check Internet Connection";
+      update();
+    } catch (e) {
+      debugPrint("error ${e.toString()}");
+      //errorMessage.value = "Something is wrong from search";
+      loading.value = false;
+    }
+  }
+
+  Future<void> customerPaymentApi(
+    String name,
+    String bid,
+    String amts,
+    String addr,
+    String pincode,
+    String mobile,
+    String bservice,
+  ) async {
+    loading = true.obs;
+    try {
+      final authResp = await categoryService.customerPayApi(
+        name,
+        bid,
+        amts,
+        addr,
+        pincode,
+        mobile,
+        bservice,
+      );
+      if (authResp.statusCode == 200) {
+        isPaymentSuccessfully.value = "Payment Done Booking Registered";
         update();
         debugPrint("Response Booked Service :::: $authResp");
       }

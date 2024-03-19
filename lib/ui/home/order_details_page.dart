@@ -304,14 +304,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       30.verticalSpace,
                       ValueListenableBuilder(
                         valueListenable: feedbackNotifier,
-                        builder: (context, value, child) => RichText(
+                        builder: (context, value, chilfd) => RichText(
                           text: TextSpan(
                             text: "Feedback:    ",
                             style: CustomTextStyles.bodySmallff9b9b9b,
                             children: [
                               TextSpan(
-                                text:
-                                    "${value.isEmpty ? widget.bookedServiceModel?.feedback : value}",
+                                text: value.isEmpty ? "" : value,
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 13.spMin,

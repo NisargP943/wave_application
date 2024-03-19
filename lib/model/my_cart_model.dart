@@ -7,3 +7,22 @@ List<ServicesModel> myCartList = [];
 List<Consultant> myConsultantModel = [];
 List<ServiceModel> myAMCList = [];
 List<CategoryModel> myCategory = [];
+
+class ServicePaymentModel {
+  String name;
+  String bid;
+  String amts;
+  String addr;
+  String pincode;
+  String mobile;
+  String bservice;
+
+  ServicePaymentModel(
+      {required this.name,
+      required this.bid,
+      required this.amts,
+      required this.addr,
+      required this.pincode,
+      required this.mobile,
+      required this.bservice});
+}

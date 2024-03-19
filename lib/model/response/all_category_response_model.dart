@@ -42,6 +42,8 @@ class ServicesModel {
   String? sdesc;
   String? srate;
   String? catg;
+  String? mainissues;
+  String? maindesc;
   String? priority;
   String? stype;
   int? rating;
@@ -55,6 +57,8 @@ class ServicesModel {
     this.sdesc,
     this.srate,
     this.catg,
+    this.mainissues,
+    this.maindesc,
     this.priority,
     this.stype,
     this.rating,
@@ -69,6 +73,8 @@ class ServicesModel {
         sdesc: json["sdesc"],
         srate: json["srate"],
         catg: json["catg"],
+        mainissues: json["mainissues"],
+        maindesc: json["maindesc"],
         priority: json["priority"],
         stype: json["stype"],
         rating: json["rating"],
@@ -82,6 +88,8 @@ class ServicesModel {
         "sdesc": sdesc,
         "srate": srate,
         "catg": catg,
+        "mainissues": mainissues,
+        "maindesc": maindesc,
         "priority": priority,
         "stype": stype,
         "rating": rating,

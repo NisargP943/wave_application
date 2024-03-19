@@ -1,4 +1,4 @@
-package com.example.wave_app
+package com.wavetech.customer
 
 import io.flutter.embedding.android.FlutterActivity
 

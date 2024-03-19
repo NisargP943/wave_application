@@ -84,52 +84,60 @@ class NavDrawer extends StatelessWidget {
                 builder: (context) => AlertDialog(
                   title: const Text("Logout"),
                   actions: [
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.off(const LoginOneScreen());
-                          customerDB?.put(
-                              "isLogin", CustomerData(isLogin: false));
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.purple,
-                            borderRadius: BorderRadius.circular(40).r,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ).r,
-                          child: Text(
-                            "Logout",
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 14.spMin),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(40).r,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ).r,
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(
-                                color: Colors.black, fontSize: 14.spMin),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.off(const LoginOneScreen());
+                              customerDB?.put(
+                                  "isLogin", CustomerData(isLogin: false));
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.purple,
+                                borderRadius: BorderRadius.circular(40).r,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
+                              ).r,
+                              child: Text(
+                                "Logout",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14.spMin),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        20.horizontalSpace,
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(40).r,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
+                              ).r,
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 14.spMin),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                   content: Column(

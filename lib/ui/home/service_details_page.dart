@@ -16,7 +16,9 @@ import 'package:wave_app/model/response/all_category_response_model.dart';
 import 'package:wave_app/model/response/all_consultants_response_model.dart';
 import 'package:wave_app/model/response/amc_response_model.dart';
 import 'package:wave_app/model/response/sub_category_response_model.dart';
+import 'package:wave_app/model/service_details_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
+import 'package:wave_app/theme/theme_helper.dart';
 import 'package:wave_app/ui/home/main_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
@@ -51,11 +53,15 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   List<DateTime?> _singleDatePickerValueWithDefaultValue = [
     DateTime.now(),
   ];
+  ValueNotifier<String> descNotifier = ValueNotifier("No Description found");
+  List<String> splitIssues = [];
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
+    issuesList = [];
+    selectedIssue = [];
     debugPrint(widget.categoryModel?.srate);
     Future.delayed(const Duration(seconds: 2), () => isLoading.value = false);
     dateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
@@ -72,6 +78,39 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     }
     serviceBookingTime?.put(
         "serviceTime", "${dateController.text} and ${timeController.text}");
+    setDescription();
+    issuesSplit();
+  }
+
+  void issuesSplit() {
+    if (widget.categoryModel != null) {
+      splitIssues = widget.categoryModel?.mainissues
+              ?.split(',')
+              .map((service) => service.trim())
+              .toList() ??
+          [];
+      for (var split in splitIssues) {
+        issuesList.add(ServiceDetailsModel(split, false));
+      }
+    } else if (widget.amcModel != null) {
+      splitIssues = widget.amcModel?.mainissues
+              ?.split(',')
+              .map((service) => service.trim())
+              .toList() ??
+          [];
+      for (var split in splitIssues) {
+        issuesList.add(ServiceDetailsModel(split, false));
+      }
+    } else {
+      splitIssues = widget.consultant?.mainissues
+              ?.split(',')
+              .map((service) => service.trim())
+              .toList() ??
+          [];
+      for (var split in splitIssues) {
+        issuesList.add(ServiceDetailsModel(split, false));
+      }
+    }
   }
 
   @override
@@ -137,9 +176,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ),
                 )
               : SingleChildScrollView(
-                  child: widget.fromSubCategory == true
-                      ? servicesDetailsFromSubCategoryWidget()
-                      : servicesDetailsFromHomeWidget(),
+                  child: servicesDetailsFromHomeWidget(),
                 ),
     );
   }
@@ -166,6 +203,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         ratingBarRow(4),
         30.verticalSpace,
         serviceDescription(),
+        10.verticalSpace,
+        labelWidgetOne("Issues"),
+        10.verticalSpace,
+        issuesListView(),
         10.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15).r,
@@ -242,6 +283,53 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     );
   }
 
+  Widget issuesListView() {
+    return issuesList.isEmpty
+        ? const Center(
+            child: Text("No Issues Found"),
+          )
+        : StatefulBuilder(
+            builder: (context, setState) => ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: issuesList.length,
+              shrinkWrap: true,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (issuesList[index].isSelected == true) {
+                        issuesList[index].isSelected = false;
+                      } else {
+                        issuesList[index].isSelected = true;
+                      }
+                      setState(() {});
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10, top: 0).r,
+                          child: Icon(
+                            size: 22,
+                            issuesList[index].isSelected == true
+                                ? Icons.check_box_rounded
+                                : Icons.check_box_outline_blank_outlined,
+                          ),
+                        ),
+                        termsTextWidget(index)
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return 10.verticalSpace;
+              },
+            ),
+          );
+  }
+
   void validate() {
     if (dateController.text.isEmpty) {
       Flushbar(
@@ -271,11 +359,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       return;
     } else {
       pageNotifier.value = 2;
+      selectedIssue =
+          issuesList.where((element) => element.isSelected == true).toList();
       if (widget.categoryModel != null) {
         myCartList.add(widget.categoryModel!);
         catDB?.put("category", widget.categoryModel?.servicename);
-
-        //  serviceBookingTime?.put("serviceType", myCartList[0].servicename);
       } else if (widget.consultant != null) {
         myConsultantModel.add(widget.consultant!);
         catDB?.put("category", widget.consultant?.servicename);
@@ -292,6 +380,23 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     }
   }
 
+  Widget termsTextWidget(int index) {
+    return Expanded(
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: issuesList[index].issue,
+              style: theme.textTheme.titleSmall?.copyWith(fontSize: 15.spMin),
+            ),
+          ],
+        ),
+        textAlign: TextAlign.left,
+      ),
+    );
+  }
+
+/*
   Widget servicesDetailsFromSubCategoryWidget() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,6 +504,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       ],
     );
   }
+*/
 
   Widget newCategoryListView() {
     return GetBuilder<AllCatController>(
@@ -569,7 +675,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           RatingBar(
-                            initialRating: 5,
+                            initialRating:
+                                widget.categoryModel!.rating!.toDouble(),
                             allowHalfRating: true,
                             itemCount: 5,
                             glowColor: Colors.orangeAccent,
@@ -680,7 +787,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           RatingBar(
-                            initialRating: 5,
+                            initialRating: widget.consultant!.rating.toDouble(),
                             allowHalfRating: true,
                             itemCount: 5,
                             glowColor: Colors.orangeAccent,
@@ -790,7 +897,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           RatingBar(
-                            initialRating: 5,
+                            initialRating: widget.amcModel!.rating!.toDouble(),
                             allowHalfRating: true,
                             itemCount: 5,
                             glowColor: Colors.orangeAccent,
@@ -845,14 +952,14 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   }
 
   Widget serviceDescription() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15).r,
-      child: Text(
-        widget.categoryModel?.sdesc ??
-            widget.consultant?.sdesc ??
-            widget.amcModel?.sdesc ??
-            "",
-        style: CustomTextStyles.titleMediumff407bff,
+    return ValueListenableBuilder(
+      valueListenable: descNotifier,
+      builder: (context, value, child) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15).r,
+        child: Text(
+          value,
+          style: CustomTextStyles.titleMediumff407bff,
+        ),
       ),
     );
   }
@@ -886,7 +993,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             ),
           ),
           Text(
-            "₹ ${widget.categoryModel?.srate ?? widget.consultant?.srate ?? widget.amcModel?.srate}",
+            /* widget.categoryModel?.price == null ||
+                    widget.consultant?.price == null ||
+                    widget.amcModel?.price.toString() == null
+                ? "Rs 0"
+                :*/
+            "Rs ${widget.categoryModel?.price ?? widget.consultant?.price ?? widget.amcModel?.price}",
             style: CustomTextStyles.displaySmallBlack900,
           ),
         ],
@@ -1198,5 +1310,19 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         style: CustomTextStyles.bodyMediumBlack900,
       ),
     );
+  }
+
+  void setDescription() {
+    if (widget.amcModel?.maindesc != "") {
+      descNotifier.value = widget.amcModel?.maindesc ?? "No Description found";
+    } else if (widget.consultant?.maindesc != "") {
+      descNotifier.value =
+          widget.consultant?.maindesc ?? "No Description found";
+    } else if (widget.categoryModel?.maindesc != "") {
+      descNotifier.value =
+          widget.categoryModel?.maindesc ?? "No Description found";
+    } else {
+      descNotifier.value = "No Description found";
+    }
   }
 }

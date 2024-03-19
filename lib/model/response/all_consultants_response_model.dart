@@ -38,6 +38,8 @@ class Consultant {
   String sdesc;
   String srate;
   String catg;
+  String? mainissues;
+  String? maindesc;
   Priority priority;
   Stype stype;
   int rating;
@@ -51,6 +53,8 @@ class Consultant {
     required this.sdesc,
     required this.srate,
     required this.catg,
+    required this.mainissues,
+    required this.maindesc,
     required this.priority,
     required this.stype,
     required this.rating,
@@ -65,6 +69,8 @@ class Consultant {
         sdesc: json["sdesc"],
         srate: json["srate"],
         catg: json["catg"],
+        mainissues: json["mainissues"],
+        maindesc: json["maindesc"],
         priority: priorityValues.map[json["priority"]]!,
         stype: stypeValues.map[json["stype"]]!,
         rating: json["rating"],
@@ -78,6 +84,8 @@ class Consultant {
         "sdesc": sdesc,
         "srate": srate,
         "catg": catg,
+        "mainissues": mainissues,
+        "maindesc": maindesc,
         "priority": priorityValues.reverse[priority],
         "stype": stypeValues.reverse[stype],
         "rating": rating,

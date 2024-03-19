@@ -39,15 +39,16 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
 
   TextEditingController locationController = TextEditingController();
 
+  TextEditingController mobileController = TextEditingController();
+
   ValueNotifier<bool> emailAccepted = ValueNotifier(false);
 
-  ValueNotifier<bool> passwordAccepted = ValueNotifier(false);
+  ValueNotifier<bool> mobileNumberAccepted = ValueNotifier(false);
 
   ValueNotifier<bool> nameAccepted = ValueNotifier(false);
 
-  ValueNotifier<bool> passwordAgainAccepted = ValueNotifier(false);
-
   ValueNotifier<bool> currentLocation = ValueNotifier(false);
+
   ValueNotifier<bool> showPlaces = ValueNotifier(false);
 
   bool? serviceEnabled;
@@ -91,6 +92,10 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
   @override
   void dispose() {
     connectivity?.cancel();
+    emailController.dispose();
+    nameController.dispose();
+    locationController.dispose();
+    mobileController.dispose();
     super.dispose();
   }
 
@@ -163,6 +168,25 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
                   },
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.emailAddress,
+                ),
+                10.verticalSpace,
+                TextFieldDesignPage(
+                  prefixWidget: const Icon(
+                    Icons.phone_android_outlined,
+                    color: Colors.grey,
+                  ),
+                  accepted: mobileNumberAccepted,
+                  controller: mobileController,
+                  labelText: "Mobile Number",
+                  onChanged: (p0) {
+                    if (p0.length < 10) {
+                      mobileNumberAccepted.value = false;
+                    } else {
+                      mobileNumberAccepted.value = true;
+                    }
+                  },
+                  textInputAction: TextInputAction.next,
+                  textInputType: TextInputType.number,
                 ),
                 10.verticalSpace,
                 TextFieldDesignPage(
@@ -352,6 +376,32 @@ class _SignUpPageScreenState extends State<SignUpPageScreen> {
         flushbarPosition: FlushbarPosition.BOTTOM,
         messageText: const Text(
           "Please enter valid email",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ).show(context);
+      return;
+    } else if (mobileController.text.isEmpty) {
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter mobile number",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ).show(context);
+      return;
+    } else if (mobileController.text.length < 10) {
+      Flushbar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xffA41C8E),
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        messageText: const Text(
+          "Please enter valid mobile number",
           style: TextStyle(
             color: Colors.white,
           ),

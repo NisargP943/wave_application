@@ -8,11 +8,12 @@ import 'package:wave_app/controller/all_category_controller/all_category_control
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/main.dart';
 import 'package:wave_app/model/my_cart_model.dart';
+import 'package:wave_app/model/service_details_model.dart';
 import 'package:wave_app/theme/custom_text_style.dart';
 import 'package:wave_app/ui/home/main_page.dart';
+import 'package:wave_app/ui/home/payment_page.dart';
 import 'package:wave_app/widgets/custom_elevated_button.dart';
 import 'package:wave_app/widgets/custom_image_view.dart';
-import 'package:wave_app/widgets/search_textfield_widget.dart';
 import 'package:wave_app/widgets/thin_textfield.dart';
 
 class WaveCartPage extends StatefulWidget {
@@ -29,6 +30,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
   TextEditingController codeController = TextEditingController();
   var categoryController = Get.put(AllCatController());
   List<Worker> workers = [];
+  String word = '';
 
   @override
   void initState() {
@@ -38,6 +40,10 @@ class _WaveCartPageState extends State<WaveCartPage> {
     );
     calculateTotalPrice();
     initWorkers();
+    debugPrint(
+        "Selected Issues : $selectedIssue --------------------------------------");
+    word = selectedIssue.map((e) => e.issue).join(",");
+    debugPrint(word);
   }
 
   @override
@@ -132,7 +138,6 @@ class _WaveCartPageState extends State<WaveCartPage> {
   }
 
   void callBookServiceApi() {
-    print(nameDB!.get("mobile").toString());
     categoryController.bookService(
       name: nameDB!.get("customername").toString(),
       number: nameDB!.get("mobile").toString(),
@@ -153,6 +158,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
           ? "${myAMCList.first.id}-${myAMCList.first.servicename}-${myAMCList.first.count}-${myAMCList.first.srate}"
           : "4023-AMC-1-1499",
       couponCode: "123",
+      bookissues: word,
     );
   }
 
@@ -228,7 +234,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
           children: [
             const Text("Total Amount:"),
             Text(
-              "₹ ${totalServiceCostDB?.get("cost") ?? 0.0}",
+              "₹ ${totalServiceCostDB?.get("cost") == "" ? 0.0 : totalServiceCostDB?.get("cost")}",
               style: CustomTextStyles.bodyMediumGray50013,
             )
           ],
@@ -279,7 +285,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    15.verticalSpace,
+                    10.verticalSpace,
                     Padding(
                       padding: const EdgeInsets.only(right: 15).r,
                       child: Row(
@@ -302,7 +308,6 @@ class _WaveCartPageState extends State<WaveCartPage> {
                       ),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "mypromocode2020",
@@ -311,7 +316,92 @@ class _WaveCartPageState extends State<WaveCartPage> {
                         GestureDetector(
                           onTap: () {
                             dummyCouponCode.value = true;
-                            Get.back();
+
+                            showDialog(
+                              builder: (context) => AlertDialog(
+                                title: const Text("AMC"),
+                                actions: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Get.back();
+                                            totalPrice.value =
+                                                totalPrice.value + 999;
+                                            totalServiceCostDB?.put(
+                                                "cost", totalPrice.value);
+                                          },
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: Colors.purple,
+                                              borderRadius:
+                                                  BorderRadius.circular(40).r,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 10,
+                                            ).r,
+                                            child: Text(
+                                              "Confirm",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.spMin),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      20.horizontalSpace,
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black),
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(40).r,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 10,
+                                            ).r,
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14.spMin),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                                content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Center(
+                                      child: Image.asset(
+                                        Assets.imagesLogo2,
+                                        height: 60.r,
+                                        width: 60.r,
+                                      ),
+                                    ),
+                                    20.verticalSpace,
+                                    const Text("Do you want AMC ?"),
+                                  ],
+                                ),
+                              ),
+                              context: context,
+                              barrierDismissible: false,
+                            );
                           },
                           child: Container(
                             margin: const EdgeInsets.only(
@@ -415,7 +505,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Text("₹${item.srate}")
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
@@ -494,7 +584,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Text("₹${item.srate}")
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
@@ -574,7 +664,7 @@ class _WaveCartPageState extends State<WaveCartPage> {
                               style: CustomTextStyles.bodyMediumGray50013,
                             ),
                             10.verticalSpace,
-                            Text("₹${item.srate}")
+                            Text("₹${item.price}")
                           ],
                         ),
                       ),
@@ -690,27 +780,27 @@ class _WaveCartPageState extends State<WaveCartPage> {
     if (myCartList.isNotEmpty) {
       for (int i = 0; i < myCartList.length; i++) {
         totalPrice.value += myCartList[i].price! * myCartList[i].count!;
-        print("dfgdfg ${totalPrice.value}");
+        debugPrint("dfgdfg ${totalPrice.value}");
         totalServiceCostDB?.put("cost", totalPrice.value);
       }
     } else if (myConsultantModel.isNotEmpty) {
       for (int i = 0; i < myConsultantModel.length; i++) {
         totalPrice.value +=
             myConsultantModel[i].price * myConsultantModel[i].count!;
-        print("dfgdfg ${totalPrice.value}");
+        debugPrint("dfgdfg ${totalPrice.value}");
         totalServiceCostDB?.put("cost", totalPrice.value);
       }
     } else if (myAMCList.isNotEmpty) {
       for (int i = 0; i < myAMCList.length; i++) {
         totalPrice.value += myAMCList[i].price! * myAMCList[i].count!;
-        print("dfgdfg ${totalPrice.value}");
+        debugPrint("dfgdfg ${totalPrice.value}");
         totalServiceCostDB?.put("cost", totalPrice.value);
       }
     } else {
       for (int i = 0; i < myCategory.length; i++) {
         totalPrice.value +=
             double.tryParse(myCategory[i].price!)! * myCategory[i].count!;
-        print("dfgdfg ${totalPrice.value}");
+        debugPrint("dfgdfg ${totalPrice.value}");
         totalServiceCostDB?.put("cost", totalPrice.value);
       }
     }
@@ -722,51 +812,37 @@ class _WaveCartPageState extends State<WaveCartPage> {
         categoryController.bookServiceResponseModel,
         (callback) {
           if (callback.status == "Done") {
-            showDialog(
-              builder: (context) => AlertDialog(
-                title: const Text("Service Booked"),
-                actions: [
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.back();
-                        pageNotifier.value = 0;
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius: BorderRadius.circular(40).r,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 10,
-                        ).r,
-                        child: Text(
-                          "Ok / Confirm",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 14.spMin),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Center(
-                      child: Image.asset(Assets.imagesSuccess),
-                    ),
-                    5.verticalSpace,
-                    Text(
-                        "Your Booking is confirmed with Booking ID : ${callback.bookingid.toString()}"),
-                  ],
+            Get.to(
+              duration: const Duration(seconds: 1),
+              transition: Transition.fadeIn,
+              PaymentPage(
+                servicePaymentModel: ServicePaymentModel(
+                  name: nameDB?.get("customername"),
+                  bid: callback.bookingid ?? "",
+                  amts: totalServiceCostDB?.get("cost").toString() ?? "",
+                  addr: locationDB?.get("city").toString() ?? "",
+                  pincode: "380007",
+                  mobile: nameDB!.get("mobile").toString(),
+                  bservice: myCartList.isNotEmpty
+                      ? myCartList.first.servicename ?? ""
+                      : myConsultantModel.isNotEmpty
+                          ? myConsultantModel.first.servicename
+                          : myAMCList.first.servicename ?? "",
                 ),
               ),
-              context: context,
-              barrierDismissible: false,
             );
-            // serviceBookingTime?.clear();
+            /* categoryController.customerPaymentApi(
+                nameDB?.get("customername"),
+                callback.bookingid ?? "",
+                totalServiceCostDB?.get("cost"),
+                locationDB?.get("city").toString() ?? "",
+                "380007",
+                nameDB!.get("mobile").toString(),
+                myCartList.isNotEmpty
+                    ? myCartList.first.servicename ?? ""
+                    : myConsultantModel.isNotEmpty
+                        ? myConsultantModel.first.servicename
+                        : myAMCList.first.servicename ?? "");*/
             totalServiceCostDB?.clear();
             myCartList.clear();
             myConsultantModel.clear();
@@ -775,6 +851,54 @@ class _WaveCartPageState extends State<WaveCartPage> {
           }
         },
       ),
+      ever(categoryController.isPaymentSuccessfully, (callback) {
+        if (callback == "Payment Done Booking Registered") {
+          showDialog(
+            builder: (context) => AlertDialog(
+              title: const Text("Service Booked"),
+              actions: [
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                      pageNotifier.value = 0;
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.circular(40).r,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ).r,
+                      child: Text(
+                        "Ok / Confirm",
+                        style:
+                            TextStyle(color: Colors.white, fontSize: 14.spMin),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Image.asset(Assets.imagesSuccess),
+                  ),
+                  5.verticalSpace,
+                  Text(
+                      "Your Booking is confirmed with Booking ID : ${categoryController.bookServiceResponseModel.value.bookingid}"),
+                ],
+              ),
+            ),
+            context: context,
+            barrierDismissible: false,
+          );
+        }
+      }),
       ever(categoryController.errorMessage, (callback) {
         Flushbar(
           duration: const Duration(seconds: 3),

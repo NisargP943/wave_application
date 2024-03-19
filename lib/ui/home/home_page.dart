@@ -159,10 +159,23 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _lastWords = result.recognizedWords;
     });
+    if (_lastWords.isNotEmpty) {
+      searchController.dropDownValue =
+          DropDownValueModel(name: _lastWords, value: _lastWords);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () => Get.to(
+          SearchServicePage(
+            serviceName: searchController.dropDownValue?.value,
+          ),
+          transition: Transition.fadeIn,
+          duration: const Duration(seconds: 1),
+        ),
+      );
 
-    searchController
-        .setDropDown(DropDownValueModel(name: _lastWords, value: _lastWords));
-    debugPrint(_lastWords);
+      debugPrint(
+          "Last word ---------------------------------------------------$_lastWords");
+    }
   }
 
   @override
@@ -195,7 +208,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget serviceDetailsItem() {
+  Widget latestServiceDetailsItem() {
     return bookedList.isEmpty
         ? const SizedBox.shrink()
         : Container(
@@ -428,11 +441,11 @@ class _HomePageState extends State<HomePage> {
                 dropDownList: dropDownList,
               ),
               15.verticalSpace,
-              labelWidgetOne("Welcome, $custName"),
-              3.verticalSpace,
               labelWidgetOne("Wave Home"),
+              3.verticalSpace,
+              labelWidgetOne("Welcome, $custName"),
               10.verticalSpace,
-              serviceDetailsItem(),
+              latestServiceDetailsItem(),
               15.verticalSpace,
               SizedBox(
                 height: 200.h,

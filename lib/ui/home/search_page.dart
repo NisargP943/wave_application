@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:wave_app/controller/all_category_controller/all_category_controller.dart';
 import 'package:wave_app/generated/assets.dart';
 import 'package:wave_app/model/response/all_category_response_model.dart';
@@ -32,8 +35,12 @@ class _SearchServicePageState extends State<SearchServicePage> {
   SingleValueDropDownController searchController =
       SingleValueDropDownController();
   late StreamSubscription connectivity;
+  SpeechToText speechToText = SpeechToText();
   List<ServicesModel> serviceList = [];
   List<DropDownValueModel> dropDownList = [];
+  bool _speechEnabled = false;
+  String _lastWords = '';
+
   List<String> category = [
     "Astrologers",
     "Caterers",
@@ -97,6 +104,13 @@ class _SearchServicePageState extends State<SearchServicePage> {
   }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    speechToText.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xfff5f5f5),
@@ -141,6 +155,9 @@ class _SearchServicePageState extends State<SearchServicePage> {
       children: [
         5.verticalSpace,
         DropDownTextFieldSearchPage(
+          suffixCallBack: () {
+            checkPermission();
+          },
           dropDownList: dropDownList,
           onChanged: (val) {
             if (searchController.dropDownValue?.value != null) {
@@ -469,5 +486,78 @@ class _SearchServicePageState extends State<SearchServicePage> {
         ).show(context);
       }
     });
+  }
+
+  Future _initSpeech() async {
+    try {
+      _speechEnabled = await speechToText.initialize(
+        onStatus: (status) {},
+        onError: (errorNotification) {},
+      );
+      _startListening();
+    } on SpeechToTextNotInitializedException catch (e) {
+      if (mounted) {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "Voice Search is Supported only in Device above Android 11",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        Flushbar(
+          duration: const Duration(seconds: 4),
+          backgroundColor: const Color(0xffA41C8E),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          messageText: const Text(
+            "Voice Search is Supported only in Device above Android 11",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ).show(context);
+      }
+    }
+  }
+
+  void _startListening() async {
+    debugPrint(_speechEnabled.toString());
+    if (_speechEnabled) {
+      await speechToText.listen(onResult: _onSpeechResult);
+      setState(() {});
+    }
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
+
+    if (_lastWords.isNotEmpty) {
+      searchController.dropDownValue =
+          DropDownValueModel(name: _lastWords, value: _lastWords);
+      Future.delayed(
+        const Duration(
+          seconds: 1,
+        ),
+        () => categoryController
+            .searchService(searchController.dropDownValue?.value),
+      );
+      debugPrint(_lastWords);
+    }
+  }
+
+  Future checkPermission() async {
+    var permission = await Permission.audio.status;
+    if (permission.isDenied || permission.isPermanentlyDenied) {
+      permission = await Permission.audio.request();
+      await _initSpeech();
+    }
   }
 }

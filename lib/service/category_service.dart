@@ -69,18 +69,20 @@ class CategoryService {
     }
   }
 
-  Future bookServiceApi(
-      {required String name,
-      required String number,
-      required String cityLat,
-      required String cityLong,
-      required String address,
-      required String bookingDate,
-      required String bookingTime,
-      required String landmark,
-      required String sdetails,
-      required String amcDetails,
-      required String couponCode}) async {
+  Future bookServiceApi({
+    required String name,
+    required String number,
+    required String cityLat,
+    required String cityLong,
+    required String address,
+    required String bookingDate,
+    required String bookingTime,
+    required String landmark,
+    required String sdetails,
+    required String amcDetails,
+    required String couponCode,
+    required String bookissues,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse(
@@ -123,6 +125,28 @@ class CategoryService {
       final response = await http.get(
         Uri.parse(
             "${Constant().baseUrl}customer_complete_booking.php?status=$status&sid=$sid&custid=$custid&rating=$rating&mobile=$phoneNumber&comments=$commentes&feedback=$feedback&amc=$amc&amountpaid=$amountpaid"),
+      );
+      debugPrint(response.body);
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future customerPayApi(
+    String name,
+    String bid,
+    String amts,
+    String addr,
+    String pincode,
+    String mobile,
+    String bservice,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            "http://wavetechservices.in/ccavenue/cpay/customerpay.php?cname=$name&bid=$bid&amts=$amts&addr=$addr&pincode=$pincode&mobile=$pincode&bservice=$bservice"),
       );
       debugPrint(response.body);
       return response;
